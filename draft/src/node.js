@@ -1,0 +1,113 @@
+draft.node=function(id,label,x,y,i,o){
+	return this.init(id,label,x,y,i,o);
+}
+draft.node.prototype.init=function(id,label,x,y,i,o){
+	this.id = id;
+	this.label = label||"empty";
+	this.x = x||10;
+	this.y = y||10;
+	this.i = i||2;
+	this.o = o||1;
+
+	var label_size = draft.context.measureText(this.label);
+	this.margin = 6;
+	this.w = label_size.width+(this.margin*4);
+	this.h = draft.font.size+(this.margin*2) + ((this.margin*3)*Math.max(this.i,this.o));
+
+	this.sx = 0;
+	this.sy = 0;
+	this.ox = 0;
+	this.oy = 0;
+
+	this.c = "red";
+
+	//make the ports
+	
+	this.p_o=[];
+	this.p_i=[];
+	this.pid = 0;//port ids
+
+	for(var op = 0; op<this.o; op++){
+		this.p_o.push( new draft.port(0,this.pid,this.w,(this.margin*3)*(op+1),this.margin,"#FBE17D") );
+		this.pid+=1;
+	}
+	for(var ip = 0; ip<this.i; ip++){
+               this.p_i.push( new draft.port(1,this.pid,0,(this.margin*3)*(ip+1),this.margin,"#FBE17D") );
+		this.pid+=1;
+        }
+        
+	this.draw();
+
+	return this;
+}
+draft.node.prototype.draw=function(){
+	draft.context.fillStyle = "#93CEA4";//FBE17D,DA5757,D9D1A6,3F7A97,0C6E6D,E82572,//http://www.colourlovers.com/
+    	//draft.context.fillRect(this.x,this.y,this.w,this.h);
+    	this.draw_shape();
+	//draw the label
+	draft.context.fillStyle = "#FFFFFF";
+	draft.context.fillText(this.label,this.x+this.margin,this.y+this.margin+(draft.font.size/2));
+	//draw the ports
+	for(var op = 0; op<this.o; op++){
+		this.p_o[op].draw( {x:this.x,y:this.y} );	
+	}
+	for(var ip = 0; ip<this.i; ip++){
+                this.p_i[ip].draw( {x:this.x,y:this.y} );
+        } 
+}
+draft.node.prototype.start_drag=function(x,y){
+	this.ox = x-this.x;
+	this.oy = y-this.y;
+}
+draft.node.prototype.drag=function(x,y){
+	this.x = x-this.ox;
+	this.y = y-this.oy;
+}
+//--------------------
+draft.node.prototype.draw_shape=function(){
+	var r = this.margin;//radius of rounder corners
+	var seg = Math.ceil(r*0.3);
+	var coff = r*2;
+	var pivot = {x:this.x+r,y:this.y+r};
+
+	draft.context.beginPath();
+	this.draw_rounded_corner(pivot,r,seg,2,true);
+	pivot.x = pivot.x+this.w-coff;
+	this.draw_rounded_corner(pivot,r,seg,3);
+	pivot.y = pivot.y+this.h-coff;
+	this.draw_rounded_corner(pivot,r,seg,0);
+	pivot.x = this.x+r;
+	this.draw_rounded_corner(pivot,r,seg,1);
+
+	draft.context.closePath();
+	draft.context.fill();
+}
+draft.node.prototype.draw_rounded_corner=function(position,radius,segments,corner,start){
+	start=start||false;
+    	var c = 2*3.1415;
+   	for (var i =0; i<=segments; i++){
+        	var s = (((i+(segments*corner))/segments)/4);
+        	var x = (Math.cos(s*c))*radius;
+        	var y = (Math.sin(s*c))*radius;
+        	if(i===0 && start){
+        	    draft.context.moveTo(x+position.x, y+position.y);
+        	}else{
+        	    draft.context.lineTo(x+position.x,y+position.y);
+        	}
+    	}
+}
+//-------
+//this will all probably end up in a node_ports object later
+draft.node.prototype.draw_ports=function(ports,xoff,yoff){
+	for(var po = 0; po<ports; po++){
+                var p = {x:this.x+this.w,y:yoff};
+                this.draw_circle(p,this.margin,"#FBE17D");
+                yoff+=this.margin;
+        }
+}
+draft.node.prototype.draw_circle=function(position,radius,color){
+	draft.context.beginPath();
+	draft.context.arc(position.x,position.y,radius,0,2*3.1415,false);
+	draft.context.fillStyle=color;
+	draft.context.fill();
+}
