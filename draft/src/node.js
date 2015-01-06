@@ -23,16 +23,16 @@ draft.node.prototype.init=function(id,label,x,y,i,o){
 
 	//make the ports
 	
-	this.p_o=[];
-	this.p_i=[];
+	this.p_o={};
+	this.p_i={};
 	this.pid = 0;//port ids
 
 	for(var op = 0; op<this.o; op++){
-		this.p_o.push( new draft.port(0,this.pid,this.w,(this.margin*3)*(op+1),this.margin,"#FBE17D") );
+		this.p_o[this.pid] = new draft.port(0,this.pid,this.w,(this.margin*3)*(op+1),this.margin,"#FBE17D");
 		this.pid+=1;
 	}
 	for(var ip = 0; ip<this.i; ip++){
-               this.p_i.push( new draft.port(1,this.pid,0,(this.margin*3)*(ip+1),this.margin,"#FBE17D") );
+               this.p_i[this.pid] = new draft.port(1,this.pid,0,(this.margin*3)*(ip+1),this.margin,"#FBE17D");
 		this.pid+=1;
         }
         
@@ -48,10 +48,10 @@ draft.node.prototype.draw=function(){
 	draft.context.fillStyle = "#FFFFFF";
 	draft.context.fillText(this.label,this.x+this.margin,this.y+this.margin+(draft.font.size/2));
 	//draw the ports
-	for(var op = 0; op<this.o; op++){
+	for(var op in this.p_o){
 		this.p_o[op].draw( {x:this.x,y:this.y} );	
 	}
-	for(var ip = 0; ip<this.i; ip++){
+	for(var ip in this.p_i){
                 this.p_i[ip].draw( {x:this.x,y:this.y} );
         } 
 }
@@ -96,18 +96,45 @@ draft.node.prototype.draw_rounded_corner=function(position,radius,segments,corne
         	}
     	}
 }
-//-------
-//this will all probably end up in a node_ports object later
-draft.node.prototype.draw_ports=function(ports,xoff,yoff){
-	for(var po = 0; po<ports; po++){
-                var p = {x:this.x+this.w,y:yoff};
-                this.draw_circle(p,this.margin,"#FBE17D");
-                yoff+=this.margin;
-        }
+
+//------
+//first check that we are near a node before going any further
+draft.node.prototype.near=function(p){
+	return (p.x>this.x-this.margin && p.x<(this.x+this.w+this.margin) && p.y>this.y-this.margin && p.y<(this.y+this.h+this.margin));
 }
-draft.node.prototype.draw_circle=function(position,radius,color){
-	draft.context.beginPath();
-	draft.context.arc(position.x,position.y,radius,0,2*3.1415,false);
-	draft.context.fillStyle=color;
-	draft.context.fill();
+draft.node.prototype.over=function(p){
+	return (p.x>this.x && p.x<(this.x+this.w) && p.y>this.y && p.y<(this.y+this.h) );
+}
+//get port information
+draft.node.prototype.port_position=function(id,io){
+	//gets the relative port position
+	var p = {x:0,y:0};
+	if(io>0){//in port
+		p.x = this.p_i[id].x+this.x;
+		p.y = this.p_i[id].y+this.y;
+	}else{//out port
+		p.x = this.p_o[id].x+this.x;
+		p.y = this.p_o[id].y+this.y;
+	}
+	return p;
+}
+//----
+draft.node.prototype.over_port=function(p){
+	var ops = this.check_over_port(p,0);
+	var ips = this.check_over_port(p,1);
+	return (ops.port>-1)?ops:ips;
+}
+draft.node.prototype.check_over_port=function(p,pio){//position
+        var out = {io:-1,port:-1};
+	var pa = (pio===0)?this.p_o:this.p_i;
+        for(var po in pa){
+                var p1 = {x:p.x,y:p.y};
+                var p2 = {x:this.x+pa[po].x,y:this.y+pa[po].y};
+                var dist = draft.distance(p1,p2);//DRAFT BASED FUNCTION
+                if(dist<=this.margin){
+                        out.io = pio;
+                        out.port = pa[po].id;
+        	}
+        }
+      	return out;
 }

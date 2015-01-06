@@ -3,7 +3,7 @@ draft.port=function(type,id,x,y,r,c){
 }
 draft.port.prototype.init=function(type,id,x,y,r,c){
 	this.type = type||1;
-	this.id = id||-1;
+	this.id = id;
 	//x y position is relative to the node
         this.x = x||0;
         this.y = y||0;

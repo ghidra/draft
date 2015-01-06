@@ -11,19 +11,20 @@ draft.ids={
         'line':0
 }
 
-draft.nodes=[];
-draft.lines=[];
+draft.nodes={};
+draft.lines={};
 
 
 draft.canvas_clicked=false;
-draft.over_port=false;
+//draft.over_port=false;
 
 draft.dragging=[];//for nodes
 draft.dragging_line={
-	'to_node':-1,
-	'to_port':-1,
-	'from_node':-1,
-	'from_port':-1
+	'create':false,
+	'id':-1,
+	'reverse':false,
+	'node':-1,
+	'port':-1
 };
 
 draft.set_canvas=function(id){
@@ -51,35 +52,25 @@ draft.mousedown=function(e){
 	this.console.innerHTML="x:"+p.x+" y:"+p.y;
 
 	//check if we are over a node
-	for(var n=0; n<this.nodes.length; n++){
+	//for(var n=0; n<this.nodes.length; n++){
+	for (var n in this.nodes){
         	nd = this.nodes[n];
-		//if we are over the node + the margin we might be clicking a port, check that first
-		if(p.x>nd.x-nd.margin && p.x<(nd.x+nd.w+nd.margin) && p.y>nd.y-nd.margin && p.y<(nd.y+nd.h+nd.margin) ){
-			//check that we are a near a out port
-			for(var op=0; op<nd.o; op++){
-				var p1 = {x:p.x,y:p.y};
-				var p2 = {x:nd.x+nd.p_o[op].x,y:nd.y+nd.p_o[op].y};
-				var dist = this.distance( p1,p2  );
-				if(dist<=nd.margin){
-					this.dragging_line.from_node = nd.id;
-					this.dragging_line.from_port = nd.p_o[op].id;
-					this.over_port = true;
+		//if we are over the node + the margin we might be clicking a port, check that firsti
+		if(nd.near(p)){
+			//check for ports first
+			//check that we are a near an out port
+			var ndp = nd.over_port(p);
+			if(ndp.io>-1){//we are over a port
+				this.dragging_line.reverse = (ndp.io===1);
+				this.dragging_line.node = nd.id;
+                                this.dragging_line.port = ndp.port;
+				this.add_line();
+			}else{//we are not over a port, lets see if we are over the node
+				if(nd.over(p)){
+					nd.start_drag(p.x,p.y);
+                                	this.dragging.push(n);
 				}
 			}
-			for(var ip=0; ip<nd.i; ip++){
-                                var p1 = {x:p.x,y:p.y};
-                                var p2 = {x:nd.x+nd.p_i[ip].x,y:nd.y+nd.p_i[ip].y};
-                                var dist = this.distance( p1,p2  );
-                                if(dist<=nd.margin){
-                                        this.dragging_line.to_node = nd.id;
-                                        this.dragging_line.to_port = nd.p_i[ip].id;
-                                        this.over_port = true;
-                                }
-                        }
-			if(p.x>nd.x && p.x<(nd.x+nd.w) && p.y>nd.y && p.y<(nd.y+nd.h) && !this.over_port ){
-                        	nd.start_drag(p.x,p.y);
-                        	this.dragging.push(n);
-                	}
 		}
     	}	
 
@@ -89,26 +80,43 @@ draft.mouseup=function(e){
 	this.console.innerHTML="";
 	this.clear_dragging();
 	this.over_port=false;
+
+	this.dragging_line.id=-1;
+	this.dragging_line.create=false;
+	this.dragging_line.node=-1;
+        this.dragging_line.port=-1;
 }
 draft.mousemove=function(e){
 	if(this.canvas_clicked){
 		var p = this.mouse_position(e);
 		this.console.innerHTML="x:"+p.x+" y:"+p.y;
+
+		//if we have created a new line
+		if(this.dragging_line.create){
+			//alert(this.dragging_line.reverse);
+			this.lines[this.dragging_line.id].drag(p,this.dragging_line.reverse);
+		}
 		
 		//drag any nodes in the dragging array
 		for(var n=0; n<this.dragging.length;n++){
             		this.nodes[this.dragging[n]].drag(p.x,p.y);    
         	}
 
-		 if(this.dragging.length>0){
-            		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
-            		for(var n=0; n<this.nodes.length;n++){
+		 if(this.dragging.length>0 || this.dragging_line.create){
+            		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			//if we have created a new line
+			if(this.dragging_line.create){
+				this.lines[this.dragging_line.id].drag(p,this.dragging_line.reverse);
+			}
+			//draw the nodes again
+            		for(var n in this.nodes){
                 		this.nodes[n].draw();
             		}
         	}
 		//-------
 	}
 }
+//--
 
 //---
 draft.mouse_position=function(e){
@@ -145,6 +153,19 @@ draft.add_node=function(label,x,y){
 	label = label||"none";
 	x = x||10;
 	y = y||10;
-	this.nodes.push(new this.node(this.ids.node,label,x,y) );
+	this.nodes[this.ids.node] = new this.node(this.ids.node,label,x,y);
 	this.ids.node+=1;
+}
+
+//-------------------
+//
+draft.add_line=function(){
+	this.dragging_line.create = true;
+	this.dragging_line.id = this.ids.line;
+	if(this.dragging_line.reverse){
+		this.lines[this.ids.line] = new this.line(this.ids.line,-1,-1,this.dragging_line.node,this.dragging_line.port);
+	}else{
+		this.lines[this.ids.line] = new this.line(this.ids.line,this.dragging_line.node,this.dragging_line.port,-1,-1);
+	} 
+	this.ids.line+=1;
 }
