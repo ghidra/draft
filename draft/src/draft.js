@@ -6,18 +6,11 @@ draft.font={
 	'size':10
 };
 
-draft.ids={
-        'node':0,
-        'line':0
-}
-
-draft.nodes={};
-draft.lines={};
+draft.scripts={};
+draft.activescript=0;
 
 
 draft.canvas_clicked=false;
-//draft.over_port=false;
-
 draft.dragging=[];//for nodes
 draft.dragging_line={
 	'create':false,
@@ -44,7 +37,14 @@ draft.set_font=function(size){
 	this.font.size = size||this.font.size;
 }
 //---------------------------
-
+draft.set_script=function(id,scr){
+	id = id||0;
+	if(!js.objhasprop(scr)){
+		scr = {nodes:{},lines:{},scripts:{}};
+	}
+	this.scripts[id] = new draft.script(id,scr);
+}
+//--------------------------
 draft.mousedown=function(e){
 	this.canvas_clicked=true;
 
@@ -53,8 +53,8 @@ draft.mousedown=function(e){
 
 	//check if we are over a node
 	//for(var n=0; n<this.nodes.length; n++){
-	for (var n in this.nodes){
-        	nd = this.nodes[n];
+	for (var n in this.scripts[this.activescript].nodes){
+        	nd = this.scripts[this.activescript].nodes[n];
 		//if we are over the node + the margin we might be clicking a port, check that firsti
 		if(nd.near(p)){
 			//check for ports first
@@ -78,7 +78,7 @@ draft.mousedown=function(e){
 draft.mouseup=function(e){
 	this.canvas_clicked=false;
 	this.console.innerHTML="";
-	this.clear_dragging();
+	js.flusharray(this.dragging);
 	this.over_port=false;
 
 	this.dragging_line.id=-1;
@@ -93,24 +93,23 @@ draft.mousemove=function(e){
 
 		//if we have created a new line
 		if(this.dragging_line.create){
-			//alert(this.dragging_line.reverse);
-			this.lines[this.dragging_line.id].drag(p,this.dragging_line.reverse);
+			this.scripts[this.activescript].lines[this.dragging_line.id].drag(p,this.dragging_line.reverse);
 		}
 		
 		//drag any nodes in the dragging array
 		for(var n=0; n<this.dragging.length;n++){
-            		this.nodes[this.dragging[n]].drag(p.x,p.y);    
+            		this.scripts[this.activescript].nodes[this.dragging[n]].drag(p.x,p.y);    
         	}
 
 		 if(this.dragging.length>0 || this.dragging_line.create){
             		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			//if we have created a new line
 			if(this.dragging_line.create){
-				this.lines[this.dragging_line.id].drag(p,this.dragging_line.reverse);
+				this.scripts[this.activescript].lines[this.dragging_line.id].drag(p,this.dragging_line.reverse);
 			}
 			//draw the nodes again
-            		for(var n in this.nodes){
-                		this.nodes[n].draw();
+            		for(var n in this.scripts[this.activescript].nodes){
+                		this.scripts[this.activescript].nodes[n].draw();
             		}
         	}
 		//-------
@@ -142,30 +141,26 @@ draft.distance=function(p1,p2){
 	var y = p1.y-p2.y;
 	return Math.sqrt( (x*x)+(y*y) );
 }
-draft.clear_dragging=function(){
-	while(this.dragging.length>0){
-		this.dragging.pop();
-	}
-}
 //---------------------
 
 draft.add_node=function(label,x,y){
 	label = label||"none";
 	x = x||10;
 	y = y||10;
-	this.nodes[this.ids.node] = new this.node(this.ids.node,label,x,y);
-	this.ids.node+=1;
+	this.scripts[this.activescript].add_node(label,x,y);
 }
 
 //-------------------
 //
 draft.add_line=function(){
 	this.dragging_line.create = true;
-	this.dragging_line.id = this.ids.line;
+	this.dragging_line.id = this.scripts[this.activescript].ids.line;
 	if(this.dragging_line.reverse){
-		this.lines[this.ids.line] = new this.line(this.ids.line,-1,-1,this.dragging_line.node,this.dragging_line.port);
+		this.scripts[this.activescript].add_line(-1,-1,this.dragging_line.node,this.dragging_line.port)
 	}else{
-		this.lines[this.ids.line] = new this.line(this.ids.line,this.dragging_line.node,this.dragging_line.port,-1,-1);
+		this.scripts[this.activescript].add_line(this.dragging_line.node,this.dragging_line.port,-1,-1);
 	} 
-	this.ids.line+=1;
 }
+//-----------------
+
+

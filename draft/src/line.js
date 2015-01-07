@@ -28,14 +28,15 @@ draft.line.prototype.draw=function(p1,p2){
 }
 
 //just for creating and being dragged out
-draft.line.prototype.drag=function(p,r){//p is the mouse position being passed in,r is a reverse drag
+//most of this might need to be taken care of in draft.js, since I am referencing it here
+draft.line.prototype.drag=function(p,r){//p is the mouse position being passed in,np is the node port position, r is a reverse drag
 	//get info from draft object based on parameters
 	if(r){
-		var newp = draft.nodes[this.tnode].port_position(this.tport,1);
+		var newp = draft.scripts[draft.activescript].nodes[this.tnode].port_position(this.tport,1);
 		this.draw(p,newp);
 	}else{
 		//alert(this.fnode+":"+this.fport);
-		var newp = draft.nodes[this.fnode].port_position(this.fport,0);
+		var newp = draft.scripts[draft.activescript].nodes[this.fnode].port_position(this.fport,0);
 		this.draw(newp,p);
 	}
 }

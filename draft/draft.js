@@ -1,7 +1,9 @@
 draft={};
 draft.includes={
 	lib:[
+		"js",
 		"draft",
+		"script",
 		"node",
 		"port",
 		"line"
