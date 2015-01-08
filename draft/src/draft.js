@@ -80,11 +80,42 @@ draft.mouseup=function(e){
 	this.console.innerHTML="";
 	js.flusharray(this.dragging);
 	this.over_port=false;
+	
 
-	this.dragging_line.id=-1;
-	this.dragging_line.create=false;
-	this.dragging_line.node=-1;
-        this.dragging_line.port=-1;
+	//line dragging logic	
+	if(this.dragging_line.create){
+		var li = this.scripts[this.activescript].lines[this.dragging_line.id];
+		var p = this.mouse_position(e);
+		//find out if we released on a valid port
+		for (var n in this.scripts[this.activescript].nodes){//loop the nodes
+			var nd = this.scripts[this.activescript].nodes[n];
+                	//if we are over the node + the margin we might be clicking a port, check that firsti
+                        if(nd.near(p)){
+				var ndp = nd.over_port(p);
+				var valid_reverse = (this.dragging_line.reverse && ndp.io===0 && !ndp.used);
+				var valid_forward = (!this.dragging_line.reverse && ndp.io===1 && !ndp.used);
+				if(valid_reverse || valid_forward){//valid, set the remaining values
+					if(valid_reverse){
+						li.fnode = nd.id;
+						li.fport = ndp.port;
+					}
+					if(valid_forward){
+						li.tnode = nd.id;
+						li.tport = ndp.port;
+					}
+					li.used = true;
+				}else{//not valid, remove the line
+					this.scripts[this.activescript].remove_line(this.dragging_line.id);
+				}
+			}else{
+				this.scripts[this.activescript].remove_line(this.dragging_line.id);
+			}
+		}
+		this.dragging_line.id=-1;
+		this.dragging_line.create=false;
+		this.dragging_line.node=-1;
+        	this.dragging_line.port=-1;
+	}
 }
 draft.mousemove=function(e){
 	if(this.canvas_clicked){

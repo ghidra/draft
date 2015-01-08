@@ -125,7 +125,7 @@ draft.node.prototype.over_port=function(p){
 	return (ops.port>-1)?ops:ips;
 }
 draft.node.prototype.check_over_port=function(p,pio){//position
-        var out = {io:-1,port:-1};
+        var out = {io:-1,port:-1,used:false};
 	var pa = (pio===0)?this.p_o:this.p_i;
         for(var po in pa){
                 var p1 = {x:p.x,y:p.y};
@@ -134,6 +134,7 @@ draft.node.prototype.check_over_port=function(p,pio){//position
                 if(dist<=this.margin){
                         out.io = pio;
                         out.port = pa[po].id;
+			out.used = pa[po].used;
         	}
         }
       	return out;
