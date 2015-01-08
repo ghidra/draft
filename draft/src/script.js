@@ -3,8 +3,8 @@ draft.script=function(id,scr){
 }
 draft.script.prototype.init=function(id,scr){
 	this.ids={
-        	'node':0,
-        	'line':0,
+    'node':0,
+    'line':0,
 		'script':0
 	}
 
