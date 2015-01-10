@@ -139,3 +139,13 @@ draft.node.prototype.check_over_port=function(p,pio){//position
         }
       	return out;
 }
+
+//-----check what nodes are are connected to, based on i or o
+/*draft.node.prototype.check_connected_node=function(io){
+	var conn = [];
+	if(io===0){//if we are looking from and out port, we check our inport connected nodes
+		for(var p in this.p_i){
+			
+		}
+	}
+}*/

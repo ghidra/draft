@@ -63,7 +63,7 @@ draft.mousedown=function(e){
 			if(ndp.io>-1){//we are over a port
 				this.dragging_line.reverse = (ndp.io===1);
 				this.dragging_line.node = nd.id;
-        this.dragging_line.port = ndp.port;
+        			this.dragging_line.port = ndp.port;
 				this.add_line();
 			}else{//we are not over a port, lets see if we are over the node
 				if(nd.over(p)){
@@ -89,23 +89,28 @@ draft.mouseup=function(e){
 		//find out if we released on a valid port
 		for (var n in this.scripts[this.activescript].nodes){//loop the nodes
 			var nd = this.scripts[this.activescript].nodes[n];
-      //if we are over the node + the margin we might be clicking a port, check that firsti
-      if(nd.near(p)){
-				var ndp = nd.over_port(p);
-				var valid_reverse = (this.dragging_line.reverse && ndp.io===0 && !ndp.used);
-				var valid_forward = (!this.dragging_line.reverse && ndp.io===1 && !ndp.used);
-				if(valid_reverse || valid_forward){//valid, set the remaining values
-					var li = this.scripts[this.activescript].lines[this.dragging_line.id];
-					if(valid_reverse){
-						li.fnode = nd.id;
-						li.fport = ndp.port;
-					}
-					if(valid_forward){
-						li.tnode = nd.id;
-						li.tport = ndp.port;
-					}
-					li.used = true;
-					connected = (!connected)?true:connected;
+      		//if we are over the node + the margin we might be clicking a port, check that firsti
+      		if(nd.near(p)){
+			var ndp = nd.over_port(p);
+			//valid also need to make sure that we are not creating infinte recursion connections
+			var valid_reverse = (this.dragging_line.reverse && ndp.io===0 && !ndp.used && nd.id!=this.dragging_line.node);
+			var valid_forward = (!this.dragging_line.reverse && ndp.io===1 && !ndp.used && nd.id!=this.dragging_line.node);
+			if(valid_reverse || valid_forward){//valid, set the remaining values
+				var li = this.scripts[this.activescript].lines[this.dragging_line.id];
+				if(valid_reverse){
+					li.fnode = nd.id;
+					li.fport = ndp.port;
+					nd.p_o[ndp.port].line.push(li.id);
+					this.scripts[this.activescript].nodes[this.dragging_line.node].p_i[this.dragging_line.port].line[0]=li.id;
+				}
+				if(valid_forward){
+					li.tnode = nd.id;
+					li.tport = ndp.port;
+					nd.p_i[ndp.port].line[0] = li.id;
+					this.scripts[this.activescript].nodes[this.dragging_line.node].p_o[this.dragging_line.port].line.push(li.id);
+				}
+				li.used = true;
+				connected = (!connected)?true:connected;
 				}
 			}
 		}
@@ -115,7 +120,7 @@ draft.mouseup=function(e){
 		this.dragging_line.id=-1;
 		this.dragging_line.create=false;
 		this.dragging_line.node=-1;
-    this.dragging_line.port=-1;
+	    	this.dragging_line.port=-1;
 	}
 }
 draft.mousemove=function(e){
@@ -130,11 +135,11 @@ draft.mousemove=function(e){
 
 		//drag any nodes in the dragging array
 		for(var n=0; n<this.dragging.length;n++){
-    	this.scripts[this.activescript].nodes[this.dragging[n]].drag(p.x,p.y);
-    }
+    			this.scripts[this.activescript].nodes[this.dragging[n]].drag(p.x,p.y);
+    		}
 
 		if(this.dragging.length>0 || this.dragging_line.create){
-    	this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			var scr = this.scripts[this.activescript];
 			//draw the lines again
 			for (var l in scr.lines){
@@ -148,10 +153,10 @@ draft.mousemove=function(e){
 				}
 			}
 			//draw the nodes again
-      for(var n in scr.nodes){
-      	scr.nodes[n].draw();
-      }
-    }
+      			for(var n in scr.nodes){
+      				scr.nodes[n].draw();
+      			}
+    		}
 		//-------
 	}
 }

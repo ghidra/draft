@@ -10,6 +10,7 @@ draft.port.prototype.init=function(type,id,x,y,r,c){
 	this.r = r||6;
 	this.c = c||"#FF0000";
 	this.used = false;
+	this.line = [];//the connected line id
 	return this;	
 }
 draft.port.prototype.set_position=function(x,y){
