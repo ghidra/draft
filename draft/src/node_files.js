@@ -24,13 +24,24 @@ function fsResults(entries){
                 s += entry.name;
         });
 
-        alert(s);
+        console.log(s);
+}
+function fsDir(fs){
+	console.log(fs);
+	//console.dir(fs);
 }
 function fsDirScan(fs){
+	
+	var mdir = fs.root.getDirectory("/mill3d",{},fsDir,fsError);
 	var dirReader = fs.root.createReader();
         var entries = [];
+	
+	console.dir(fs);
+	//console.dir(mdir);
         var readEntries = function() {
                 dirReader.readEntries (function(results) {
+			//console.log('results:'+results);
+			//console.dir(results);
                         if (!results.length) {
                                 fsResults(entries.sort());
                         } else {
