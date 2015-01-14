@@ -1,4 +1,5 @@
 function init(){
+	draft.init();
 	draft.set_canvas("c");
 	draft.set_console("p");
 	draft.set_script();//set a black script

@@ -140,12 +140,14 @@ draft.node.prototype.check_over_port=function(p,pio){//position
       	return out;
 }
 
-//-----check what nodes are are connected to, based on i or o
-/*draft.node.prototype.check_connected_node=function(io){
-	var conn = [];
-	if(io===0){//if we are looking from and out port, we check our inport connected nodes
-		for(var p in this.p_i){
-			
+//-----check when connecting lines if we are going to make an infinte loop
+/*draft.node.prototype.check_infinite_loop=function(nid){//the attempting to connect node, and the direction
+	//we need to recursevly check that no nodes plug into given node
+	var loop = false;
+	for (var op in this.p_o){
+		for(var l=0l l< this.p_o[op].line.length; l++){
+				
 		}
 	}
+	return loop;
 }*/

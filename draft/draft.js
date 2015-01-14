@@ -6,7 +6,8 @@ draft.includes={
 		"script",
 		"node",
 		"port",
-		"line"
+		"line",
+		"node_files"
 	],
 	include:function(src){
 		document.write('<script type="text/javascript" language="javascript" src="'+src+'"></script>');
