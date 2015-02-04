@@ -32,9 +32,9 @@ function fsDir(fs){
 }
 function fsDirScan(fs){
 	
-	var mdir = fs.root.getDirectory("/mill3d",{},fsDir,fsError);
+	//var mdir = fs.root.getDirectory("/mill3d",{},fsDir,fsError);
 	var dirReader = fs.root.createReader();
-        var entries = [];
+  var entries = [];
 	
 	console.dir(fs);
 	//console.dir(mdir);

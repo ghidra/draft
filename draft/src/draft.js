@@ -9,6 +9,9 @@ draft.font={
 draft.scripts={};
 draft.activescript=0;
 
+draft.nodes={};//this will hold all the loaded node objects that are available
+draft.node_menu={};
+
 
 draft.canvas_clicked=false;
 draft.dragging=[];//for nodes
@@ -19,12 +22,17 @@ draft.dragging_line={
 	'node':-1,
 	'port':-1
 };
+draft.mouseposition={};//i need to save this from the canvas
 
-
-draft.nodes_loaded = {};
-draft.init=function(){
-	draft.nodes_loaded = new draft.node_files();
+draft.init_nodes=function(layer){
+	//layer is the id of the div element that we are going to draw the menu into
+	 this.node_menu = new draft.node_browser(layer);
 }
+
+//draft.nodes_loaded = {};
+//draft.init=function(){
+//	draft.nodes_loaded = new draft.node_files();
+//}
 
 draft.set_canvas=function(id){
 	this.canvas = document.getElementById(id);
@@ -34,7 +42,10 @@ draft.set_canvas=function(id){
 
 	this.canvas.onmousedown = function(e){draft.mousedown(e);};
 	this.canvas.onmouseup =function(e){draft.mouseup(e);};
-	this.canvas.onmousemove = function(e){draft.mousemove(e)};
+	this.canvas.onmousemove = function(e){draft.mousemove(e);};
+
+	this.canvas.tabIndex = 1000;//this forces the canvas to get the keyboard events
+	this.canvas.onkeydown = function(e){draft.keypressed(e);};
 }
 draft.set_console=function(id){
 	this.console = document.getElementById(id);
@@ -127,13 +138,16 @@ draft.mouseup=function(e){
 		this.dragging_line.id=-1;
 		this.dragging_line.create=false;
 		this.dragging_line.node=-1;
-    		this.dragging_line.port=-1;
+    	this.dragging_line.port=-1;
 	}	
 }
 
 draft.mousemove=function(e){
+	var p = this.mouse_position(e);
+	this.console.innerHTML="x:"+p.x+" y:"+p.y;
+	this.mouseposition = p;
 	if(this.canvas_clicked){
-		var p = this.mouse_position(e);
+		
 		this.console.innerHTML="x:"+p.x+" y:"+p.y;
 
 		//if we have created a new line
@@ -180,10 +194,10 @@ draft.mouse_position=function(e){
 
 	var target = e.currentTarget;
 
-    	while (target) {
-        	xp += (target.offsetLeft - target.scrollLeft + target.clientLeft);
-        	yp += (target.offsetTop - target.scrollTop + target.clientTop);
-        	target = target.offsetParent;
+	while (target) {
+    	xp += (target.offsetLeft - target.scrollLeft + target.clientLeft);
+    	yp += (target.offsetTop - target.scrollTop + target.clientTop);
+    	target = target.offsetParent;
    	}
 
 	return {x: xo-xp, y: yo-yp};
@@ -215,3 +229,12 @@ draft.add_line=function(){
 	}
 }
 //-----------------
+draft.keycodes={"tab":9};
+draft.keypressed=function(e){
+	if(e.keyCode === this.keycodes["tab"]){
+		e.preventDefault();
+		//i might want to pass in different mouse position based on if it is going to overlap wrong
+		this.node_menu.toggle(this.mouseposition);
+	}
+	
+}
