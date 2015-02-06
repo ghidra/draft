@@ -4,7 +4,18 @@ draft.node_browser=function(layer){
 
 draft.node_browser.prototype.init=function(layer){
 	this.menu = {};
-	this.menu_html = "<div id=\"node_main_menu\"><div class=\"node_main_menu_label\">TAB Menu</div>";
+	
+	/*var menu_container = document.createElement("DIV");
+	menu_container.id = "node_menu_list";
+	menu_container.class="node_main_menu_label";
+
+	var menu_label = document.createElement("DIV");
+	menu_label.innerHTML = "TAB Menu";
+	menu_label.class="node_main_menu_label";
+
+	menu_container = ;*/
+	
+	//this.menu_html = "<div id=\"node_menu_list\"><div class=\"node_main_menu_label\">TAB Menu</div>";
 	this.menu_categories_html = {};
 
 
@@ -20,17 +31,18 @@ draft.node_browser.prototype.init=function(layer){
 			
 			this.menu[category]={};//set the category
 			//set the main html parts
-			this.menu_html+="<a id=\"node_main_menu_\""+category+" class=\"node_main_menu_category\">"+category+"</a>";
+			this.menu_html+="<a id=\"node_main_menu_"+category+"\" class=\"node_menu_label\">"+category+"</a>";
 			//make a category html element
-			this.menu_categories_html[category]="<div id=\"node_sub_menu_\""+category+" class=\"node_sub_menu_category\">";
+			this.menu_categories_html[category]="<div id=\"node_sub_menu_"+category+"\" class=\"node_menu_list\">";
 
 			for (var n in draft.nodes[category]){
 				if(draft.nodes[category].hasOwnProperty(n)){
 					this.menu[category][n] = n;
 					//set the secondary html parts
-					this.menu_categories_html[category]
+					this.menu_categories_html[category]="<a id=\"node_sub_menu_"+category+"_"+n+"\" class=\"node_menu_label\">"+n+"</a>";
 				}
 			}
+			//close the sub menu category
 			this.menu_categories_html[category]+="</div>"
 		}
 	}
@@ -52,4 +64,8 @@ draft.node_browser.prototype.toggle=function(p){
 		this.canvas.style.top = p.y;
 		this.visible=true;
 	}
+}
+
+draft.node_browser.prototype.test=function(){
+	alert("something");
 }
