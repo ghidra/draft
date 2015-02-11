@@ -4,7 +4,8 @@ draft.nodes.js={};
 
 draft.include_nodes={
 	lib:[
-		"html/div"
+		"html/terminal",
+		"html/generic"
 	],
 	include:function(src){
 		document.write('<script type="text/javascript" language="javascript" src="'+src+'"></script>');
