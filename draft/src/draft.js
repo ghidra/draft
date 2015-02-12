@@ -10,6 +10,7 @@ draft.scripts={};
 draft.activescript=0;
 
 draft.nodes={};//this will hold all the loaded node objects that are available
+draft.nodes.compound={};//this will be my default compound object
 draft.node_menu={};
 
 
@@ -71,7 +72,7 @@ draft.mousedown=function(e){
 	//check if we are over a node
 	//for(var n=0; n<this.nodes.length; n++){
 	for (var n in this.scripts[this.activescript].nodes){
-        	nd = this.scripts[this.activescript].nodes[n];
+        nd = this.scripts[this.activescript].nodes[n];
 		//if we are over the node + the margin we might be clicking a port, check that firsti
 		if(nd.near(p)){
 			//check for ports first
@@ -85,7 +86,7 @@ draft.mousedown=function(e){
 			}else{//we are not over a port, lets see if we are over the node
 				if(nd.over(p)){
 					nd.start_drag(p.x,p.y);
-                                	this.dragging.push(n);
+                    this.dragging.push(n);
 				}
 			}
 		}
@@ -210,11 +211,12 @@ draft.distance=function(p1,p2){
 }
 //---------------------
 
-draft.add_node=function(label,x,y){
-	label = label||"none";
+draft.add_node=function(category,name,x,y){
+	category = category||"none";
+	name = name||"none";
 	x = x||10;
 	y = y||10;
-	this.scripts[this.activescript].add_node(label,x,y);
+	this.scripts[this.activescript].add_node(category,name,x,y);
 }
 
 //-------------------

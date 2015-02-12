@@ -27,7 +27,8 @@ draft.node_browser.prototype.init=function(layer){
 	menu_container.appendChild(menu_label);
 
 	for (var category in draft.nodes){
-		if(draft.nodes.hasOwnProperty(category)){
+		if(draft.nodes.hasOwnProperty(category) && category!="compound"){
+			//i am hidding the compounds group for now
 
 			this.menu[category]={};//set the category
 
@@ -114,7 +115,12 @@ draft.node_browser.prototype.show_sub_menu=function(e,id){
 	//this.canvas.appendChild(sub_menu);
 }
 draft.node_browser.prototype.create_node=function(e,id){
-	alert(id);
+	var sp = id.split("_");
+	var node = sp[sp.length-1];
+	var cat = sp[sp.length-2];
+	draft.add_node(cat,node);
+	this.toggle();
+	//alert(id);
 }
 draft.node_browser.prototype.test=function(){
 	alert("something");

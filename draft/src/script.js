@@ -13,11 +13,12 @@ draft.script.prototype.init=function(id,scr){
 	this.scripts = js.objhasprop(scr.scripts)?scr.scripts:{};
 }
 //----------------
-draft.script.prototype.add_node=function(label,x,y){
-        label = label||"none";
+draft.script.prototype.add_node=function(category,name,x,y){
+        name = name||"none";
+        category = category||"none";
         x = x||10;
         y = y||10;
-        this.nodes[this.ids.node] = new draft.node(this.ids.node,label,x,y);
+        this.nodes[this.ids.node] = new draft.node(this.ids.node,category,name,x,y);
         this.ids.node+=1;
 }
 draft.script.prototype.remove_node=function(id){

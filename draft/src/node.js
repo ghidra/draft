@@ -1,15 +1,18 @@
-draft.node=function(id,label,x,y,i,o){
-	return this.init(id,label,x,y,i,o);
+draft.node=function(id,category,name,x,y,i,o){
+	return this.init(id,category,name,x,y,i,o);
 }
-draft.node.prototype.init=function(id,label,x,y,i,o){
+draft.node.prototype.init=function(id,category,name,x,y,i,o){
 	this.id = id;
-	this.label = label||"empty";
+	this.name = name||"empty";
+	this.category = category||"empty";
+	this.class = this.attach_class(category,name);//attaches the send in node
+
 	this.x = x||10;
 	this.y = y||10;
 	this.i = i||2;
 	this.o = o||1;
 
-	var label_size = draft.context.measureText(this.label);
+	var label_size = draft.context.measureText(this.name);
 	this.margin = 6;
 	this.w = label_size.width+(this.margin*4);
 	this.h = draft.font.size+(this.margin*2) + ((this.margin*3)*Math.max(this.i,this.o));
@@ -40,13 +43,25 @@ draft.node.prototype.init=function(id,label,x,y,i,o){
 
 	return this;
 }
+
+draft.node.prototype.attach_class=function(category,name){
+	var node_class = {};
+	if(draft.nodes.hasOwnProperty(category)){
+		if(draft.nodes[category].hasOwnProperty(name)){
+			//alert("hey we can make this node:"+category+":"+name);
+			node_class = new draft.nodes[category][name];
+		}
+	}
+	return node_class;
+}
+
 draft.node.prototype.draw=function(){
 	draft.context.fillStyle = "#93CEA4";//FBE17D,DA5757,D9D1A6,3F7A97,0C6E6D,E82572,//http://www.colourlovers.com/
     	//draft.context.fillRect(this.x,this.y,this.w,this.h);
     	this.draw_shape();
 	//draw the label
 	draft.context.fillStyle = "#FFFFFF";
-	draft.context.fillText(this.label,this.x+this.margin,this.y+this.margin+(draft.font.size/2));
+	draft.context.fillText(this.name,this.x+this.margin,this.y+this.margin+(draft.font.size/2));
 	//draw the ports
 	for(var op in this.p_o){
 		this.p_o[op].draw( {x:this.x,y:this.y} );	
@@ -58,6 +73,8 @@ draft.node.prototype.draw=function(){
 draft.node.prototype.start_drag=function(x,y){
 	this.ox = x-this.x;
 	this.oy = y-this.y;
+	//this also means that the node was clicked on, lets throw up the parameters
+	//alert('you clicked me');
 }
 draft.node.prototype.drag=function(x,y){
 	this.x = x-this.ox;
