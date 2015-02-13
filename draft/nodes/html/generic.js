@@ -7,7 +7,7 @@ draft.nodes.html.generic.prototype=new draft.node_framework();
 draft.nodes.html.generic.prototype.constructor=draft.node_framework;
 
 draft.nodes.html.generic.prototype.init=function(){
-	//this.inputs={},
+	this.label="html node",
 	this.inputs.tags=[
 		"a",
 		"abbr",
@@ -119,7 +119,7 @@ draft.nodes.html.generic.prototype.init=function(){
 		"wbr"
 	];
 
-	this.globalAttribute=[
+	this.inputs.globalAttribute=[
 		"accesskey",
 		"class",
 		"contenteditable",
@@ -137,6 +137,12 @@ draft.nodes.html.generic.prototype.init=function(){
 		"title",
 		"translate"
 	];
+	this.inputs.test={
+		"a":"test a",
+		"b":"test b"
+	};
 
-	this.innerHTML="";
+	this.inputs.passthrough=1;
+
+	this.outputs.result="";
 }

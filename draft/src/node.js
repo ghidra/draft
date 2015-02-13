@@ -1,80 +1,90 @@
 draft.node=function(id,category,name,x,y,i,o){
 	return this.init(id,category,name,x,y,i,o);
 }
-draft.node.prototype.init=function(id,category,name,x,y,i,o){
+draft.node.prototype.init=function(id,category,name,x,y){
 	this.id = id;
-	this.name = name||"empty";
-	this.category = category||"empty";
 	this.class = this.attach_class(category,name);//attaches the send in node
+	this.category = category||"empty";
 
 	this.x = x||10;
 	this.y = y||10;
-	this.i = i||2;
-	this.o = o||1;
 
-	var label_size = draft.context.measureText(this.name);
-	this.margin = 6;
-	this.w = label_size.width+(this.margin*4);
-	this.h = draft.font.size+(this.margin*2) + ((this.margin*3)*Math.max(this.i,this.o));
-
-	this.sx = 0;
-	this.sy = 0;
-	this.ox = 0;
+	this.ox = 0;//offset values for dragging
 	this.oy = 0;
 
-	this.c = "red";
+	this.margin = 6;
 
-	//make the ports
-	
+	this.label="";
+	this.i = 0;//number of inports
+	this.o = 0;//nuber of out ports
+
 	this.p_o={};
 	this.p_i={};
 	this.pid = 0;//port ids
 
-	for(var op = 0; op<this.o; op++){
-		this.p_o[this.pid] = new draft.port(0,this.pid,this.w,(this.margin*3)*(op+1),this.margin,"#FBE17D");
-		this.pid+=1;
-	}
-	for(var ip = 0; ip<this.i; ip++){
-               this.p_i[this.pid] = new draft.port(1,this.pid,0,(this.margin*3)*(ip+1),this.margin,"#FBE17D");
-		this.pid+=1;
-        }
-        
+	this.set_dimensions();
+	this.node_parameters = new draft.node_parameters();     
 	this.draw();
 
 	return this;
 }
-
+//--------------------------set up functions
 draft.node.prototype.attach_class=function(category,name){
 	var node_class = {};
 	if(draft.nodes.hasOwnProperty(category)){
 		if(draft.nodes[category].hasOwnProperty(name)){
-			//alert("hey we can make this node:"+category+":"+name);
 			node_class = new draft.nodes[category][name];
 		}
 	}
 	return node_class;
 }
+draft.node.prototype.set_dimensions=function(){
+	//set label related shit
+	this.label = this.class.label;
+	var label_size = draft.context.measureText(this.label);
+	this.w = label_size.width+(this.margin*4);
+	//get the number of ports to set the height
+	//out ports
+	for (var op in this.class.outputs){
+		if(this.class.outputs.hasOwnProperty(op)){
+			this.p_o[this.pid] = new draft.port(0,this.pid,this.w,(this.margin*3)*(this.o+1),this.margin,"#FBE17D");
+			this.pid+=1;
+			this.o+=1;
+		}
+	}
+	//in ports
+	for (var ip in this.class.inputs){
+		if(this.class.inputs.hasOwnProperty(ip)){
+			this.p_i[this.pid] = new draft.port(1,this.pid,0,(this.margin*3)*(this.i+1),this.margin,"#FBE17D");
+			this.pid+=1;
+			this.i+=1;
+		}
+	}
+
+	this.h = draft.font.size+(this.margin*2) + ((this.margin*3)*Math.max(this.i,this.o));
+}
+//-------------------------
 
 draft.node.prototype.draw=function(){
 	draft.context.fillStyle = "#93CEA4";//FBE17D,DA5757,D9D1A6,3F7A97,0C6E6D,E82572,//http://www.colourlovers.com/
     	//draft.context.fillRect(this.x,this.y,this.w,this.h);
-    	this.draw_shape();
+    this.draw_shape();
 	//draw the label
 	draft.context.fillStyle = "#FFFFFF";
-	draft.context.fillText(this.name,this.x+this.margin,this.y+this.margin+(draft.font.size/2));
+	draft.context.fillText(this.label,this.x+this.margin,this.y+this.margin+(draft.font.size/2));
 	//draw the ports
 	for(var op in this.p_o){
 		this.p_o[op].draw( {x:this.x,y:this.y} );	
 	}
 	for(var ip in this.p_i){
-                this.p_i[ip].draw( {x:this.x,y:this.y} );
-        } 
+        this.p_i[ip].draw( {x:this.x,y:this.y} );
+    } 
 }
 draft.node.prototype.start_drag=function(x,y){
 	this.ox = x-this.x;
 	this.oy = y-this.y;
-	//this also means that the node was clicked on, lets throw up the parameters
-	//alert('you clicked me');
+	//show parameters
+	this.node_parameters.show(this.class);
 }
 draft.node.prototype.drag=function(x,y){
 	this.x = x-this.ox;

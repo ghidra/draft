@@ -1,0 +1,18 @@
+a way to give colors to groupds of nodes.
+port colors should also reflect the type of data
+
+parameters styles
+
+parameters saving data
+there is a object on the node.class that can used to store it
+that data also needs to be checked against to when making parameters so it show what is selected.
+paramter needs to check if there is something plugged in, so it doesnt show it
+
+basic canvas navigation
+so you can zoom in zoom out and move around
+
+node infiniate recursion commnection needs to be checked
+
+render data
+
+terminal node needs a way to see results

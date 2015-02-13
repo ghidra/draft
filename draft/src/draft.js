@@ -1,5 +1,6 @@
 draft.canvas={};
-draft.context={};
+draft.context={};//the 2d context
+draft.parameters={};//hold the parameter pane
 draft.console={};
 draft.font={
 	'family':'Courier New',
@@ -50,6 +51,9 @@ draft.set_canvas=function(id){
 }
 draft.set_console=function(id){
 	this.console = document.getElementById(id);
+}
+draft.set_parameter_pane=function(id){
+	this.parameters = document.getElementById(id);
 }
 draft.set_font=function(size){
 	this.font.size = size||this.font.size;
@@ -188,7 +192,7 @@ draft.mousemove=function(e){
 //---
 draft.mouse_position=function(e){
 	var xp = 0;
-    	var yp = 0;
+    var yp = 0;
 
 	var xo = e.clientX;
 	var yo = e.clientY;

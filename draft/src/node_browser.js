@@ -82,9 +82,10 @@ draft.node_browser.prototype.toggle=function(p){
 			open_sub.style.visibility="hidden";
 		}
 	}else{
+		var main_menu = draft.canvas;
 		this.canvas.style.visibility="";
-		this.canvas.style.left = p.x;
-		this.canvas.style.top = p.y;
+		this.canvas.style.left = p.x+main_menu.offsetLeft;
+		this.canvas.style.top = p.y+main_menu.offsetTop;
 		this.visible=true;
 	}
 }
@@ -118,9 +119,9 @@ draft.node_browser.prototype.create_node=function(e,id){
 	var sp = id.split("_");
 	var node = sp[sp.length-1];
 	var cat = sp[sp.length-2];
-	draft.add_node(cat,node);
+	
+	draft.add_node(cat,node,draft.mouseposition.x,draft.mouseposition.y);
 	this.toggle();
-	//alert(id);
 }
 draft.node_browser.prototype.test=function(){
 	alert("something");

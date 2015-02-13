@@ -4,6 +4,7 @@ draft.includes={
 		"js",
 		"draft",
 		"script",
+		"node_parameters",
 		"node",
 		"port",
 		"line",
