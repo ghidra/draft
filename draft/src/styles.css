@@ -23,3 +23,14 @@
 	display: block;
 	background-color: #888888;
 }
+
+/*-------- node parameters ---*/
+select {
+   margin: 2px;
+   background: transparent;
+   width: 160px;
+   border: 1px solid #ccc;
+} 
+.parameter_label{
+	border: 1px solid #ccc;
+}

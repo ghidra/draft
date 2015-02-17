@@ -84,7 +84,7 @@ draft.node.prototype.start_drag=function(x,y){
 	this.ox = x-this.x;
 	this.oy = y-this.y;
 	//show parameters
-	this.node_parameters.show(this.class);
+	this.node_parameters.show(this.id,this.class);
 }
 draft.node.prototype.drag=function(x,y){
 	this.x = x-this.ox;

@@ -6,8 +6,9 @@ draft.node_framework.prototype.init=function(){
 
 	this.inputs={};
 	this.inputs.passthrough=0;//the waiting ports that can multiply
+	this.inputs_values={};//to hold the set values
 
-	this.values={};//to hold the set values
+	//DO NOT NAME INPUTS WITH '_' IT WILL BREAK THE PARAMETERS PASSING
 
 	this.outputs={};
 }

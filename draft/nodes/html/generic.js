@@ -120,6 +120,7 @@ draft.nodes.html.generic.prototype.init=function(){
 	];
 
 	this.inputs.globalAttribute=[
+		"none",
 		"accesskey",
 		"class",
 		"contenteditable",
@@ -143,6 +144,12 @@ draft.nodes.html.generic.prototype.init=function(){
 	};
 
 	this.inputs.passthrough=1;
+
+	this.inputs_values={
+		"tags":"div",
+		"globalAttribute":"none",
+		"test":"b"
+	};
 
 	this.outputs.result="";
 }
