@@ -25,12 +25,35 @@
 }
 
 /*-------- node parameters ---*/
+.parameter_label{
+	border: 1px solid #ccc;
+}
 select {
    margin: 2px;
    background: transparent;
    width: 160px;
    border: 1px solid #ccc;
+}
+.subparm_label{
+	float:left;
+	max-width: 60px;
 } 
-.parameter_label{
-	border: 1px solid #ccc;
+.sliderBG{
+	width:98px;
+	height:22px;
+	background-color:#ccc;
+	float:right;
+	margin: 2 2 0 0px;
+}
+.sliderFG{
+	height:20px;
+	margin:1px;
+	background-color:white;
+	float:left;
+}
+.sliderIN{
+	float:right;
+	color:black;
+	width:60px;
+	margin-right:2px;
 }
