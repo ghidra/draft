@@ -1,11 +1,22 @@
 
 paramter needs to check if there is something plugged in, so it doesnt show it
 
-slider for numbers
-
 deal with the inputs.passthrough value to make extendable ports
 
 //---------- UI
+
+my right padding on drop downs is missing
+i might need to label ports (boo)
+input string windows, hopefully easliy expandable
+maybe one day, i need to add another array on nodes, so I can get more specific with unput type data 	ie ints floats long string short strings
+input types:
+	strings
+	booleans
+	vectors
+	matrices
+	colors
+	ramps
+	gradient
 
 a way to give colors to groupds of nodes.
 port colors should also reflect the type of data

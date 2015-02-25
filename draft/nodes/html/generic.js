@@ -142,13 +142,15 @@ draft.nodes.html.generic.prototype.init=function(){
 		"a":"test a",
 		"b":"test b"
 	};
+	this.inputs.testn=0;
 
 	this.inputs.passthrough=1;
 
 	this.inputs_values={
 		"tags":"div",
 		"globalAttribute":"none",
-		"test":"b"
+		"test":"b",
+		"testn":1
 	};
 
 	this.outputs.result="";
