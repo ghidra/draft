@@ -22,8 +22,8 @@ draft.node_parameters.prototype.show=function(id,node){
 	//parms.appendChild(document.createElement("BR"));
 
 	for(var ip in node.inputs){
-		if(node.inputs.hasOwnProperty(ip)){
-			//console.log(this.to_type(this.class.inputs[ip]));
+		if(node.inputs.hasOwnProperty(ip) && ip != 'passthrough'){
+			//console.log( ip+":"+js.totype(node.inputs[ip]) );
 			switch(js.totype(node.inputs[ip])){
 				case "array":
 					parms.appendChild(new draft.node_parameters.dropdown(id,ip,node.inputs[ip],node.inputs_values[ip],0,[this.width,this.width_label,this.width_input,this.margin]));
@@ -35,8 +35,10 @@ draft.node_parameters.prototype.show=function(id,node){
 					parms.appendChild(new draft.node_parameters.slider(id,ip,node.inputs_values[ip],[this.width,this.width_label,this.width_input,this.margin]));
 					break;
 				default:
-					parms.innerHTML+='string';
-					parms.appendChild(document.createElement("BR"));
+					//console.log("a string");
+					parms.appendChild(new draft.node_parameters.string(id,ip,node.inputs_values[ip],[this.width,this.width_label,this.width_input,this.margin]));
+					//parms.innerHTML+='string';
+					//parms.appendChild(document.createElement("BR"));
 			}
 		}
 	}
@@ -98,6 +100,44 @@ draft.node_parameters.dropdown.prototype.init=function(id,parm,options,val,objec
 }
 draft.node_parameters.dropdown.prototype.changed=function(){
 	draft.scripts[draft.activescript].nodes[this.id].class.inputs_values[this.parm]=document.getElementById("dd_node_"+this.id+"_"+this.parm).value; 
+}
+//--------------------
+//string
+draft.node_parameters.string=function(id,parm,value,dime){
+	return this.init(id,parm,value,dime);
+}
+draft.node_parameters.string.prototype.init=function(id,parm,val,dime){
+	this.id = id;
+	this.parm = parm;
+	this.val = val;
+
+	this.element = document.createElement("DIV");
+	var s_label = document.createElement("DIV");
+	s_label.className="subparm_label";
+	s_label.innerHTML = "&nbsp;"+parm;
+	s_label.style.fontSize=draft.font.size;
+	s_label.style.maxWidth = dime[1]+"px";
+	s_label.style.margin = dime[3]+"px";
+	this.element.style.clear="both";
+
+	var s = document.createElement("INPUT");
+	s.type = "text";
+	s.value=val;
+	//dd.style.float = "right";
+	s.style.width=dime[2]+"px";
+	//console.log(this.width_input+"px");
+	s.id = "s_node_"+id+"_"+parm;
+	var _this = this;
+	s.onchange=function(e){_this.changed()};
+
+	this.element.appendChild(s_label);
+	this.element.appendChild(s);
+	//alert(this.element);
+	return this.element;
+}
+draft.node_parameters.string.prototype.changed=function(){
+	console.log( document.getElementById("s_node_"+this.id+"_"+this.parm).value );
+	draft.scripts[draft.activescript].nodes[this.id].class.inputs_values[this.parm]=document.getElementById("s_node_"+this.id+"_"+this.parm).value; 
 }
 //--------------------
 //slider

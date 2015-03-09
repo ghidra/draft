@@ -47,18 +47,31 @@ draft.node.prototype.set_dimensions=function(){
 	//out ports
 	for (var op in this.class.outputs){
 		if(this.class.outputs.hasOwnProperty(op)){
-			this.p_o[this.pid] = new draft.port(0,this.pid,this.w,(this.margin*3)*(this.o+1),this.margin,"#FBE17D");
+			var iporttype = this.class.types.output[op];
+			//this.p_o[this.pid] = new draft.port(0,this.pid,this.w,(this.margin*3)*(this.o+1),this.margin,"#FBE17D");
+			this.p_o[this.pid] = new draft.port(0,this.pid,this.w,(this.margin*3)*(this.o+1),this.margin,iporttype);
 			this.pid+=1;
 			this.o+=1;
 		}
 	}
 	//in ports
 	for (var ip in this.class.inputs){
-		if(this.class.inputs.hasOwnProperty(ip)){
-			this.p_i[this.pid] = new draft.port(1,this.pid,0,(this.margin*3)*(this.i+1),this.margin,"#FBE17D");
+		if(this.class.inputs.hasOwnProperty(ip) && ip != "passthrough"){
+			var oporttype = this.class.types.input[ip];
+			//console.log(porttype)
+			//console.log( ip+":"+js.totype( this.class.inputs[ip] ) );
+			//this.p_i[this.pid] = new draft.port(1,this.pid,0,(this.margin*3)*(this.i+1),this.margin,"#FBE17D");
+			this.p_i[this.pid] = new draft.port(1,this.pid,0,(this.margin*3)*(this.i+1),this.margin, oporttype );
 			this.pid+=1;
 			this.i+=1;
 		}
+	}
+	//now do pass throughs, so that they are last
+	var ptporttype = this.class.types.input.passthrough;
+	for (var pt = 0; pt<this.class.inputs.passthrough; pt++){
+		this.p_i[this.pid] = new draft.port(1,this.pid,0,(this.margin*3)*(this.i+1),this.margin, ptporttype );
+		this.pid+=1;
+		this.i+=1;
 	}
 
 	this.h = draft.font.size+(this.margin*2) + ((this.margin*3)*Math.max(this.i,this.o));
@@ -66,6 +79,7 @@ draft.node.prototype.set_dimensions=function(){
 //-------------------------
 
 draft.node.prototype.draw=function(){
+	//draft.context.fillStyle = "#E82572";//,,,,,,//http://www.colourlovers.com/
 	draft.context.fillStyle = "#93CEA4";//FBE17D,DA5757,D9D1A6,3F7A97,0C6E6D,E82572,//http://www.colourlovers.com/
     	//draft.context.fillRect(this.x,this.y,this.w,this.h);
     this.draw_shape();

@@ -5,10 +5,12 @@ draft.port.prototype.init=function(type,id,x,y,r,c){
 	this.type = type||1;//in or our
 	this.id = id;
 	//x y position is relative to the node
-        this.x = x||0;
-        this.y = y||0;
-	this.r = r||6;
-	this.c = c||"#FF0000";
+    this.x = x||0;
+    this.y = y||0;
+	this.r = r||6;//radius
+	//this.c = c||"#FF0000";
+	this.dt = c||"none";
+	this.c = draft.colors_port[c];//data type, for color
 	this.used = false;
 	this.line = [];//the connected line id
 	return this;	

@@ -1,3 +1,4 @@
+node type color next
 
 paramter needs to check if there is something plugged in, so it doesnt show it
 

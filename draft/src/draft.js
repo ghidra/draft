@@ -26,6 +26,35 @@ draft.dragging_line={
 };
 draft.mouseposition={};//i need to save this from the canvas
 
+draft.colors_node={
+	'css':'#D9D1A6',//beige
+	'html':'#93CEA4',//greenish
+	'js':'#3F7A97',//navy
+	'glsl':'#222222',
+	'none':'#ff0000'
+};
+draft.colors_port={
+	'dom':'#00aa00',
+	'bool':'#0C6E6D',//dark green blue
+	'select':'#E82572',
+	'array':'#E82572',//hot pink
+	'object':'#486774',
+	'float':'#4F7C6B',
+	'int':'#83834B',
+	'number':'#4F7C6B',
+	'vector2':'#',
+	'vector3':'#',
+	'vector4':'#',
+	'matrix3':'#',
+	'matrix4':'#',
+	'string':'#FBE17D',//yellow
+	'path':'#',
+	'novel':'#',
+	'passthrough':'#F67421',
+	'none':'#000000'//none is a polymorphic type expectation
+}
+draft.colors_error='DA5757';//reddish
+
 draft.init_nodes=function(layer){
 	//layer is the id of the div element that we are going to draw the menu into
 	 this.node_menu = new draft.node_browser(layer);

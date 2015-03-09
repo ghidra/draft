@@ -7,6 +7,10 @@
 	user-select: none;
 	outline:none;
 }
+/*----body----*/
+body{
+	background-color: #555555;
+}
 
 /*------- node menu -------*/
 
@@ -29,9 +33,12 @@
 	border: 1px solid #ccc;
 }
 select {
-   background: transparent;
+   /*background: transparent;*/
    border: 1px solid #ccc;
    float:right;
+}
+input {
+	float:right;
 }
 .subparm_label{
 	float:left;

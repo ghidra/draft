@@ -153,5 +153,20 @@ draft.nodes.html.generic.prototype.init=function(){
 		"testn":1
 	};
 
-	this.outputs.result="";
+	this.outputs.result={};
+
+	//------typing, ports need to have a type association to keep things strict
+	
+	this.types={
+		input:{
+			"tags":"select",
+			"globalAttribute":"select",
+			"test":"select",
+			"testn":"number",
+			"passthrough":'none'
+		},
+		output:{
+			"result":"dom"
+		}
+	};
 }
