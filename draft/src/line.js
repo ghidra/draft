@@ -23,7 +23,7 @@ draft.line.prototype.draw=function(p1,p2){
   	draft.context.lineWidth = 2;
 
   	// line color
-  	draft.context.strokeStyle = 'black';
+  	draft.context.strokeStyle = this.c;
   	draft.context.stroke();
 }
 

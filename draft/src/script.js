@@ -25,9 +25,9 @@ draft.script.prototype.remove_node=function(id){
 	delete this.nodes[id];
 }
 //-------------------
-draft.script.prototype.add_line=function(fn,fp,tn,tp){
-      	this.lines[this.ids.line] = new draft.line(this.ids.line,fn,fp,tn,tp);
-        this.ids.line+=1;
+draft.script.prototype.add_line=function(fn,fp,tn,tp,c){
+    this.lines[this.ids.line] = new draft.line(this.ids.line,fn,fp,tn,tp,c);
+    this.ids.line+=1;
 }
 draft.script.prototype.remove_line=function(id){
 	delete this.lines[id];
