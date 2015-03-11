@@ -166,19 +166,20 @@ draft.node.prototype.over_port=function(p){
 	return (ops.port>-1)?ops:ips;
 }
 draft.node.prototype.check_over_port=function(p,pio){//position
-        var out = {io:-1,port:-1,used:false};
+    var out = {io:-1,port:-1,used:false,dt:'unknown'};
 	var pa = (pio===0)?this.p_o:this.p_i;
-        for(var po in pa){
-                var p1 = {x:p.x,y:p.y};
-                var p2 = {x:this.x+pa[po].x,y:this.y+pa[po].y};
-                var dist = draft.distance(p1,p2);//DRAFT BASED FUNCTION
-                if(dist<=this.margin){
-                        out.io = pio;
-                        out.port = pa[po].id;
-			out.used = pa[po].used;
-        	}
-        }
-      	return out;
+    for(var po in pa){
+            var p1 = {x:p.x,y:p.y};
+            var p2 = {x:this.x+pa[po].x,y:this.y+pa[po].y};
+            var dist = draft.distance(p1,p2);//DRAFT BASED FUNCTION
+            if(dist<=this.margin){
+                    out.io = pio;
+                    out.port = pa[po].id;
+					out.used = pa[po].used;
+					out.dt = pa[po].dt;
+    	}
+    }
+  	return out;
 }
 
 //-----check when connecting lines if we are going to make an infinte loop

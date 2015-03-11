@@ -143,10 +143,25 @@ draft.mouseup=function(e){
       		//if we are over the node + the margin we might be clicking a port, check that firsti
       		if(nd.near(p)){
 				var ndp = nd.over_port(p);
-				//var infinite_loop = nd.check_infinite_loop(this.dragging_line.node);
-				//valid also need to make sure that we are not creating infinte recursion connections
+				//okay we are over a port, we need to check that it is a valid release point
+				//for forward to be valid, the port TO must be either the same type or polymorphic
+				//for reverse to be valid, same rules apply above.
+				//I need to also check for infinite recursion, plugging into a node that plugs into itself at some point
+				//also if valid, and polymorphic update the color
+				//also, if this is a second connection from a port, delete the first one
+
+				//which way are we dragging?
+				if(!this.dragging_line.reverse){
+					//dragging forward
+					//check that the port that we are on is of the same color
+					var fp = this.scripts[this.activescript].nodes[this.dragging_line.node].p_o[this.dragging_line.port];//the actual port
+					//var fp = nd.p_i[];
+					var dtmatch = fp.dt==ndp.dt || ndp.dt=='none';//data match
+					console.log("from data type:"+fp.dt);
+					console.log("to data type:"+ndp.dt);
+				}
 				var valid_reverse = (this.dragging_line.reverse && ndp.io===0 && !ndp.used && nd.id!=this.dragging_line.node);
-				var valid_forward = (!this.dragging_line.reverse && ndp.io===1 && !ndp.used && nd.id!=this.dragging_line.node);
+				var valid_forward = (!this.dragging_line.reverse && ndp.io===1 && !ndp.used && nd.id!=this.dragging_line.node && dtmatch);
 				if(valid_reverse || valid_forward){//valid, set the remaining values
 					var li = this.scripts[this.activescript].lines[this.dragging_line.id];
 					if(valid_reverse){
@@ -160,6 +175,9 @@ draft.mouseup=function(e){
 						li.tport = ndp.port;
 						nd.p_i[ndp.port].line[0] = li.id;
 						this.scripts[this.activescript].nodes[this.dragging_line.node].p_o[this.dragging_line.port].line.push(li.id);
+						if(ndp.dt=='none'){
+							nd.p_i[ndp.port].c = fp.c;
+						}
 					}
 					li.used = true;
 					connected = (!connected)?true:connected;
@@ -169,12 +187,13 @@ draft.mouseup=function(e){
 		if(!connected){
 			//console.log("not valid");
 			this.scripts[this.activescript].remove_line(this.dragging_line.id);
-			this.refresh();
+			//this.refresh();
 		}
 		this.dragging_line.id=-1;
 		this.dragging_line.create=false;
 		this.dragging_line.node=-1;
     	this.dragging_line.port=-1;
+    	this.refresh();
 	}	
 }
 
