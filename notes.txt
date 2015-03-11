@@ -3,6 +3,10 @@ node type color next
 i would like poly ports to take on the color of the connected wire
 wires can only connect to poly or similar color types
 
+wires only get to connect once, if connected elsewhere, the old one is removed
+
+ability to dissconect wires
+
 paramter needs to check if there is something plugged in, so it doesnt show it
 
 deal with the inputs.passthrough value to make extendable ports
