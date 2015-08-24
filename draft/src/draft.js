@@ -1,3 +1,4 @@
+draft={};
 draft.canvas={};
 draft.context={};//the 2d context
 draft.parameters={};//hold the parameter pane
