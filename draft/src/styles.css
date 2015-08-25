@@ -40,21 +40,21 @@ select {
 input {
 	float:right;
 }
-.subparm_label{
+[class*='_label_ui']{
 	float:left;
 } 
-.sliderBG{
+.slider_BG{
 	height:22px;
 	background-color:#ccc;
 	float:right;
 }
-.sliderFG{
+.slider_FG{
 	height:20px;
 	margin:1px;
 	background-color:white;
 	float:left;
 }
-.sliderIN{
+.slider_IN{
 	float:right;
 	color:black;
 	margin-right:2px;

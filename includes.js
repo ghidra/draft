@@ -1,5 +1,8 @@
 //COMPILE MODULES
-//rad.includes.modules([]);
+rad.includes.modules([
+	"mouse",
+	"ui"
+]);
 //COMPILE SOURCES
 rad.includes.source([
 	"draft/src/js.js",

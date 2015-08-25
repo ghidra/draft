@@ -24,15 +24,46 @@ draft.node_parameters.prototype.show=function(id,node){
 	for(var ip in node.inputs){
 		if(node.inputs.hasOwnProperty(ip) && ip != 'passthrough'){
 			//console.log( ip+":"+js.totype(node.inputs[ip]) );
-			switch(js.totype(node.inputs[ip])){
+			switch(rad.totype(node.inputs[ip])){
 				case "array":
-					parms.appendChild(new draft.node_parameters.dropdown(id,ip,node.inputs[ip],node.inputs_values[ip],0,[this.width,this.width_label,this.width_input,this.margin]));
-					break;
 				case "object":
-					parms.appendChild(new draft.node_parameters.dropdown(id,ip,node.inputs[ip],node.inputs_values[ip],1,[this.width,this.width_label,this.width_input,this.margin]));
+					var dd = new rad.dropdown({
+						"id":id,
+						"label":ip,
+						"options":node.inputs[ip],
+						"value":node.inputs_values[ip],
+						"width":this.width_input,
+						"width_label":this.width_label,
+						"margin":this.margin,
+						"fontsize":draft.font.size,
+						"callback":function(arg){
+							draft.scripts[draft.activescript].nodes[arg.id].class.inputs_values[arg.label]=document.getElementById("dd_"+arg.id+"_"+arg.label).value;
+						}
+							
+					});
+					parms.appendChild(dd.element);
+					//parms.appendChild(new draft.node_parameters.dropdown(id,ip,node.inputs[ip],node.inputs_values[ip],0,[this.width,this.width_label,this.width_input,this.margin]));
 					break;
+				//case "object":
+				//	parms.appendChild(new draft.node_parameters.dropdown(id,ip,node.inputs[ip],node.inputs_values[ip],1,[this.width,this.width_label,this.width_input,this.margin]));
+				//	break;
 				case "number":
-					parms.appendChild(new draft.node_parameters.slider(id,ip,node.inputs_values[ip],[this.width,this.width_label,this.width_input,this.margin]));
+					var sl = new rad.slider({
+						"id":id,
+						"label":ip,
+						"value":node.inputs_values[ip],
+						"width":this.width_input,
+						"width_label":this.width_label,
+						"width_input":40,
+						"margin":this.margin,
+						"fontsize":draft.font.size,
+						"callback":function(arg){
+							draft.scripts[draft.activescript].nodes[arg.id].class.inputs_values[arg.label]=arg.value;
+						}
+							
+					});
+					parms.appendChild(sl.element);
+					//parms.appendChild(new draft.node_parameters.slider(id,ip,node.inputs_values[ip],[this.width,this.width_label,this.width_input,this.margin]));
 					break;
 				default:
 					//console.log("a string");
@@ -57,7 +88,7 @@ draft.node_parameters.prototype.dimensions=function(){
 
 //-----------------------
 //dropwdown
-draft.node_parameters.dropdown=function(id,parm,options,val,object,dime){
+/*draft.node_parameters.dropdown=function(id,parm,options,val,object,dime){
 	return this.init(id,parm,options,val,object,dime);
 }
 draft.node_parameters.dropdown.prototype.init=function(id,parm,options,val,object,dime){
@@ -100,7 +131,7 @@ draft.node_parameters.dropdown.prototype.init=function(id,parm,options,val,objec
 }
 draft.node_parameters.dropdown.prototype.changed=function(){
 	draft.scripts[draft.activescript].nodes[this.id].class.inputs_values[this.parm]=document.getElementById("dd_node_"+this.id+"_"+this.parm).value; 
-}
+}*/
 //--------------------
 //string
 draft.node_parameters.string=function(id,parm,value,dime){
@@ -141,7 +172,7 @@ draft.node_parameters.string.prototype.changed=function(){
 }
 //--------------------
 //slider
-draft.node_parameters.slider=function(id,parm,value,dime){
+/*draft.node_parameters.slider=function(id,parm,value,dime){
 	return this.init(id,parm,value,dime);
 }
 draft.node_parameters.slider.prototype.init=function(id,parm,val,dime){
@@ -247,4 +278,4 @@ draft.node_parameters.slider.prototype.bounds=function(val){
 	var v = Math.abs(span);
 
 	return {min:val-v, max:val+v};
-}
+}*/
