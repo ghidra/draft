@@ -17,6 +17,9 @@ draft.node_menu={};
 
 
 draft.canvas_clicked=false;
+draft.canvas_scale=1.0;
+draft.canvas_pos=new rad.vector2();
+
 draft.dragging=[];//for nodes
 draft.dragging_line={
 	'create':false,
@@ -119,7 +122,8 @@ draft.mousedown=function(e){
 				this.add_line();
 			}else{//we are not over a port, lets see if we are over the node
 				if(nd.over(p)){
-					nd.start_drag(p.x,p.y);
+					//nd.start_drag(p.x,p.y);
+					nd.start_drag(p);
                     this.dragging.push(n);
 				}
 			}
@@ -213,7 +217,8 @@ draft.mousemove=function(e){
 
 		//drag any nodes in the dragging array
 		for(var n=0; n<this.dragging.length;n++){
-    		this.scripts[this.activescript].nodes[this.dragging[n]].drag(p.x,p.y);
+    		//this.scripts[this.activescript].nodes[this.dragging[n]].drag(p.x,p.y);
+    		this.scripts[this.activescript].nodes[this.dragging[n]].drag(p);
     	}
 
 		if(this.dragging.length>0 || this.dragging_line.create){
@@ -272,14 +277,14 @@ draft.mouse_position=function(e){
     	target = target.offsetParent;
    	}
 
-	return {x: xo-xp, y: yo-yp};
+	return new rad.vector2(xo-xp,yo-yp);//{x: xo-xp, y: yo-yp};
 
 }
-draft.distance=function(p1,p2){
+/*draft.distance=function(p1,p2){
 	var x = p1.x-p2.x;
 	var y = p1.y-p2.y;
 	return Math.sqrt( (x*x)+(y*y) );
-}
+}*/
 //---------------------
 
 draft.add_node=function(category,name,x,y){

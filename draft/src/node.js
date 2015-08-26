@@ -6,11 +6,14 @@ draft.node.prototype.init=function(id,category,name,x,y){
 	this.class = this.attach_class(category,name);//attaches the send in node
 	this.category = category||"empty";
 
-	this.x = x||10;
-	this.y = y||10;
+	this.p = new rad.vector2(x,y);
+	this.offset = new rad.vector2();//offset vector
 
-	this.ox = 0;//offset values for dragging
-	this.oy = 0;
+	//this.x = x||10;
+	//this.y = y||10;
+
+	//this.ox = 0;//offset values for dragging
+	//this.oy = 0;
 
 	this.margin = 6;
 
@@ -85,31 +88,34 @@ draft.node.prototype.draw=function(){
     this.draw_shape();
 	//draw the label
 	draft.context.fillStyle = "#FFFFFF";
-	draft.context.fillText(this.label,this.x+this.margin,this.y+this.margin+(draft.font.size/2));
+	draft.context.fillText(this.label,this.p.x+this.margin,this.p.y+this.margin+(draft.font.size/2));
 	//draw the ports
 	for(var op in this.p_o){
-		this.p_o[op].draw( {x:this.x,y:this.y} );	
+		this.p_o[op].draw( new rad.vector2(this.p.x,this.p.y) );	
 	}
 	for(var ip in this.p_i){
-        this.p_i[ip].draw( {x:this.x,y:this.y} );
+        this.p_i[ip].draw( new rad.vector2(this.p.x,this.p.y) );
     } 
 }
-draft.node.prototype.start_drag=function(x,y){
-	this.ox = x-this.x;
-	this.oy = y-this.y;
+draft.node.prototype.start_drag=function(v){
+	this.offset.set(v.x-this.p.x,v.y-this.p.y)
+	//this.ox = x-this.p.x;
+	//this.oy = y-this.p.y;
 	//show parameters
 	this.node_parameters.show(this.id,this.class);
 }
-draft.node.prototype.drag=function(x,y){
-	this.x = x-this.ox;
-	this.y = y-this.oy;
+draft.node.prototype.drag=function(v){
+	//var v = new rad.vector2(x,y);
+	this.p = v.sub(this.offset);
+	//this.p.x = x-this.ox;
+	//this.p.y = y-this.oy;
 }
 //--------------------
 draft.node.prototype.draw_shape=function(){
 	var r = this.margin;//radius of rounder corners
 	var seg = Math.ceil(r*0.3);
 	var coff = r*2;
-	var pivot = {x:this.x+r,y:this.y+r};
+	var pivot = new rad.vector2(this.p.x+r,this.p.y+r);//{x:this.x+r,y:this.y+r};
 
 	draft.context.beginPath();
 	this.draw_rounded_corner(pivot,r,seg,2,true);
@@ -117,7 +123,7 @@ draft.node.prototype.draw_shape=function(){
 	this.draw_rounded_corner(pivot,r,seg,3);
 	pivot.y = pivot.y+this.h-coff;
 	this.draw_rounded_corner(pivot,r,seg,0);
-	pivot.x = this.x+r;
+	pivot.x = this.p.x+r;
 	this.draw_rounded_corner(pivot,r,seg,1);
 
 	draft.context.closePath();
@@ -125,7 +131,7 @@ draft.node.prototype.draw_shape=function(){
 }
 draft.node.prototype.draw_rounded_corner=function(position,radius,segments,corner,start){
 	start=start||false;
-    	var c = 2*3.1415;
+    var c = 2*3.1415;
    	for (var i =0; i<=segments; i++){
         	var s = (((i+(segments*corner))/segments)/4);
         	var x = (Math.cos(s*c))*radius;
@@ -141,21 +147,19 @@ draft.node.prototype.draw_rounded_corner=function(position,radius,segments,corne
 //------
 //first check that we are near a node before going any further
 draft.node.prototype.near=function(p){
-	return (p.x>this.x-this.margin && p.x<(this.x+this.w+this.margin) && p.y>this.y-this.margin && p.y<(this.y+this.h+this.margin));
+	return (p.x>this.p.x-this.margin && p.x<(this.p.x+this.w+this.margin) && p.y>this.p.y-this.margin && p.y<(this.p.y+this.h+this.margin));
 }
 draft.node.prototype.over=function(p){
-	return (p.x>this.x && p.x<(this.x+this.w) && p.y>this.y && p.y<(this.y+this.h) );
+	return (p.x>this.p.x && p.x<(this.p.x+this.w) && p.y>this.p.y && p.y<(this.p.y+this.h) );
 }
 //get port information
 draft.node.prototype.port_position=function(id,io){
 	//gets the relative port position
-	var p = {x:0,y:0};
+	var p = new rad.vector2();//{x:0,y:0};
 	if(io>0){//in port
-		p.x = this.p_i[id].x+this.x;
-		p.y = this.p_i[id].y+this.y;
+		p = this.p_i[id].p.add(this.p);
 	}else{//out port
-		p.x = this.p_o[id].x+this.x;
-		p.y = this.p_o[id].y+this.y;
+		p = this.p_o[id].p.add(this.p);
 	}
 	return p;
 }
@@ -169,9 +173,10 @@ draft.node.prototype.check_over_port=function(p,pio){//position
     var out = {io:-1,port:-1,used:false,dt:'unknown'};
 	var pa = (pio===0)?this.p_o:this.p_i;
     for(var po in pa){
-            var p1 = {x:p.x,y:p.y};
-            var p2 = {x:this.x+pa[po].x,y:this.y+pa[po].y};
-            var dist = draft.distance(p1,p2);//DRAFT BASED FUNCTION
+            //var p1 = p;//new rad.vector2(p.x,p.y);///// THIS IS BECAUSE I AM NOT PASSING IN A RAD>VECTOR2//{x:p.x,y:p.y};
+            var p2 = new rad.vector2(this.p.x+pa[po].p.x,this.p.y+pa[po].p.y);//{x:this.p.x+pa[po].p.x,y:this.p.y+pa[po].p.y};
+            //var dist = draft.distance(p1,p2);//DRAFT BASED FUNCTION
+            var dist = p.distance(p2);//DRAFT BASED FUNCTION
             if(dist<=this.margin){
                     out.io = pio;
                     out.port = pa[po].id;

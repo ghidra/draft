@@ -41,7 +41,7 @@ draft.node_parameters.prototype.show=function(id,node){
 						}
 							
 					});
-					parms.appendChild(dd.element);
+					parms.appendChild(dd.get_element());
 					//parms.appendChild(new draft.node_parameters.dropdown(id,ip,node.inputs[ip],node.inputs_values[ip],0,[this.width,this.width_label,this.width_input,this.margin]));
 					break;
 				//case "object":
@@ -62,12 +62,28 @@ draft.node_parameters.prototype.show=function(id,node){
 						}
 							
 					});
-					parms.appendChild(sl.element);
+					parms.appendChild(sl.get_element());
 					//parms.appendChild(new draft.node_parameters.slider(id,ip,node.inputs_values[ip],[this.width,this.width_label,this.width_input,this.margin]));
 					break;
 				default:
+					var tb = new rad.textbox({
+						"id":id,
+						"label":ip,
+						"value":node.inputs_values[ip],
+						"width":this.width_input,
+						"width_label":this.width_label,
+						"margin":this.margin,
+						"fontsize":draft.font.size,
+						"callback":function(arg){
+							console.log( document.getElementById("tb_"+arg.id+"_"+arg.label).value );
+							draft.scripts[draft.activescript].nodes[arg.id].class.inputs_values[arg.label]=document.getElementById("tb_"+arg.id+"_"+arg.label).value;
+							//draft.scripts[draft.activescript].nodes[arg.id].class.inputs_values[arg.label]=arg.value;
+						}
+							
+					});
+					parms.appendChild(tb.get_element());
 					//console.log("a string");
-					parms.appendChild(new draft.node_parameters.string(id,ip,node.inputs_values[ip],[this.width,this.width_label,this.width_input,this.margin]));
+					//parms.appendChild(new draft.node_parameters.string(id,ip,node.inputs_values[ip],[this.width,this.width_label,this.width_input,this.margin]));
 					//parms.innerHTML+='string';
 					//parms.appendChild(document.createElement("BR"));
 			}
@@ -134,7 +150,7 @@ draft.node_parameters.dropdown.prototype.changed=function(){
 }*/
 //--------------------
 //string
-draft.node_parameters.string=function(id,parm,value,dime){
+/*draft.node_parameters.string=function(id,parm,value,dime){
 	return this.init(id,parm,value,dime);
 }
 draft.node_parameters.string.prototype.init=function(id,parm,val,dime){
@@ -169,7 +185,7 @@ draft.node_parameters.string.prototype.init=function(id,parm,val,dime){
 draft.node_parameters.string.prototype.changed=function(){
 	console.log( document.getElementById("s_node_"+this.id+"_"+this.parm).value );
 	draft.scripts[draft.activescript].nodes[this.id].class.inputs_values[this.parm]=document.getElementById("s_node_"+this.id+"_"+this.parm).value; 
-}
+}*/
 //--------------------
 //slider
 /*draft.node_parameters.slider=function(id,parm,value,dime){
