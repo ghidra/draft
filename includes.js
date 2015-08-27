@@ -1,5 +1,6 @@
 //COMPILE MODULES
 rad.includes.modules([
+	"array",
 	"vector",
 	"mouse",
 	"ui"

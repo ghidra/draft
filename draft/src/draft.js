@@ -101,40 +101,50 @@ draft.set_script=function(id,scr){
 }
 //--------------------------
 draft.mousedown=function(e){
+	//alert(rad.isrightclick());
 	this.canvas_clicked=true;
 
 	var p = this.mouse_position(e);
 	this.console.innerHTML="x:"+p.x+" y:"+p.y;
 
 	//check if we are over a node
-	//for(var n=0; n<this.nodes.length; n++){
-	for (var n in this.scripts[this.activescript].nodes){
-        nd = this.scripts[this.activescript].nodes[n];
-		//if we are over the node + the margin we might be clicking a port, check that firsti
-		if(nd.near(p)){
-			//check for ports first
-			//check that we are a near an out port
-			var ndp = nd.over_port(p);
-			if(ndp.io>-1){//we are over a port
-				this.dragging_line.reverse = (ndp.io===1);
-				this.dragging_line.node = nd.id;
-        		this.dragging_line.port = ndp.port;
-				this.add_line();
-			}else{//we are not over a port, lets see if we are over the node
-				if(nd.over(p)){
-					//nd.start_drag(p.x,p.y);
-					nd.start_drag(p);
-                    this.dragging.push(n);
+	var overnode = false;
+	var overport = false;
+	if(rad.isleftclick()){
+		//for(var n=0; n<this.nodes.length; n++){
+		for (var n in this.scripts[this.activescript].nodes){
+	        nd = this.scripts[this.activescript].nodes[n];
+			//if we are over the node + the margin we might be clicking a port, check that firsti
+			if(nd.near(p)){
+				//check for ports first
+				//check that we are a near an out port
+				var ndp = nd.over_port(p);
+				if(ndp.io>-1){//we are over a port
+					this.dragging_line.reverse = (ndp.io===1);
+					this.dragging_line.node = nd.id;
+	        		this.dragging_line.port = ndp.port;
+					this.add_line();
+					overport = true;
+				}else{//we are not over a port, lets see if we are over the node
+					if(nd.over(p)){
+						//nd.start_drag(p.x,p.y);
+						nd.start_drag(p);
+	                    this.dragging.push(n);
+	                    overnode=true;
+					}
 				}
 			}
-		}
-    	}
+	    }
+	    //if(!overnode && !overport){
+	    //	this.dragging = this.scripts[this.activescript].nodes;
+	    //}
+	}
 
 }
 draft.mouseup=function(e){
 	this.canvas_clicked=false;
 	this.console.innerHTML="";
-	js.flusharray(this.dragging);
+	rad.flusharray(this.dragging);
 	this.over_port=false;
 
 
@@ -262,23 +272,8 @@ draft.refresh=function(){
 }
 
 //---
-draft.mouse_position=function(e){
-	var xp = 0;
-    var yp = 0;
-
-	var xo = e.clientX;
-	var yo = e.clientY;
-
-	var target = e.currentTarget;
-
-	while (target) {
-    	xp += (target.offsetLeft - target.scrollLeft + target.clientLeft);
-    	yp += (target.offsetTop - target.scrollTop + target.clientTop);
-    	target = target.offsetParent;
-   	}
-
-	return new rad.vector2(xo-xp,yo-yp);//{x: xo-xp, y: yo-yp};
-
+draft.mouse_position=function(e){//this needs to be removed eventually
+	return rad.relativemouseposition(e);
 }
 /*draft.distance=function(p1,p2){
 	var x = p1.x-p2.x;

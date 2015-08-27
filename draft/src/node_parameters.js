@@ -41,7 +41,7 @@ draft.node_parameters.prototype.show=function(id,node){
 						}
 							
 					});
-					parms.appendChild(dd.get_element());
+					parms.appendChild(dd.getelement());
 					//parms.appendChild(new draft.node_parameters.dropdown(id,ip,node.inputs[ip],node.inputs_values[ip],0,[this.width,this.width_label,this.width_input,this.margin]));
 					break;
 				//case "object":
@@ -62,7 +62,7 @@ draft.node_parameters.prototype.show=function(id,node){
 						}
 							
 					});
-					parms.appendChild(sl.get_element());
+					parms.appendChild(sl.getelement());
 					//parms.appendChild(new draft.node_parameters.slider(id,ip,node.inputs_values[ip],[this.width,this.width_label,this.width_input,this.margin]));
 					break;
 				default:
@@ -81,7 +81,7 @@ draft.node_parameters.prototype.show=function(id,node){
 						}
 							
 					});
-					parms.appendChild(tb.get_element());
+					parms.appendChild(tb.getelement());
 					//console.log("a string");
 					//parms.appendChild(new draft.node_parameters.string(id,ip,node.inputs_values[ip],[this.width,this.width_label,this.width_input,this.margin]));
 					//parms.innerHTML+='string';
