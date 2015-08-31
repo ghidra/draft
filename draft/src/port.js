@@ -22,10 +22,13 @@ draft.port.prototype.set_position=function(x,y){
 }
 //----
 draft.port.prototype.draw=function(offset){
-        draft.context.beginPath();
-        draft.context.arc(this.p.x+offset.x,this.p.y+offset.y,this.r,0,2*3.1415,false);
-        draft.context.fillStyle=this.c;
-        draft.context.fill();
+	var scale = draft.canvas_scale.scale;
+	var newpos = this.p.multscalar(scale).add(offset);
+    draft.context.beginPath();
+    draft.context.arc(newpos.x,newpos.y,this.r*scale,0,2*3.1415,false);
+    //draft.context.arc(this.p.x+offset.x,this.p.y+offset.y,this.r*scale,0,2*3.1415,false);
+    draft.context.fillStyle=this.c;
+    draft.context.fill();
 }
 
 

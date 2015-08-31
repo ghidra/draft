@@ -7,6 +7,7 @@ draft.node.prototype.init=function(id,category,name,x,y){
 	this.category = category||"empty";
 
 	this.p = new rad.vector2(x,y);
+	this.p_scalled = new rad.vector2(x,y);
 	this.offset = new rad.vector2();//offset vector
 
 	//this.x = x||10;
@@ -82,27 +83,40 @@ draft.node.prototype.set_dimensions=function(){
 //-------------------------
 
 draft.node.prototype.draw=function(){
+	//take scale into account
+	var scale = draft.canvas_scale.scale;
+	var toorigin = new rad.vector2().sub(this.offset);
+	var atorigin = this.p.add(toorigin);
+	var scalledp = atorigin.multscalar(scale);
+	this.p_scalled = scalledp.add(toorigin.neg());
+
 	//draft.context.fillStyle = "#E82572";//,,,,,,//http://www.colourlovers.com/
 	draft.context.fillStyle = "#93CEA4";//FBE17D,DA5757,D9D1A6,3F7A97,0C6E6D,E82572,//http://www.colourlovers.com/
     	//draft.context.fillRect(this.x,this.y,this.w,this.h);
     this.draw_shape();
 	//draw the label
 	draft.context.fillStyle = "#FFFFFF";
-	draft.context.fillText(this.label,this.p.x+this.margin,this.p.y+this.margin+(draft.font.size/2));
+	draft.context.fillText(this.label,this.p_scalled.x+(this.margin*scale),this.p_scalled.y+(this.margin*scale)+(draft.font.size/2));
+	//draft.context.fillText(this.label,this.p.x+this.margin,this.p.y+this.margin+(draft.font.size/2));
 	//draw the ports
 	for(var op in this.p_o){
-		this.p_o[op].draw( new rad.vector2(this.p.x,this.p.y) );	
+		this.p_o[op].draw( new rad.vector2(this.p_scalled.x,this.p_scalled.y) );
+		//this.p_o[op].draw( new rad.vector2(this.p.x,this.p.y) );	
 	}
 	for(var ip in this.p_i){
-        this.p_i[ip].draw( new rad.vector2(this.p.x,this.p.y) );
+        this.p_i[ip].draw( new rad.vector2(this.p_scalled.x,this.p_scalled.y) );
     } 
 }
 draft.node.prototype.start_drag=function(v){
-	this.offset.set(v.x-this.p.x,v.y-this.p.y)
+	this.set_offset(v);//this.offset.set(v.x-this.p.x,v.y-this.p.y)
 	//this.ox = x-this.p.x;
 	//this.oy = y-this.p.y;
 	//show parameters
 	this.node_parameters.show(this.id,this.class);
+}
+draft.node.prototype.set_offset=function(v){
+	//this.offset.set(v.sub(this.p));
+	this.offset=v.sub(this.p);
 }
 draft.node.prototype.drag=function(v){
 	//var v = new rad.vector2(x,y);
@@ -112,7 +126,21 @@ draft.node.prototype.drag=function(v){
 }
 //--------------------
 draft.node.prototype.draw_shape=function(){
-	var r = this.margin;//radius of rounder corners
+	var scale = draft.canvas_scale.scale;
+	var r = this.margin*scale;//radius of rounder corners
+	var seg = Math.ceil(r*0.3);
+	var coff = r*2;
+	var pivot = new rad.vector2(this.p_scalled.x+r,this.p_scalled.y+r);//{x:this.x+r,y:this.y+r};
+
+	draft.context.beginPath();
+	this.draw_rounded_corner(pivot,r,seg,2,true);
+	pivot.x = pivot.x+(this.w*scale)-coff;
+	this.draw_rounded_corner(pivot,r,seg,3);
+	pivot.y = pivot.y+(this.h*scale)-coff;
+	this.draw_rounded_corner(pivot,r,seg,0);
+	pivot.x = this.p_scalled.x+r;
+	this.draw_rounded_corner(pivot,r,seg,1);
+	/*var r = this.margin;//radius of rounder corners
 	var seg = Math.ceil(r*0.3);
 	var coff = r*2;
 	var pivot = new rad.vector2(this.p.x+r,this.p.y+r);//{x:this.x+r,y:this.y+r};
@@ -124,7 +152,7 @@ draft.node.prototype.draw_shape=function(){
 	pivot.y = pivot.y+this.h-coff;
 	this.draw_rounded_corner(pivot,r,seg,0);
 	pivot.x = this.p.x+r;
-	this.draw_rounded_corner(pivot,r,seg,1);
+	this.draw_rounded_corner(pivot,r,seg,1);*/
 
 	draft.context.closePath();
 	draft.context.fill();

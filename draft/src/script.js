@@ -8,9 +8,9 @@ draft.script.prototype.init=function(id,scr){
 		'script':0
 	}
 
-	this.nodes = js.objhasprop(scr.nodes)?scr.nodes:{};
-	this.lines = js.objhasprop(scr.lines)?scr.lines:{};
-	this.scripts = js.objhasprop(scr.scripts)?scr.scripts:{};
+	this.nodes = rad.objhasprop(scr.nodes)?scr.nodes:{};
+	this.lines = rad.objhasprop(scr.lines)?scr.lines:{};
+	this.scripts = rad.objhasprop(scr.scripts)?scr.scripts:{};
 }
 //----------------
 draft.script.prototype.add_node=function(category,name,x,y){

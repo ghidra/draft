@@ -17,8 +17,16 @@ draft.node_menu={};
 
 
 draft.canvas_clicked=false;
-draft.canvas_scale=1.0;
-draft.canvas_pos=new rad.vector2();
+draft.canvas_scale={
+	'scalling':false,
+	'scale':1.0,
+	'scale_start':1.0,
+	'min':0.5,
+	'max':2.5,
+	'start':new rad.vector2(),
+	'speed':0.005
+}
+//draft.canvas_pos=new rad.vector2();
 
 draft.dragging=[];//for nodes
 draft.dragging_line={
@@ -73,7 +81,8 @@ draft.set_canvas=function(id){
 	this.canvas = document.getElementById(id);
 	this.context = this.canvas.getContext("2d");
 	this.context.font = this.font.size+"px "+this.font.family;
-	this.canvas.ondragstart=function(){return false};//stop trying to drag
+	this.canvas.ondragstart=function(){return false;};//stop trying to drag
+	this.canvas.oncontextmenu=function(){return false;};//stop trying to get a menu in this part
 
 	this.canvas.onmousedown = function(e){draft.mousedown(e);};
 	this.canvas.onmouseup =function(e){draft.mouseup(e);};
@@ -108,11 +117,15 @@ draft.mousedown=function(e){
 	this.console.innerHTML="x:"+p.x+" y:"+p.y;
 
 	//check if we are over a node
-	var overnode = false;
-	var overport = false;
+	
 	if(rad.isleftclick()){
 		//for(var n=0; n<this.nodes.length; n++){
+		//drag all vars
+		var overnode = false;
+		var overport = false;
+
 		for (var n in this.scripts[this.activescript].nodes){
+			//dragall.push(n);
 	        nd = this.scripts[this.activescript].nodes[n];
 			//if we are over the node + the margin we might be clicking a port, check that firsti
 			if(nd.near(p)){
@@ -135,9 +148,30 @@ draft.mousedown=function(e){
 				}
 			}
 	    }
-	    //if(!overnode && !overport){
-	    //	this.dragging = this.scripts[this.activescript].nodes;
-	    //}
+	    if(!overnode && !overport){
+	    	//drag all the nodes, this is a workspace translate
+	    	rad.flusharray(this.dragging);//clean it out
+	    	for (var n in this.scripts[this.activescript].nodes){
+	    		this.scripts[this.activescript].nodes[n].set_offset(p);
+	    		this.dragging.push(n);
+	    	}
+	    }
+	}else{
+		if(rad.isrightclick()){
+			draft.canvas_scale.start=p;
+			draft.canvas_scale.scalling=true;
+			draft.canvas_scale.scale_start=draft.canvas_scale.scale;
+			
+			for (var n in this.scripts[this.activescript].nodes){
+	    		this.scripts[this.activescript].nodes[n].set_offset(p);
+	    		//this.dragging.push(n);
+	    	}
+			//set the offset on all the nodes
+
+			//lets scale the workspace
+			//console.log("rightclicked")
+		}
+
 	}
 
 }
@@ -209,7 +243,11 @@ draft.mouseup=function(e){
 		this.dragging_line.node=-1;
     	this.dragging_line.port=-1;
     	this.refresh();
-	}	
+	}
+	//reset the rightclick scale
+	if(draft.canvas_scale.scalling){
+		draft.canvas_scale.scalling=false;
+	}
 }
 
 draft.mousemove=function(e){
@@ -217,40 +255,61 @@ draft.mousemove=function(e){
 	this.console.innerHTML="x:"+p.x+" y:"+p.y;
 	this.mouseposition = p;
 	if(this.canvas_clicked){
-		
-		this.console.innerHTML="x:"+p.x+" y:"+p.y;
 
-		//if we have created a new line
-		if(this.dragging_line.create){
-			this.scripts[this.activescript].lines[this.dragging_line.id].drag(p,this.dragging_line.reverse);
-		}
+		if(draft.canvas_scale.scalling){
+			//lets scale the scene
+			//i need to first get the scale based on drag
+			var dragdir = draft.canvas_scale.start.sub(p);
+			var newscale = dragdir.dot(new rad.vector2(-0.5,-0.5))*draft.canvas_scale.speed;
+			draft.canvas_scale.scale=rad.clamp(draft.canvas_scale.scale_start+newscale,draft.canvas_scale.min, draft.canvas_scale.max);
+			
+			this.console.innerHTML+="</br>scale:"+draft.canvas_scale.scale;
 
-		//drag any nodes in the dragging array
-		for(var n=0; n<this.dragging.length;n++){
-    		//this.scripts[this.activescript].nodes[this.dragging[n]].drag(p.x,p.y);
-    		this.scripts[this.activescript].nodes[this.dragging[n]].drag(p);
-    	}
+			this.context.font = this.font.size*draft.canvas_scale.scale+"px "+this.font.family;
 
-		if(this.dragging.length>0 || this.dragging_line.create){
-			//duplicate of refersh with specific code because of draggin line
-    		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-			var scr = this.scripts[this.activescript];
-			//draw the lines again
-			for (var l in scr.lines){
-				//this first one is our lewly created line
-				if(l==this.dragging_line.id){//use == instead of === because tpyes might be different
-					scr.lines[l].drag(p,this.dragging_line.reverse);
-				}else{
-					var p1 = scr.nodes[scr.lines[l].fnode].port_position(scr.lines[l].fport,0);
-					var p2 = scr.nodes[scr.lines[l].tnode].port_position(scr.lines[l].tport,1);
-					scr.lines[l].draw(p1,p2);
-				}
+			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+			for(var n in this.scripts[this.activescript].nodes){
+	  			this.scripts[this.activescript].nodes[n].draw();
+	  		}
+			//get the length and the dot to determine which and where
+
+		}else{
+			//lets release everything
+			this.console.innerHTML="x:"+p.x+" y:"+p.y;
+
+			//if we have created a new line
+			if(this.dragging_line.create){
+				this.scripts[this.activescript].lines[this.dragging_line.id].drag(p,this.dragging_line.reverse);
 			}
-			//draw the nodes again
-  			for(var n in scr.nodes){
-  				scr.nodes[n].draw();
-  			}
-    	}
+
+			//drag any nodes in the dragging array
+			for(var n=0; n<this.dragging.length;n++){
+	    		//this.scripts[this.activescript].nodes[this.dragging[n]].drag(p.x,p.y);
+	    		this.scripts[this.activescript].nodes[this.dragging[n]].drag(p);
+	    	}
+
+			if(this.dragging.length>0 || this.dragging_line.create){
+				//duplicate of refersh with specific code because of draggin line
+	    		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+				var scr = this.scripts[this.activescript];
+				//draw the lines again
+				for (var l in scr.lines){
+					//this first one is our lewly created line
+					if(l==this.dragging_line.id){//use == instead of === because tpyes might be different
+						scr.lines[l].drag(p,this.dragging_line.reverse);
+					}else{
+						var p1 = scr.nodes[scr.lines[l].fnode].port_position(scr.lines[l].fport,0);
+						var p2 = scr.nodes[scr.lines[l].tnode].port_position(scr.lines[l].tport,1);
+						scr.lines[l].draw(p1,p2);
+					}
+				}
+				//draw the nodes again
+	  			for(var n in scr.nodes){
+	  				scr.nodes[n].draw();
+	  			}
+	    	}
+	    }
 		//-------
 	}
 }
