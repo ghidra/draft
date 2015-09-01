@@ -21,8 +21,8 @@ draft.port.prototype.set_position=function(x,y){
 	this.p.y = y;
 }
 //----
-draft.port.prototype.draw=function(offset){
-	var scale = draft.canvas_scale.scale;
+draft.port.prototype.draw=function(offset,scale){
+	scale = scale || 1.0;//draft.canvas_scale.scale;
 	var newpos = this.p.multscalar(scale).add(offset);
     draft.context.beginPath();
     draft.context.arc(newpos.x,newpos.y,this.r*scale,0,2*3.1415,false);

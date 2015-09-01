@@ -128,10 +128,10 @@ draft.mousedown=function(e){
 			//dragall.push(n);
 	        nd = this.scripts[this.activescript].nodes[n];
 			//if we are over the node + the margin we might be clicking a port, check that firsti
-			if(nd.near(p)){
+			if(nd.near(p,draft.canvas_scale.scale)){
 				//check for ports first
 				//check that we are a near an out port
-				var ndp = nd.over_port(p);
+				var ndp = nd.over_port(p,draft.canvas_scale.scale);
 				if(ndp.io>-1){//we are over a port
 					this.dragging_line.reverse = (ndp.io===1);
 					this.dragging_line.node = nd.id;
@@ -139,7 +139,7 @@ draft.mousedown=function(e){
 					this.add_line();
 					overport = true;
 				}else{//we are not over a port, lets see if we are over the node
-					if(nd.over(p)){
+					if(nd.over(p,draft.canvas_scale.scale)){
 						//nd.start_drag(p.x,p.y);
 						nd.start_drag(p);
 	                    this.dragging.push(n);
@@ -190,8 +190,8 @@ draft.mouseup=function(e){
 		for (var n in this.scripts[this.activescript].nodes){//loop the nodes
 			var nd = this.scripts[this.activescript].nodes[n];
       		//if we are over the node + the margin we might be clicking a port, check that firsti
-      		if(nd.near(p)){
-				var ndp = nd.over_port(p);
+      		if(nd.near(p,draft.canvas_scale.scale)){
+				var ndp = nd.over_port(p,draft.canvas_scale.scale);
 				//okay we are over a port, we need to check that it is a valid release point
 				//for forward to be valid, the port TO must be either the same type or polymorphic
 				//for reverse to be valid, same rules apply above.
@@ -206,8 +206,8 @@ draft.mouseup=function(e){
 					var fp = this.scripts[this.activescript].nodes[this.dragging_line.node].p_o[this.dragging_line.port];//the actual port
 					//var fp = nd.p_i[];
 					var dtmatch = fp.dt==ndp.dt || ndp.dt=='none';//data match
-					console.log("from data type:"+fp.dt);
-					console.log("to data type:"+ndp.dt);
+					//console.log("from data type:"+fp.dt);
+					//console.log("to data type:"+ndp.dt);
 				}
 				var valid_reverse = (this.dragging_line.reverse && ndp.io===0 && !ndp.used && nd.id!=this.dragging_line.node);
 				var valid_forward = (!this.dragging_line.reverse && ndp.io===1 && !ndp.used && nd.id!=this.dragging_line.node && dtmatch);
@@ -270,7 +270,7 @@ draft.mousemove=function(e){
 			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 			for(var n in this.scripts[this.activescript].nodes){
-	  			this.scripts[this.activescript].nodes[n].draw();
+	  			this.scripts[this.activescript].nodes[n].draw(draft.canvas_scale.scale);
 	  		}
 			//get the length and the dot to determine which and where
 
@@ -306,7 +306,7 @@ draft.mousemove=function(e){
 				}
 				//draw the nodes again
 	  			for(var n in scr.nodes){
-	  				scr.nodes[n].draw();
+	  				scr.nodes[n].draw(draft.canvas_scale.scale);
 	  			}
 	    	}
 	    }

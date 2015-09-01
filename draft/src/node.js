@@ -10,6 +10,9 @@ draft.node.prototype.init=function(id,category,name,x,y){
 	this.p_scalled = new rad.vector2(x,y);
 	this.offset = new rad.vector2();//offset vector
 
+	this.w=0;
+	this.h=0;
+
 	//this.x = x||10;
 	//this.y = y||10;
 
@@ -27,6 +30,7 @@ draft.node.prototype.init=function(id,category,name,x,y){
 	this.pid = 0;//port ids
 
 	this.set_dimensions();
+	this.center= new rad.vector2(this.w/2.0,this.h/2.0);
 	this.node_parameters = new draft.node_parameters();     
 	this.draw();
 
@@ -82,12 +86,17 @@ draft.node.prototype.set_dimensions=function(){
 }
 //-------------------------
 
-draft.node.prototype.draw=function(){
+draft.node.prototype.draw=function(scale){
+	//there are double transforms happeneing somewhere
 	//take scale into account
-	var scale = draft.canvas_scale.scale;
-	var toorigin = new rad.vector2().sub(this.offset);
+	scale = scale || 1.0;//draft.canvas_scale.scale;
+	
+	var mousepos = this.p.add(this.offset);
+	//var toorigin = new rad.vector2().sub(this.offset);
+	var toorigin = new rad.vector2().sub(mousepos.sub(this.center.multscalar(scale)));
 	var atorigin = this.p.add(toorigin);
 	var scalledp = atorigin.multscalar(scale);
+
 	this.p_scalled = scalledp.add(toorigin.neg());
 
 	//draft.context.fillStyle = "#E82572";//,,,,,,//http://www.colourlovers.com/
@@ -100,11 +109,11 @@ draft.node.prototype.draw=function(){
 	//draft.context.fillText(this.label,this.p.x+this.margin,this.p.y+this.margin+(draft.font.size/2));
 	//draw the ports
 	for(var op in this.p_o){
-		this.p_o[op].draw( new rad.vector2(this.p_scalled.x,this.p_scalled.y) );
+		this.p_o[op].draw( new rad.vector2(this.p_scalled.x,this.p_scalled.y), scale );
 		//this.p_o[op].draw( new rad.vector2(this.p.x,this.p.y) );	
 	}
 	for(var ip in this.p_i){
-        this.p_i[ip].draw( new rad.vector2(this.p_scalled.x,this.p_scalled.y) );
+        this.p_i[ip].draw( new rad.vector2(this.p_scalled.x,this.p_scalled.y), scale );
     } 
 }
 draft.node.prototype.start_drag=function(v){
@@ -112,15 +121,16 @@ draft.node.prototype.start_drag=function(v){
 	//this.ox = x-this.p.x;
 	//this.oy = y-this.p.y;
 	//show parameters
-	this.node_parameters.show(this.id,this.class);
 }
 draft.node.prototype.set_offset=function(v){
 	//this.offset.set(v.sub(this.p));
-	this.offset=v.sub(this.p);
+	console.log("set offset");
+	this.offset=v.sub(this.p_scalled);
 }
 draft.node.prototype.drag=function(v){
 	//var v = new rad.vector2(x,y);
 	this.p = v.sub(this.offset);
+	//this.p_scalled.clone(this.p);
 	//this.p.x = x-this.ox;
 	//this.p.y = y-this.oy;
 }
@@ -174,11 +184,13 @@ draft.node.prototype.draw_rounded_corner=function(position,radius,segments,corne
 
 //------
 //first check that we are near a node before going any further
-draft.node.prototype.near=function(p){
-	return (p.x>this.p.x-this.margin && p.x<(this.p.x+this.w+this.margin) && p.y>this.p.y-this.margin && p.y<(this.p.y+this.h+this.margin));
+draft.node.prototype.near=function(p,scale){
+	scale = scale || 1.0;
+	return (p.x>this.p_scalled.x-(this.margin*scale) && p.x<(this.p_scalled.x+((this.w+this.margin)*scale)) && p.y>this.p_scalled.y-(this.margin*scale) && p.y<(this.p_scalled.y+(this.h+this.margin)*scale) );
 }
-draft.node.prototype.over=function(p){
-	return (p.x>this.p.x && p.x<(this.p.x+this.w) && p.y>this.p.y && p.y<(this.p.y+this.h) );
+draft.node.prototype.over=function(p,scale){
+	scale = scale || 1.0;
+	return (p.x>this.p_scalled.x && p.x<(this.p_scalled.x+(this.w*scale)) && p.y>this.p_scalled.y && p.y<(this.p_scalled.y+(this.h*scale)) );
 }
 //get port information
 draft.node.prototype.port_position=function(id,io){
