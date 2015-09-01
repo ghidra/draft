@@ -121,6 +121,7 @@ draft.node.prototype.start_drag=function(v){
 	//this.ox = x-this.p.x;
 	//this.oy = y-this.p.y;
 	//show parameters
+	this.node_parameters.show(this.id,this.class);
 }
 draft.node.prototype.set_offset=function(v){
 	//this.offset.set(v.sub(this.p));
