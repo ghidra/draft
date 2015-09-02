@@ -1,14 +1,16 @@
-draft.node=function(id,category,name,x,y,i,o){
-	return this.init(id,category,name,x,y,i,o);
+draft.node=function(id,category,name,x,y,scale,i,o){
+	return this.init(id,category,name,x,y,scale,i,o);
 }
-draft.node.prototype.init=function(id,category,name,x,y){
+draft.node.prototype.init=function(id,category,name,x,y,scale){
 	this.id = id;
 	this.class = this.attach_class(category,name);//attaches the send in node
 	this.category = category||"empty";
 
 	this.p = new rad.vector2(x,y);
-	this.p_scalled = new rad.vector2(x,y);
+	this.p_scalled = new rad.vector2(x,y);//store values durring scalling calculations
 	this.offset = new rad.vector2();//offset vector
+
+	this.scl = scale || 1.0;
 
 	this.w=0;
 	this.h=0;
@@ -50,7 +52,7 @@ draft.node.prototype.set_dimensions=function(){
 	//set label related shit
 	this.label = this.class.label;
 	var label_size = draft.context.measureText(this.label);
-	this.w = label_size.width+(this.margin*4);
+	this.w = (label_size.width+(this.margin*4))*(1.0/this.scl);//mult by inverse scale to get the right size
 	//get the number of ports to set the height
 	//out ports
 	for (var op in this.class.outputs){
@@ -86,18 +88,18 @@ draft.node.prototype.set_dimensions=function(){
 }
 //-------------------------
 
-draft.node.prototype.draw=function(scale){
+draft.node.prototype.draw=function(){
 	//there are double transforms happeneing somewhere
 	//take scale into account
-	scale = scale || 1.0;//draft.canvas_scale.scale;
+	//scale = scale || 1.0;//draft.canvas_scale.scale;
 	
-	var mousepos = this.p.add(this.offset);
+	/*var mousepos = this.p.add(this.offset);
 	//var toorigin = new rad.vector2().sub(this.offset);
 	var toorigin = new rad.vector2().sub(mousepos.sub(this.center.multscalar(scale)));
 	var atorigin = this.p.add(toorigin);
 	var scalledp = atorigin.multscalar(scale);
 
-	this.p_scalled = scalledp.add(toorigin.neg());
+	this.p = scalledp.add(toorigin.neg());*/
 
 	//draft.context.fillStyle = "#E82572";//,,,,,,//http://www.colourlovers.com/
 	draft.context.fillStyle = "#93CEA4";//FBE17D,DA5757,D9D1A6,3F7A97,0C6E6D,E82572,//http://www.colourlovers.com/
@@ -105,16 +107,29 @@ draft.node.prototype.draw=function(scale){
     this.draw_shape();
 	//draw the label
 	draft.context.fillStyle = "#FFFFFF";
-	draft.context.fillText(this.label,this.p_scalled.x+(this.margin*scale),this.p_scalled.y+(this.margin*scale)+(draft.font.size/2));
+	draft.context.fillText(this.label,this.p.x+(this.margin*this.scl),this.p.y+(this.margin*this.scl)+(draft.font.size/2));
 	//draft.context.fillText(this.label,this.p.x+this.margin,this.p.y+this.margin+(draft.font.size/2));
 	//draw the ports
 	for(var op in this.p_o){
-		this.p_o[op].draw( new rad.vector2(this.p_scalled.x,this.p_scalled.y), scale );
+		this.p_o[op].draw( new rad.vector2(this.p.x,this.p.y), this.scl );
 		//this.p_o[op].draw( new rad.vector2(this.p.x,this.p.y) );	
 	}
 	for(var ip in this.p_i){
-        this.p_i[ip].draw( new rad.vector2(this.p_scalled.x,this.p_scalled.y), scale );
-    } 
+        this.p_i[ip].draw( new rad.vector2(this.p.x,this.p.y), this.scl );
+    }
+
+    this.debug_pos();
+}
+draft.node.prototype.scale=function(scale){
+	this.scl = scale || 1.0;//draft.canvas_scale.scale;
+	//called when scalling from draft main class
+
+	var toorigin = new rad.vector2().sub(this.p_scalled.sub(this.center.multscalar(scale)));
+	var atorigin = this.p.add(toorigin);
+	var scalledp = atorigin.multscalar(scale);
+
+	//this.p = scalledp.add(toorigin.neg());
+	this.draw()
 }
 draft.node.prototype.start_drag=function(v){
 	this.set_offset(v);//this.offset.set(v.x-this.p.x,v.y-this.p.y)
@@ -123,33 +138,39 @@ draft.node.prototype.start_drag=function(v){
 	//show parameters
 	this.node_parameters.show(this.id,this.class);
 }
+//draft.node.prototype.stop_drag=function(){
+	//console.log(this.id)
+//	this.p.clone(this.p);
+//}
 draft.node.prototype.set_offset=function(v){
-	//this.offset.set(v.sub(this.p));
-	console.log("set offset");
-	this.offset=v.sub(this.p_scalled);
+	//specifically if we want to move all nodes at once
+	this.offset=v.sub(this.p);
+}
+draft.node.prototype.set_scale_offset=function(v){
+	//specifically, for when we want to scale the nodes
+	this.p_scalled.clone(v);
 }
 draft.node.prototype.drag=function(v){
 	//var v = new rad.vector2(x,y);
 	this.p = v.sub(this.offset);
-	//this.p_scalled.clone(this.p);
+	//this.p.clone(this.p);
 	//this.p.x = x-this.ox;
 	//this.p.y = y-this.oy;
 }
 //--------------------
 draft.node.prototype.draw_shape=function(){
-	var scale = draft.canvas_scale.scale;
-	var r = this.margin*scale;//radius of rounder corners
+	var r = this.margin*this.scl;//radius of rounder corners
 	var seg = Math.ceil(r*0.3);
 	var coff = r*2;
-	var pivot = new rad.vector2(this.p_scalled.x+r,this.p_scalled.y+r);//{x:this.x+r,y:this.y+r};
+	var pivot = new rad.vector2(this.p.x+r,this.p.y+r);//{x:this.x+r,y:this.y+r};
 
 	draft.context.beginPath();
 	this.draw_rounded_corner(pivot,r,seg,2,true);
-	pivot.x = pivot.x+(this.w*scale)-coff;
+	pivot.x = pivot.x+(this.w*this.scl)-coff;
 	this.draw_rounded_corner(pivot,r,seg,3);
-	pivot.y = pivot.y+(this.h*scale)-coff;
+	pivot.y = pivot.y+(this.h*this.scl)-coff;
 	this.draw_rounded_corner(pivot,r,seg,0);
-	pivot.x = this.p_scalled.x+r;
+	pivot.x = this.p.x+r;
 	this.draw_rounded_corner(pivot,r,seg,1);
 	/*var r = this.margin;//radius of rounder corners
 	var seg = Math.ceil(r*0.3);
@@ -164,6 +185,32 @@ draft.node.prototype.draw_shape=function(){
 	this.draw_rounded_corner(pivot,r,seg,0);
 	pivot.x = this.p.x+r;
 	this.draw_rounded_corner(pivot,r,seg,1);*/
+
+	draft.context.closePath();
+	draft.context.fill();
+}
+draft.node.prototype.debug_pos=function(){
+	draft.context.fillStyle = "#FF0000";
+	draft.context.beginPath();
+
+	draft.context.moveTo(this.p.x, this.p.y);
+	draft.context.lineTo(this.p.x+2, this.p.y);
+	draft.context.lineTo(this.p.x+2, this.p.y-2);
+	draft.context.lineTo(this.p.x, this.p.y-2);
+	draft.context.lineTo(this.p.x, this.p.y);
+
+	draft.context.closePath();
+	draft.context.fill();
+
+	//scaled pos
+	draft.context.fillStyle = "#00FF00";
+	draft.context.beginPath();
+
+	draft.context.moveTo(this.p_scalled.x, this.p_scalled.y);
+	draft.context.lineTo(this.p_scalled.x+2, this.p_scalled.y);
+	draft.context.lineTo(this.p_scalled.x+2, this.p_scalled.y-2);
+	draft.context.lineTo(this.p_scalled.x, this.p_scalled.y-2);
+	draft.context.lineTo(this.p_scalled.x, this.p_scalled.y);
 
 	draft.context.closePath();
 	draft.context.fill();
@@ -185,13 +232,11 @@ draft.node.prototype.draw_rounded_corner=function(position,radius,segments,corne
 
 //------
 //first check that we are near a node before going any further
-draft.node.prototype.near=function(p,scale){
-	scale = scale || 1.0;
-	return (p.x>this.p_scalled.x-(this.margin*scale) && p.x<(this.p_scalled.x+((this.w+this.margin)*scale)) && p.y>this.p_scalled.y-(this.margin*scale) && p.y<(this.p_scalled.y+(this.h+this.margin)*scale) );
+draft.node.prototype.near=function(p){
+	return (p.x>this.p.x-(this.margin*this.scl) && p.x<(this.p.x+((this.w+this.margin)*this.scl)) && p.y>this.p.y-(this.margin*this.scl) && p.y<(this.p.y+(this.h+this.margin)*this.scl) );
 }
-draft.node.prototype.over=function(p,scale){
-	scale = scale || 1.0;
-	return (p.x>this.p_scalled.x && p.x<(this.p_scalled.x+(this.w*scale)) && p.y>this.p_scalled.y && p.y<(this.p_scalled.y+(this.h*scale)) );
+draft.node.prototype.over=function(p){
+	return (p.x>this.p.x && p.x<(this.p.x+(this.w*this.scl)) && p.y>this.p.y && p.y<(this.p.y+(this.h*this.scl)) );
 }
 //get port information
 draft.node.prototype.port_position=function(id,io){

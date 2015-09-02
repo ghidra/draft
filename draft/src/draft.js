@@ -131,15 +131,16 @@ draft.mousedown=function(e){
 			if(nd.near(p,draft.canvas_scale.scale)){
 				//check for ports first
 				//check that we are a near an out port
-				var ndp = nd.over_port(p,draft.canvas_scale.scale);
+				var ndp = nd.over_port(p);
 				if(ndp.io>-1){//we are over a port
 					this.dragging_line.reverse = (ndp.io===1);
 					this.dragging_line.node = nd.id;
 	        		this.dragging_line.port = ndp.port;
 					this.add_line();
 					overport = true;
-				}else{//we are not over a port, lets see if we are over the node
-					if(nd.over(p,draft.canvas_scale.scale)){
+				}else{
+					//we are not over a port, lets see if we are over the node
+					if(nd.over(p)){
 						//nd.start_drag(p.x,p.y);
 						nd.start_drag(p);
 	                    this.dragging.push(n);
@@ -163,7 +164,7 @@ draft.mousedown=function(e){
 			draft.canvas_scale.scale_start=draft.canvas_scale.scale;
 			
 			for (var n in this.scripts[this.activescript].nodes){
-	    		this.scripts[this.activescript].nodes[n].set_offset(p);
+	    		this.scripts[this.activescript].nodes[n].set_scale_offset(p);
 	    		//this.dragging.push(n);
 	    	}
 			//set the offset on all the nodes
@@ -190,8 +191,8 @@ draft.mouseup=function(e){
 		for (var n in this.scripts[this.activescript].nodes){//loop the nodes
 			var nd = this.scripts[this.activescript].nodes[n];
       		//if we are over the node + the margin we might be clicking a port, check that firsti
-      		if(nd.near(p,draft.canvas_scale.scale)){
-				var ndp = nd.over_port(p,draft.canvas_scale.scale);
+      		if(nd.near(p)){
+				var ndp = nd.over_port(p);
 				//okay we are over a port, we need to check that it is a valid release point
 				//for forward to be valid, the port TO must be either the same type or polymorphic
 				//for reverse to be valid, same rules apply above.
@@ -248,6 +249,11 @@ draft.mouseup=function(e){
 	if(draft.canvas_scale.scalling){
 		draft.canvas_scale.scalling=false;
 	}
+	//draw all the nodes again
+	//for(var n in this.scripts[this.activescript].nodes){
+	//	this.scripts[this.activescript].nodes[n].draw(draft.canvas_scale.scale);
+		//this.scripts[this.activescript].nodes[n].stop_drag();
+	//}
 }
 
 draft.mousemove=function(e){
@@ -270,7 +276,7 @@ draft.mousemove=function(e){
 			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 			for(var n in this.scripts[this.activescript].nodes){
-	  			this.scripts[this.activescript].nodes[n].draw(draft.canvas_scale.scale);
+	  			this.scripts[this.activescript].nodes[n].scale(draft.canvas_scale.scale);
 	  		}
 			//get the length and the dot to determine which and where
 
@@ -326,7 +332,7 @@ draft.refresh=function(){
 	}
 	//draw the nodes again
 	for(var n in scr.nodes){
-		scr.nodes[n].draw();
+		scr.nodes[n].draw(draft.canvas_scale.scale);
 	}
 }
 
@@ -346,7 +352,7 @@ draft.add_node=function(category,name,x,y){
 	name = name||"none";
 	x = x||10;
 	y = y||10;
-	this.scripts[this.activescript].add_node(category,name,x,y);
+	this.scripts[this.activescript].add_node(category,name,x,y,draft.canvas_scale.scale);
 }
 
 //-------------------
