@@ -19,8 +19,8 @@ draft.node_menu={};
 draft.canvas_clicked=false;
 draft.canvas_scale={
 	'scalling':false,
-	'scale':1.0,
-	'scale_start':1.0,
+	//'scale':1.0,
+	//'scale_start':1.0,
 	'min':0.5,
 	'max':2.5,
 	'start':new rad.vector2(),
@@ -128,7 +128,7 @@ draft.mousedown=function(e){
 			//dragall.push(n);
 	        nd = this.scripts[this.activescript].nodes[n];
 			//if we are over the node + the margin we might be clicking a port, check that firsti
-			if(nd.near(p,draft.canvas_scale.scale)){
+			if(nd.near(p)){
 				//check for ports first
 				//check that we are a near an out port
 				var ndp = nd.over_port(p);
@@ -161,7 +161,8 @@ draft.mousedown=function(e){
 		if(rad.isrightclick()){
 			draft.canvas_scale.start=p;
 			draft.canvas_scale.scalling=true;
-			draft.canvas_scale.scale_start=draft.canvas_scale.scale;
+			this.scripts[this.activescript].start_scale();
+			//draft.canvas_scale.scale_start=draft.canvas_scale.scale;
 			
 			for (var n in this.scripts[this.activescript].nodes){
 	    		this.scripts[this.activescript].nodes[n].set_scale_offset(p);
@@ -267,16 +268,18 @@ draft.mousemove=function(e){
 			//i need to first get the scale based on drag
 			var dragdir = draft.canvas_scale.start.sub(p);
 			var newscale = dragdir.dot(new rad.vector2(-0.5,-0.5))*draft.canvas_scale.speed;
-			draft.canvas_scale.scale=rad.clamp(draft.canvas_scale.scale_start+newscale,draft.canvas_scale.min, draft.canvas_scale.max);
+			this.scripts[this.activescript].scale.scale=rad.clamp(this.scripts[this.activescript].scale.start+newscale,draft.canvas_scale.min, draft.canvas_scale.max);
+			//draft.canvas_scale.scale=rad.clamp(draft.canvas_scale.scale_start+newscale,draft.canvas_scale.min, draft.canvas_scale.max);
 			
-			this.console.innerHTML+="</br>scale:"+draft.canvas_scale.scale;
+			//this.console.innerHTML+="</br>scale:"+draft.canvas_scale.scale;
 
-			this.context.font = this.font.size*draft.canvas_scale.scale+"px "+this.font.family;
+			//this.context.font = this.font.size*draft.canvas_scale.scale+"px "+this.font.family;
+			this.context.font = this.font.size*this.scripts[this.activescript].scale.scale+"px "+this.font.family;
 
 			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 			for(var n in this.scripts[this.activescript].nodes){
-	  			this.scripts[this.activescript].nodes[n].scale(draft.canvas_scale.scale);
+	  			this.scripts[this.activescript].nodes[n].scale(this.scripts[this.activescript].scale.scale,this.scripts[this.activescript].scale.start);
 	  		}
 			//get the length and the dot to determine which and where
 
@@ -352,7 +355,7 @@ draft.add_node=function(category,name,x,y){
 	name = name||"none";
 	x = x||10;
 	y = y||10;
-	this.scripts[this.activescript].add_node(category,name,x,y,draft.canvas_scale.scale);
+	this.scripts[this.activescript].add_node(category,name,x,y);
 }
 
 //-------------------

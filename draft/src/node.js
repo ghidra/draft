@@ -7,7 +7,8 @@ draft.node.prototype.init=function(id,category,name,x,y,scale){
 	this.category = category||"empty";
 
 	this.p = new rad.vector2(x,y);
-	this.p_scalled = new rad.vector2(x,y);//store values durring scalling calculations
+	this.p_prescalled = new rad.vector2(x,y);//store values durring scalling calculations
+	this.p_scalled = new rad.vector2();//store the mouse position value before scaling
 	this.offset = new rad.vector2();//offset vector
 
 	this.scl = scale || 1.0;
@@ -118,17 +119,19 @@ draft.node.prototype.draw=function(){
         this.p_i[ip].draw( new rad.vector2(this.p.x,this.p.y), this.scl );
     }
 
-    this.debug_pos();
+    //this.debug_pos();
 }
-draft.node.prototype.scale=function(scale){
+draft.node.prototype.scale=function(scale,start){
+	//this just needs to determine the new position, scale is taken care of in the draw function
 	this.scl = scale || 1.0;//draft.canvas_scale.scale;
 	//called when scalling from draft main class
+//this.center.multscalar(scale)
+	var toorigin = new rad.vector2().sub(this.p_scalled);
+	var atorigin = this.p_prescalled.add(toorigin);
+	var scalledp = atorigin.multscalar(scale/start);
 
-	var toorigin = new rad.vector2().sub(this.p_scalled.sub(this.center.multscalar(scale)));
-	var atorigin = this.p.add(toorigin);
-	var scalledp = atorigin.multscalar(scale);
-
-	//this.p = scalledp.add(toorigin.neg());
+	this.p = scalledp.add(toorigin.neg());
+	//this.p = atorigin.add(toorigin.neg());
 	this.draw()
 }
 draft.node.prototype.start_drag=function(v){
@@ -148,6 +151,7 @@ draft.node.prototype.set_offset=function(v){
 }
 draft.node.prototype.set_scale_offset=function(v){
 	//specifically, for when we want to scale the nodes
+	this.p_prescalled.clone(this.p);//store value
 	this.p_scalled.clone(v);
 }
 draft.node.prototype.drag=function(v){
