@@ -278,8 +278,16 @@ draft.mousemove=function(e){
 
 			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-			for(var n in this.scripts[this.activescript].nodes){
-	  			this.scripts[this.activescript].nodes[n].scale(this.scripts[this.activescript].scale.scale,this.scripts[this.activescript].scale.start);
+			var scr = this.scripts[this.activescript];
+
+			for(var n in scr.nodes){
+	  			scr.nodes[n].scale(scr.scale.scale,scr.scale.start);
+	  		}
+	  		//draw the connections too
+	  		for (var l in scr.lines){
+	  			var p1 = scr.nodes[scr.lines[l].fnode].port_position(scr.lines[l].fport,0);
+				var p2 = scr.nodes[scr.lines[l].tnode].port_position(scr.lines[l].tport,1);
+				scr.lines[l].draw(p1,p2);
 	  		}
 			//get the length and the dot to determine which and where
 

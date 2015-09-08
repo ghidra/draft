@@ -247,9 +247,9 @@ draft.node.prototype.port_position=function(id,io){
 	//gets the relative port position
 	var p = new rad.vector2();//{x:0,y:0};
 	if(io>0){//in port
-		p = this.p_i[id].p.add(this.p);
+		p = this.p_i[id].p.multscalar(this.scl).add(this.p);
 	}else{//out port
-		p = this.p_o[id].p.add(this.p);
+		p = this.p_o[id].p.multscalar(this.scl).add(this.p);
 	}
 	return p;
 }
@@ -264,10 +264,10 @@ draft.node.prototype.check_over_port=function(p,pio){//position
 	var pa = (pio===0)?this.p_o:this.p_i;
     for(var po in pa){
             //var p1 = p;//new rad.vector2(p.x,p.y);///// THIS IS BECAUSE I AM NOT PASSING IN A RAD>VECTOR2//{x:p.x,y:p.y};
-            var p2 = new rad.vector2(this.p.x+pa[po].p.x,this.p.y+pa[po].p.y);//{x:this.p.x+pa[po].p.x,y:this.p.y+pa[po].p.y};
+            var p2 = new rad.vector2(this.p.x+(pa[po].p.x*this.scl),this.p.y+(pa[po].p.y*this.scl));//{x:this.p.x+pa[po].p.x,y:this.p.y+pa[po].p.y};
             //var dist = draft.distance(p1,p2);//DRAFT BASED FUNCTION
             var dist = p.distance(p2);//DRAFT BASED FUNCTION
-            if(dist<=this.margin){
+            if(dist<=this.margin*this.scl){
                     out.io = pio;
                     out.port = pa[po].id;
 					out.used = pa[po].used;
