@@ -67,6 +67,12 @@ draft.colors_port={
 }
 draft.colors_error='DA5757';//reddish
 
+//TEST
+
+draft.bsptest=function(){
+	this.bsp = new rad.panels("test");
+}
+
 draft.init_nodes=function(layer){
 	//layer is the id of the div element that we are going to draw the menu into
 	 this.node_menu = new draft.node_browser(layer);

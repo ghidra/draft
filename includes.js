@@ -5,7 +5,9 @@ rad.includes.modules([
 	"math",
 	"vector",
 	"mouse",
-	"ui"
+	"ui",
+	"drag",
+	"panels"
 ]);
 //COMPILE SOURCES
 rad.includes.source([

@@ -6,6 +6,8 @@ function init(){
 	draft.set_console("console");
 	draft.set_script();//set a black script
 
+	draft.bsptest();
+
 	//draft.add_node("none","node1");
 	//draft.add_node("none","node2",100,100);
 }
