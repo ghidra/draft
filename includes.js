@@ -4,6 +4,7 @@ rad.includes.modules([
 	"object",
 	"math",
 	"vector",
+	"dom",
 	"mouse",
 	"ui",
 	"drag",
