@@ -70,12 +70,33 @@ draft.colors_error='DA5757';//reddish
 //TEST
 
 draft.bsptest=function(){
-	this.bsp = new rad.panels("test");
+	var layout = {
+		'split':0,
+		'size':80,
+		'partitions':{
+			'container_main':{
+				'split':1,
+				'size':20,
+				'partitions':{
+					'parameters':{},
+					'container_workspace':{
+						'split':1,
+						'partitions':{
+							'workspace':{},
+							'output':{}
+						}
+					}
+				}
+			},
+			'console':{}
+		}
+	};
+	this.bsp = new rad.panels("test",layout);
 }
 
 draft.init_nodes=function(layer){
-	//layer is the id of the div element that we are going to draw the menu into
-	 this.node_menu = new draft.node_browser(layer);
+	//layer is the id of the div element that we are going to draw the menu into 
+	this.node_menu = new draft.node_browser(layer);
 }
 
 //draft.nodes_loaded = {};
