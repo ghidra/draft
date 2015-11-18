@@ -1,8 +1,12 @@
 draft={};
+
+this.panels={};//this holds the rad.panels
+
 draft.canvas={};
 draft.context={};//the 2d context
 draft.parameters={};//hold the parameter pane
-draft.console={};
+draft.console={};//hold the console log window
+
 draft.font={
 	'family':'Courier New',
 	'size':10
@@ -69,7 +73,7 @@ draft.colors_error='DA5757';//reddish
 
 //TEST
 
-draft.bsptest=function(){
+draft.layout_workspace=function(id){
 	var layout = {
 		'split':0,
 		'size':80,
@@ -82,7 +86,7 @@ draft.bsptest=function(){
 					'container_workspace':{
 						'split':1,
 						'partitions':{
-							'workspace':{},
+							'canvas':{},
 							'output':{}
 						}
 					}
@@ -91,7 +95,7 @@ draft.bsptest=function(){
 			'console':{}
 		}
 	};
-	this.bsp = new rad.panels("test",layout);
+	this.panels = new rad.panels(id,layout);
 }
 
 draft.init_nodes=function(layer){
@@ -105,7 +109,18 @@ draft.init_nodes=function(layer){
 //}
 
 draft.set_canvas=function(id){
-	this.canvas = document.getElementById(id);
+	//this.canvas = document.getElementById("partition_"+id);
+	var canvas_container = this.panels.get_panel(id);
+	this.canvas = document.createElement("canvas");
+	this.canvas.id="canvas";
+	this.canvas.className="noselect";
+	var cc_dimensions = canvas_container.getBoundingClientRect();
+	this.canvas.width=cc_dimensions.width;
+	this.canvas.height=cc_dimensions.height;
+	this.canvas.style.display="block";
+	canvas_container.appendChild(this.canvas);
+
+	//console.log(this.canvas);
 	this.context = this.canvas.getContext("2d");
 	this.context.font = this.font.size+"px "+this.font.family;
 	this.canvas.ondragstart=function(){return false;};//stop trying to drag
@@ -119,10 +134,12 @@ draft.set_canvas=function(id){
 	this.canvas.onkeydown = function(e){draft.keypressed(e);};
 }
 draft.set_console=function(id){
-	this.console = document.getElementById(id);
+	//this.console = document.getElementById(id);
+	this.console = this.panels.get_panel(id);
 }
 draft.set_parameter_pane=function(id){
 	this.parameters = document.getElementById(id);
+	this.parameters = this.panels.get_panel(id);
 }
 draft.set_font=function(size){
 	this.font.size = size||this.font.size;

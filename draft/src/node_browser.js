@@ -15,6 +15,9 @@ draft.node_browser.prototype.init=function(layer){
 	this.canvas.style.position = "absolute";
 	this.canvas.style.color = 0x0;
 
+	this.canvas.style.top=0;
+	this.canvas.style.left=0;
+
 	//the main container
 	var menu_container = document.createElement("DIV");
 	menu_container.id = "node_menu_list";
