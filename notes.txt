@@ -1,3 +1,10 @@
+#-----rad
+resize window function to update drawing of resizers and spliters
+-my first attempt calls draw which re-draws everything and this, deletes any content inside the partitions.
+-I need to store any elements inside the partition before redrawing--that will be an entire other undertaking
+
+
+
 #-----nodes
 node type color
 node infiniate recursion commnection needs to be checked

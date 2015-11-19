@@ -7,6 +7,12 @@ draft.context={};//the 2d context
 draft.parameters={};//hold the parameter pane
 draft.console={};//hold the console log window
 
+draft.eids={
+	"canvas":"",
+	"parameters":"",
+	"console":""
+}
+
 draft.font={
 	'family':'Courier New',
 	'size':10
@@ -95,7 +101,7 @@ draft.layout_workspace=function(id){
 			'console':{}
 		}
 	};
-	this.panels = new rad.panels(id,layout);
+	this.panels = new rad.panels(id,layout,rad.closure(this,this.resizecanvas));//,rad.closure(this,this.windowresized)
 }
 
 draft.init_nodes=function(layer){
@@ -110,14 +116,19 @@ draft.init_nodes=function(layer){
 
 draft.set_canvas=function(id){
 	//this.canvas = document.getElementById("partition_"+id);
+	this.eids.canvas = id;//store the id for windowreize
+
 	var canvas_container = this.panels.get_panel(id);
+	//var cc_dimensions = canvas_container.getBoundingClientRect();
 	this.canvas = document.createElement("canvas");
-	this.canvas.id="canvas";
+	this.canvas.id=id;
 	this.canvas.className="noselect";
-	var cc_dimensions = canvas_container.getBoundingClientRect();
-	this.canvas.width=cc_dimensions.width;
-	this.canvas.height=cc_dimensions.height;
 	this.canvas.style.display="block";
+	//this.canvas.width=cc_dimensions.width;
+	//this.canvas.height=cc_dimensions.height;
+
+	this.resizecanvas();
+
 	canvas_container.appendChild(this.canvas);
 
 	//console.log(this.canvas);
@@ -133,12 +144,30 @@ draft.set_canvas=function(id){
 	this.canvas.tabIndex = 1000;//this forces the canvas to get the keyboard events
 	this.canvas.onkeydown = function(e){draft.keypressed(e);};
 }
+//caled at build and on window resize
+draft.resizecanvas=function(){
+	var canvas_container = this.panels.get_panel(this.eids.canvas);
+	var cc_dimensions = canvas_container.getBoundingClientRect();
+	this.canvas.width=cc_dimensions.width;
+	this.canvas.height=cc_dimensions.height;
+	if(this.canvas.onkeydown!=undefined){
+		this.refresh();
+	}
+}
+draft.windowresized=function(){
+	//this is a backup function in case I have to rebuild the entire thing
+	//right now, I am not going to.. it all depends on if
+	//in rad.panels.windowresized, if I call this.draw() which redraws everything 
+	//and erases everything inside in the process
+	this.set_canvas(this.eids.canvas);
+	this.refresh();
+}
 draft.set_console=function(id){
 	//this.console = document.getElementById(id);
 	this.console = this.panels.get_panel(id);
 }
 draft.set_parameter_pane=function(id){
-	this.parameters = document.getElementById(id);
+	//this.parameters = document.getElementById(id);
 	this.parameters = this.panels.get_panel(id);
 }
 draft.set_font=function(size){
