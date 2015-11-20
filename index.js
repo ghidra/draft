@@ -4,10 +4,11 @@ function init(){
 
 	draft.init_nodes("node_menu");
 	draft.set_canvas("canvas");
-	
 	draft.set_parameter_pane("parameters");
 	draft.set_console("console");
-	draft.set_script();//set a black script
+	draft.set_script();//set a blank script
+	draft.set_output_preview("output_preview");//this will also generate a terminal node
+
 
 	
 

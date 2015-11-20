@@ -2,6 +2,8 @@ draft.node_framework=function(){
 	return this.init();
 }
 draft.node_framework.prototype.init=function(){
+	//draft.node_framework.prototype.init.call();
+
 	this.label="null";
 
 	this.inputs={};
@@ -18,4 +20,8 @@ draft.node_framework.prototype.init=function(){
 		input:{},
 		output:{}
 	};
+}
+
+draft.node_framework.prototype.render=function(){
+	//here we evaluate the nodes data, and whomever is plugged in
 }

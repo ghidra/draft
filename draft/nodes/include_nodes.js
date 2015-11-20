@@ -1,10 +1,12 @@
+//i have to use this, since I dont have a way to automatically read in nodes
+draft.nodes.core={};
 draft.nodes.html={};
 draft.nodes.css={};
 draft.nodes.js={};
 
 draft.include_nodes={
 	lib:[
-		"html/terminal",
+		"core/terminal",
 		"html/generic"
 	],
 	include:function(src){

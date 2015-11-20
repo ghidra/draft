@@ -5,6 +5,7 @@ this.panels={};//this holds the rad.panels
 draft.canvas={};
 draft.context={};//the 2d context
 draft.parameters={};//hold the parameter pane
+draft.output_preview={};//hold the windows that the terminal will output to
 draft.console={};//hold the console log window
 
 draft.eids={
@@ -93,7 +94,7 @@ draft.layout_workspace=function(id){
 						'split':1,
 						'partitions':{
 							'canvas':{},
-							'output':{}
+							'output_preview':{}
 						}
 					}
 				}
@@ -180,6 +181,13 @@ draft.set_script=function(id,scr){
 		scr = {nodes:{},lines:{},scripts:{}};
 	}
 	this.scripts[id] = new draft.script(id,scr);
+}
+draft.set_output_preview=function(id){
+	this.output_preview = this.panels.get_panel(id);
+	//maybe also generate a terminal node
+	//also i need to check and make sure that we only do this for an empty script
+	var cc_dimensions = this.output_preview.getBoundingClientRect();
+	this.add_node("core","terminal",cc_dimensions.width/2,cc_dimensions.height/2);
 }
 //--------------------------
 draft.mousedown=function(e){
@@ -312,6 +320,14 @@ draft.mouseup=function(e){
 			//console.log("not valid");
 			this.scripts[this.activescript].remove_line(this.dragging_line.id);
 			//this.refresh();
+		}else{
+			//THIS OUTPUTS TO MY OUTPUT WINDOW
+			//we made a connection
+			//console.log('connected, refresh render');
+			var terminal = draft.scripts[0].find_node("core","terminal");//returns the first one found, with no id sent
+			//console.log(terminal);
+
+			this.output_preview.innerHTML = terminal.class.render();
 		}
 		this.dragging_line.id=-1;
 		this.dragging_line.create=false;

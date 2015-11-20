@@ -32,7 +32,7 @@ draft.node_browser.prototype.init=function(layer){
 	for (var category in draft.nodes){
 		if(draft.nodes.hasOwnProperty(category) && category!="compound"){
 			//i am hidding the compounds group for now
-
+			
 			this.menu[category]={};//set the category
 
 			//set the main menu parts

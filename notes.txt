@@ -3,7 +3,17 @@ resize window function to update drawing of resizers and spliters
 -my first attempt calls draw which re-draws everything and this, deletes any content inside the partitions.
 -I need to store any elements inside the partition before redrawing--that will be an entire other undertaking
 
+#script class
+find_node
+	-add ability to return a list of all the found nodes of a type and label if no id given
+	-currently I return the first found
+	-allow both behaviors
 
+#editor render
+	-parameter changes update editor render
+	-rendering now is only for one terminal
+	-as well it does not even care who the terminal wants to draw to
+		-make it so that who to draw to is relevant, quereied from the terminal node
 
 #-----nodes
 node type color

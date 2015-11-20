@@ -39,3 +39,17 @@ draft.script.prototype.remove_line=function(id){
 draft.script.prototype.start_scale=function(){
     this.scale.start=this.scale.scale;
 }
+
+draft.script.prototype.find_node=function(category,name,id){
+    //i should add the ability to return a list of all the found nodes if no id is sent in
+    for (n in this.nodes){
+        if ( this.nodes[n].category === category && this.nodes[n].label === name ){
+            if(id != undefined){
+                return (this.nodes[n] === id)?this.nodes[n]:false;
+            }else{
+                //if we do not send in an id, we return the first found one
+                return this.nodes[n];
+            }
+        }
+    }
+}
