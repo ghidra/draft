@@ -199,7 +199,7 @@ draft.mousedown=function(e){
 
 	//check if we are over a node
 	
-	if(rad.isleftclick()){
+	if(rad.isleftclick(e)){
 		//for(var n=0; n<this.nodes.length; n++){
 		//drag all vars
 		var overnode = false;
@@ -239,7 +239,7 @@ draft.mousedown=function(e){
 	    	}
 	    }
 	}else{
-		if(rad.isrightclick()){
+		if(rad.isrightclick(e)){
 			draft.canvas_scale.start=p;
 			draft.canvas_scale.scalling=true;
 			this.scripts[this.activescript].start_scale();
