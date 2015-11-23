@@ -8,7 +8,7 @@ draft.line.prototype.init=function(id,from_node,from_port,to_node,to_port,c){
 	this.tnode = to_node||0;
 	this.tport = to_port||0;
   	this.c = c||"#FF0000";
-  	console.log(from_node+":"+from_port+":"+to_node+":"+to_port)
+  	//console.log(from_node+":"+from_port+":"+to_node+":"+to_port)
   	return this;
 }
 

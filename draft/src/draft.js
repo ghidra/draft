@@ -1,6 +1,7 @@
 draft={};
 
-this.panels={};//this holds the rad.panels
+draft.panels={};//this holds the rad.panels
+draft.output={};//this is the rendere, that needs to be set after everything loads
 
 draft.canvas={};
 draft.context={};//the 2d context
@@ -183,6 +184,7 @@ draft.set_script=function(id,scr){
 	this.scripts[id] = new draft.script(id,scr);
 }
 draft.set_output_preview=function(id){
+	this.output = new draft.renderer();
 	this.output_preview = this.panels.get_panel(id);
 	//maybe also generate a terminal node
 	//also i need to check and make sure that we only do this for an empty script
@@ -299,14 +301,18 @@ draft.mouseup=function(e){
 					if(valid_reverse){
 						li.fnode = nd.id;
 						li.fport = ndp.port;
-						nd.p_o[ndp.port].line.push(li.id);
-						this.scripts[this.activescript].nodes[this.dragging_line.node].p_i[this.dragging_line.port].line[0]=li.id;
+						nd.p_o[ndp.port].line = li.id;
+						this.scripts[this.activescript].nodes[this.dragging_line.node].p_i[this.dragging_line.port].line=li.id;
+						//nd.p_o[ndp.port].line.push(li.id);
+						//this.scripts[this.activescript].nodes[this.dragging_line.node].p_i[this.dragging_line.port].line[0]=li.id;
 					}
 					if(valid_forward){
 						li.tnode = nd.id;
 						li.tport = ndp.port;
-						nd.p_i[ndp.port].line[0] = li.id;
-						this.scripts[this.activescript].nodes[this.dragging_line.node].p_o[this.dragging_line.port].line.push(li.id);
+						nd.p_i[ndp.port].line = li.id;
+						this.scripts[this.activescript].nodes[this.dragging_line.node].p_o[this.dragging_line.port].line = li.id;
+						//nd.p_i[ndp.port].line[0] = li.id;
+						//this.scripts[this.activescript].nodes[this.dragging_line.node].p_o[this.dragging_line.port].line.push(li.id);
 						if(ndp.dt=='none'){
 							nd.p_i[ndp.port].c = fp.c;
 						}
@@ -327,7 +333,7 @@ draft.mouseup=function(e){
 			var terminal = draft.scripts[0].find_node("core","terminal");//returns the first one found, with no id sent
 			//console.log(terminal);
 
-			this.output_preview.innerHTML = draft.render(terminal);//terminal.class.render();
+			this.output_preview.innerHTML = draft.output.render(terminal,0);//zero is the script id.. for later when I need to get compound data//terminal.class.render();
 		}
 		this.dragging_line.id=-1;
 		this.dragging_line.create=false;

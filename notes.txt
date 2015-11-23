@@ -11,9 +11,12 @@ find_node
 
 #editor render
 	-parameter changes update editor render
-	-rendering now is only for one terminal
-	-as well it does not even care who the terminal wants to draw to
-		-make it so that who to draw to is relevant, quereied from the terminal node
+	-render move to new object
+		-render recursion needs thought, and work
+		-at the moment, it returns the first value found
+		-i need to pipe values in and keep them to retrieve later
+		-maybe I need a attribute on node, that holds the render_output.
+			-also so that I can query if that has changed so that I dont need to render everything all the time
 
 #-----nodes
 node type color

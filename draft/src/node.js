@@ -60,7 +60,7 @@ draft.node.prototype.set_dimensions=function(){
 		if(this.class.outputs.hasOwnProperty(op)){
 			var iporttype = this.class.types.output[op];
 			//this.p_o[this.pid] = new draft.port(0,this.pid,this.w,(this.margin*3)*(this.o+1),this.margin,"#FBE17D");
-			this.p_o[this.pid] = new draft.port(0,this.pid,this.w,(this.margin*3)*(this.o+1),this.margin,iporttype);
+			this.p_o[this.pid] = new draft.port(0,this.pid,op,this.w,(this.margin*3)*(this.o+1),this.margin,iporttype);
 			this.pid+=1;
 			this.o+=1;
 		}
@@ -72,7 +72,7 @@ draft.node.prototype.set_dimensions=function(){
 			//console.log(porttype)
 			//console.log( ip+":"+js.totype( this.class.inputs[ip] ) );
 			//this.p_i[this.pid] = new draft.port(1,this.pid,0,(this.margin*3)*(this.i+1),this.margin,"#FBE17D");
-			this.p_i[this.pid] = new draft.port(1,this.pid,0,(this.margin*3)*(this.i+1),this.margin, oporttype );
+			this.p_i[this.pid] = new draft.port(1,this.pid,ip,0,(this.margin*3)*(this.i+1),this.margin, oporttype );
 			this.pid+=1;
 			this.i+=1;
 		}
@@ -80,7 +80,7 @@ draft.node.prototype.set_dimensions=function(){
 	//now do pass throughs, so that they are last
 	var ptporttype = this.class.types.input.passthrough;
 	for (var pt = 0; pt<this.class.inputs.passthrough; pt++){
-		this.p_i[this.pid] = new draft.port(1,this.pid,0,(this.margin*3)*(this.i+1),this.margin, ptporttype );
+		this.p_i[this.pid] = new draft.port(1,this.pid,"passthrough",0,(this.margin*3)*(this.i+1),this.margin, ptporttype );
 		this.pid+=1;
 		this.i+=1;
 	}

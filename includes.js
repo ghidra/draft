@@ -22,6 +22,6 @@ rad.includes.source([
 	"draft/src/node_framework.js",
 	"draft/src/node_browser.js",
 	"draft/nodes/include_nodes.js",
-	"draft/src/render.js",
+	"draft/src/renderer.js",
 	"index.js"
 ]);

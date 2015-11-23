@@ -1,9 +1,10 @@
-draft.port=function(type,id,x,y,r,c){
-        return this.init(type,id,x,y,r,c);
+draft.port=function(type,id,label,x,y,r,c){
+        return this.init(type,id,label,x,y,r,c);
 }
-draft.port.prototype.init=function(type,id,x,y,r,c){
+draft.port.prototype.init=function(type,id,label,x,y,r,c){
 	this.type = type||1;//in or our
 	this.id = id;
+	this.label = label;
 	//x y position is relative to the node
 	this.p=new rad.vector2(x,y);
     //this.x = x||0;
@@ -13,7 +14,7 @@ draft.port.prototype.init=function(type,id,x,y,r,c){
 	this.dt = c||"none";//datatype
 	this.c = draft.colors_port[c];//data type, for color
 	this.used = false;
-	this.line = [];//the connected line id
+	this.line = -1;//the connected line id
 	return this;	
 }
 draft.port.prototype.set_position=function(x,y){
