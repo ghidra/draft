@@ -32,6 +32,8 @@ draft.nodes.core.terminal.prototype.init=function(){
 //this is the render function
 //being as it is the terminal node, the output of this will be the final output
 draft.nodes.core.terminal.prototype.render=function(){
-	var output="none";
+	//loop the inputs
+	//get what is connected, and start to loop those
+	var output="this is the terminal node";
 	return output;
 }

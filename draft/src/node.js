@@ -277,6 +277,10 @@ draft.node.prototype.check_over_port=function(p,pio){//position
   	return out;
 }
 
+//link to class.render
+draft.node.prototype.render=function(){
+	return this.class.render();
+}
 //-----check when connecting lines if we are going to make an infinte loop
 /*draft.node.prototype.check_infinite_loop=function(nid){//the attempting to connect node, and the direction
 	//we need to recursevly check that no nodes plug into given node

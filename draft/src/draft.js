@@ -327,7 +327,7 @@ draft.mouseup=function(e){
 			var terminal = draft.scripts[0].find_node("core","terminal");//returns the first one found, with no id sent
 			//console.log(terminal);
 
-			this.output_preview.innerHTML = terminal.class.render();
+			this.output_preview.innerHTML = draft.render(terminal);//terminal.class.render();
 		}
 		this.dragging_line.id=-1;
 		this.dragging_line.create=false;
