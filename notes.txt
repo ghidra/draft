@@ -3,6 +3,10 @@ resize window function to update drawing of resizers and spliters
 -my first attempt calls draw which re-draws everything and this, deletes any content inside the partitions.
 -I need to store any elements inside the partition before redrawing--that will be an entire other undertaking
 
+#----------
+#parameters
+	-check if parameter we want to create is already created, so that we dont create it again redundantly
+
 #script class
 find_node
 	-add ability to return a list of all the found nodes of a type and label if no id given
@@ -53,14 +57,3 @@ marquee selection
 upstream selection. downstream selection
 
 ----
-
-
-
-//---------- terminal
-
-each terminal should beable to generate a new layer in the doc that it can render to
-each script can have multiple terminals
-
-render data
-
-terminal node needs a way to see results

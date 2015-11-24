@@ -9,6 +9,8 @@ draft.parameters={};//hold the parameter pane
 draft.output_preview={};//hold the windows that the terminal will output to
 draft.console={};//hold the console log window
 
+draft.colors={};//object to hold color types
+
 draft.eids={
 	"canvas":"",
 	"parameters":"",
@@ -27,6 +29,16 @@ draft.nodes={};//this will hold all the loaded node objects that are available
 draft.nodes.compound={};//this will be my default compound object
 draft.node_menu={};
 
+//----
+//make local storage
+//make I can test to see if I am connected to a database first... if not, then we can talk about local storage
+//right now, at work i only have local storage for testing
+draft.database={};//not even used yet
+draft.file = {};//new draft.io();//a file io handler
+//draft.localstorage=new rad.localstorage();
+//console.log(draft.localstorage);
+
+//----
 
 draft.canvas_clicked=false;
 draft.canvas_scale={
@@ -49,35 +61,6 @@ draft.dragging_line={
 	'port':-1
 };
 draft.mouseposition={};//i need to save this from the canvas
-
-draft.colors_node={
-	'css':'#D9D1A6',//beige
-	'html':'#93CEA4',//greenish
-	'js':'#3F7A97',//navy
-	'glsl':'#222222',
-	'none':'#ff0000'
-};
-draft.colors_port={
-	'dom':'#00aa00',
-	'bool':'#0C6E6D',//dark green blue
-	'select':'#E82572',
-	'array':'#E82572',//hot pink
-	'object':'#486774',
-	'float':'#4F7C6B',
-	'int':'#83834B',
-	'number':'#4F7C6B',
-	'vector2':'#',
-	'vector3':'#',
-	'vector4':'#',
-	'matrix3':'#',
-	'matrix4':'#',
-	'string':'#FBE17D',//yellow
-	'path':'#',
-	'novel':'#',
-	'passthrough':'#F67421',
-	'none':'#000000'//none is a polymorphic type expectation
-}
-draft.colors_error='DA5757';//reddish
 
 //TEST
 
@@ -176,20 +159,25 @@ draft.set_font=function(size){
 	this.font.size = size||this.font.size;
 }
 //---------------------------
-draft.set_script=function(id,scr){
-	id = id||0;
-	if(!js.objhasprop(scr)){
-		scr = {nodes:{},lines:{},scripts:{}};
-	}
-	this.scripts[id] = new draft.script(id,scr);
-}
 draft.set_output_preview=function(id){
 	this.output = new draft.renderer();
 	this.output_preview = this.panels.get_panel(id);
-	//maybe also generate a terminal node
-	//also i need to check and make sure that we only do this for an empty script
-	var cc_dimensions = this.output_preview.getBoundingClientRect();
-	this.add_node("core","terminal",cc_dimensions.width/2,cc_dimensions.height/2);
+}
+//---------------------------
+draft.set_script=function(id,scr){
+	//lets set up the draft.io
+	draft.file = new draft.io();
+
+	//load the script, or make a blank one
+	id = id||0;
+	if(!rad.objhasprop(scr)){//no script was sent in, so we just make a blank script
+		scr = {nodes:{},lines:{},scripts:{}};
+		this.scripts[id] = new draft.script(id,scr);
+		//make a terminal node
+		var cc_dimensions = this.output_preview.getBoundingClientRect();
+		this.add_node("core","terminal",cc_dimensions.width/2,cc_dimensions.height/2);
+		this.scripts[0].nodes[0].start_drag(new rad.vector2());//automatically pop up the parameters
+	}
 }
 //--------------------------
 draft.mousedown=function(e){
@@ -484,4 +472,36 @@ draft.keypressed=function(e){
 		this.node_menu.toggle(this.mouseposition);
 	}
 	
+}
+
+
+//------
+//colors
+draft.colors_error='DA5757';//reddish
+draft.colors.node={
+	'css':'#D9D1A6',//beige
+	'html':'#93CEA4',//greenish
+	'js':'#3F7A97',//navy
+	'glsl':'#222222',
+	'none':'#ff0000'
+};
+draft.colors.port={
+	'dom':'#00aa00',
+	'bool':'#0C6E6D',//dark green blue
+	'select':'#E82572',
+	'array':'#E82572',//hot pink
+	'object':'#486774',
+	'float':'#4F7C6B',
+	'int':'#83834B',
+	'number':'#4F7C6B',
+	'vector2':'#',
+	'vector3':'#',
+	'vector4':'#',
+	'matrix3':'#',
+	'matrix4':'#',
+	'string':'#FBE17D',//yellow
+	'path':'#',
+	'novel':'#',
+	'passthrough':'#F67421',
+	'none':'#000000'//none is a polymorphic type expectation
 }

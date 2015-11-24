@@ -91,6 +91,17 @@ draft.node_parameters.prototype.show=function(id,node){
 			}
 		}
 	}
+
+	//we could add in per node parameters here, that come from the class data
+	//console.log(node);
+	//console.log(rad.objhasfunction(node,"paramaters"));
+	if(rad.objhasfunction(node,"parameters")){//if the node has the function to make a paramater
+		var extra = node.parameters(id,this.width,this.width_input,this.width_label,this.margin);
+		if( rad.isdomelement( extra ) ){//we expect it to be a dom element
+			parms.appendChild(extra);
+		}
+	}
+
 	win.appendChild(parms);
 }
 draft.node_parameters.prototype.dimensions=function(){

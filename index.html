@@ -6,6 +6,24 @@
 <link rel="stylesheet" type="text/css" href="draft/src/styles.css">
 <script type="text/javascript" language="Javascript" src="rad/rad.js"></script>
 <script type="text/javascript" language="Javascript" src="includes.js"></script>
+
+<script type="text/javascript" language="Javascript">
+function init(){
+	//draft.init();
+	draft.layout_workspace("workspace");
+	draft.init_nodes("node_menu");
+	draft.set_canvas("canvas");
+	draft.set_parameter_pane("parameters");
+	draft.set_console("console");
+	draft.set_output_preview("output_preview");
+	draft.set_script();//set a blank script
+
+}
+window.onload=function(){
+    init();    
+}
+</script>
+
 </head>
 <body>
 	<div id="workspace"></div>

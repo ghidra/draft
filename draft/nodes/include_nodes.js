@@ -1,4 +1,5 @@
 //i have to use this, since I dont have a way to automatically read in nodes
+draft.nodes.basic={};
 draft.nodes.core={};
 draft.nodes.html={};
 draft.nodes.css={};
@@ -6,6 +7,7 @@ draft.nodes.js={};
 
 draft.include_nodes={
 	lib:[
+		"basic/string",
 		"core/terminal",
 		"html/generic"
 	],

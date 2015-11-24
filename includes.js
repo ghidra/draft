@@ -8,12 +8,13 @@ rad.includes.modules([
 	"mouse",
 	"ui",
 	"drag",
-	"panels"
+	"panels",
+	"localstorage"
 ]);
 //COMPILE SOURCES
 rad.includes.source([
-	"draft/src/js.js",
 	"draft/src/draft.js",
+	"draft/src/io.js",
 	"draft/src/script.js",
 	"draft/src/node_parameters.js",
 	"draft/src/node.js",
@@ -22,6 +23,5 @@ rad.includes.source([
 	"draft/src/node_framework.js",
 	"draft/src/node_browser.js",
 	"draft/nodes/include_nodes.js",
-	"draft/src/renderer.js",
-	"index.js"
+	"draft/src/renderer.js"
 ]);

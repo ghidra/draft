@@ -116,7 +116,9 @@ draft.node.prototype.draw=function(){
 		//this.p_o[op].draw( new rad.vector2(this.p.x,this.p.y) );	
 	}
 	for(var ip in this.p_i){
-        this.p_i[ip].draw( new rad.vector2(this.p.x,this.p.y), this.scl );
+		if(this.category!="basic"){//basic nodes do not need inputs
+        	this.p_i[ip].draw( new rad.vector2(this.p.x,this.p.y), this.scl );
+        }
     }
 
     //this.debug_pos();
