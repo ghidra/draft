@@ -9,6 +9,7 @@ draft.node_framework.prototype.init=function(){
 	this.inputs={};
 	this.inputs.passthrough=0;//the waiting ports that can multiply
 	this.inputs_values={};//to hold the set values
+	this.inputs_values_defaults={};//to hold default values
 
 	//DO NOT NAME INPUTS WITH '_' IT WILL BREAK THE PARAMETERS PASSING
 
@@ -20,6 +21,11 @@ draft.node_framework.prototype.init=function(){
 		input:{},
 		output:{}
 	};
+
+	//extending calsses must call store_defaults
+}
+draft.node_framework.prototype.store_defaults=function(){
+	this.inputs_values_defaults=rad.objclonefast(this.inputs_values);
 }
 
 draft.node_framework.prototype.render=function(){

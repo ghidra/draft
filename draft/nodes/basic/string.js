@@ -27,6 +27,7 @@ draft.nodes.basic.string.prototype.init=function(){
 			"result":"string"
 		}
 	};
+	//this.store_defaults();
 }
 
 draft.nodes.basic.string.prototype.render=function(){

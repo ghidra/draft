@@ -141,6 +141,10 @@ draft.node.prototype.start_drag=function(v){
 	//this.ox = x-this.p.x;
 	//this.oy = y-this.p.y;
 	//show parameters
+	this.refresh_parameters();
+	//this.node_parameters.show(this.id,this.class);
+}
+draft.node.prototype.refresh_parameters=function(){
 	this.node_parameters.show(this.id,this.class);
 }
 //draft.node.prototype.stop_drag=function(){
@@ -294,3 +298,29 @@ draft.node.prototype.render=function(){
 	}
 	return loop;
 }*/
+
+
+////saving function
+draft.node.prototype.sanitize=function(){
+	var clean = {};
+	clean.id = this.id;
+	clean.label = this.label;
+	clean.category = this.category;
+	clean.x = this.p.x;
+	clean.y = this.p.y;
+	clean.i = this.i;//number of inports
+	clean.o = this.o;//nuber of out ports
+
+	clean.class = {};//attaches the send in node
+	clean.class.label = this.class.label;
+	for(p in this.class.inputs_values){
+		if(rad.objfindprop(this.class.inputs_values_defaults,p)){//if we have set the defaults
+			if(this.class.inputs_values[p]!=this.class.inputs_values_defaults[p]){//only save it if it has changed
+				clean.class[p] = this.class.inputs_values[p]
+			}
+		}else{//no default set, lets just save it
+			clean.class[p] = this.class.inputs_values[p];
+		}
+	}
+	return clean;
+}

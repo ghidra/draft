@@ -11,6 +11,8 @@ draft.io.prototype.init=function(){
 //---------------------
 draft.io.prototype.list=function(){
 	//get list of saved
+
+	//this is the brute force local storage way
 	var files = this.storage.getobj("files");
 	if(!files){//there are no files already saved
 		return null;
@@ -25,15 +27,19 @@ draft.io.prototype.list=function(){
 }
 draft.io.prototype.save=function(name,src){
 	//save the file
-	//i need to sanitize the src before saving it
 	//if using local storage get the file object first, to add to it
 	var files = this.storage.getobj("files");
+	var src_clean=this.sanitize_script(src);
+
 	if(!files){//there are no files already saved
 		var new_file = {};
-		new_file[name]=src;
+		new_file[name]=src_clean;
+		//console.log(name)
 		this.storage.setobj("files",new_file);
 	}else{
 		//there are saved files, lets append, or overwrite
+		files[name]=src_clean;
+		this.storage.setobj("files",files);
 	}
 }
 draft.io.prototype.load=function(name){
@@ -60,4 +66,31 @@ file0:{
 	}
 }
 
+notes:
+clear out with chrome dev tools
+	draft.file.storage.storage.clear()
+get output
+	draft.file.storage.getobj("files")
 */
+draft.io.prototype.sanitize_script=function(src){
+	//this will take the javscript object and remove anything that we dont need to save, and fold it into 
+	//something cleanr to save
+	//recursive, to include embedded scripts
+	//we have nodes, lines, and scripts, ids, and scale
+	var clean = {};
+	clean.ids=rad.objclonefast(src.ids);
+	clean.scale=rad.objclonefast(src.scale);
+	clean.nodes={};
+	clean.lines={};
+	//clean.scripts=this.santize_scripts(src.scripts);
+
+	for(n in src.nodes){
+		clean.nodes[n] = src.nodes[n].sanitize();
+	}
+
+	for(l in src.lines){
+		clean.lines[l] = src.lines[l].sanitize();
+	}
+
+	return clean;
+}

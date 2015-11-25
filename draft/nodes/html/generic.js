@@ -169,4 +169,6 @@ draft.nodes.html.generic.prototype.init=function(){
 			"result":"dom"
 		}
 	};
+	
+	this.store_defaults();
 }

@@ -27,6 +27,8 @@ draft.nodes.core.terminal.prototype.init=function(){
 			"passthrough":'none'
 		}
 	};
+
+	//this.store_defaults();
 }
 
 //this is the render function
@@ -57,7 +59,7 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 
 	//console.log("draft.nodes.core.terminal.parameters:"+id);
 	//make the text box to save
-	var tb = new rad.textbox({
+	var tb_saveas = new rad.textbox({
 		"id":id,
 		"label":"save as",
 		"value":"",
@@ -67,9 +69,9 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		"fontsize":draft.font.size
 	});
 	//the html elements id = tb_0_save as
-	element.appendChild(tb.element);
+	element.appendChild(tb_saveas.element);
 
-	var bu = new rad.button({
+	var bu_save = new rad.button({
 		"id":id,
 		"label":"save",
 		"width":width_input,
@@ -77,20 +79,24 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		"margin":margin,
 		"fontsize":draft.font.size,
 		"callback":function(arg){
-			console.log("lets save");
 			//get the save file name
 			var filename = document.getElementById("tb_"+id+"_save as").value;
 			if(filename===""){
 				alert("save: no file name given");
 				return null;
 			}
+			//console.log(filename);
 			//send that to the save function
-			//draft.file.save(name,draft.scripts[0]);
-			draft.file.save(name,{data:"lots of data"});
+			//draft.file.save(filename,{data:"lots of data"});
+			draft.file.save(filename,draft.scripts[0]);
+			//now clear the save as text input value, and update the list
+			//probably best to just reload the parameters
+			//document.getElementById("tb_"+id+"_save as").value="";
+			draft.scripts[0].nodes[0].refresh_parameters();
 		}
 	});
 
-	element.appendChild(bu.element);
+	element.appendChild(bu_save.element);
 
 	///---------
 
@@ -109,9 +115,9 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 	if(!file_list){//no files found,make the arrays we need
 		file_list = ["no files found"];
 	}
-	console.log(file_list);
+	//console.log(file_list);
 	
-	var dd = new rad.dropdown({
+	var dd_files = new rad.dropdown({
 		"id":id,
 		"label":"load script",
 		"options":file_list,
@@ -122,9 +128,9 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		"fontsize":draft.font.size	
 	});
 
-	element.appendChild(dd.element);
+	element.appendChild(dd_files.element);
 
-	var lbu = new rad.button({
+	var bu_load = new rad.button({
 		"id":id,
 		"label":"load",
 		"width":width_input,
@@ -134,7 +140,7 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		"callback":function(arg){console.log("lets load");}
 	});
 
-	element.appendChild(lbu.element);
+	element.appendChild(bu_load.element);
 	
 	return element;
 }
