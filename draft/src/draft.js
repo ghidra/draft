@@ -89,15 +89,7 @@ draft.layout_workspace=function(id){
 	this.panels = new rad.panels(id,layout,rad.closure(this,this.resizecanvas));//,rad.closure(this,this.windowresized)
 }
 
-draft.init_nodes=function(layer){
-	//layer is the id of the div element that we are going to draw the menu into 
-	this.node_menu = new draft.node_browser(layer);
-}
-
-//draft.nodes_loaded = {};
-//draft.init=function(){
-//	draft.nodes_loaded = new draft.node_files();
-//}
+//draft.init_nodes=function(layer){}
 
 draft.set_canvas=function(id){
 	//this.canvas = document.getElementById("partition_"+id);
@@ -147,10 +139,9 @@ draft.windowresized=function(){
 	this.set_canvas(this.eids.canvas);
 	this.refresh();
 }
-draft.set_console=function(id){
-	//this.console = document.getElementById(id);
-	this.console = this.panels.get_panel(id);
-}
+
+//draft.set_console=function(id){}
+
 draft.set_parameter_pane=function(id){
 	//this.parameters = document.getElementById(id);
 	this.parameters = this.panels.get_panel(id);
@@ -159,25 +150,53 @@ draft.set_font=function(size){
 	this.font.size = size||this.font.size;
 }
 //---------------------------
-draft.set_output_preview=function(id){
-	this.output = new draft.renderer();
-	this.output_preview = this.panels.get_panel(id);
-}
+//draft.set_output_preview=function(id){}
 //---------------------------
-draft.set_script=function(id,scr){
-	//lets set up the draft.io
-	draft.file = new draft.io();
-
+draft.set_script=function(id,src){
+	//first thing, i need to clean out any objects if something was loaded before
+	rad.objclear(this.scripts);
 	//load the script, or make a blank one
 	id = id||0;
-	if(!rad.objhasprop(scr)){//no script was sent in, so we just make a blank script
-		scr = {nodes:{},lines:{},scripts:{}};
-		this.scripts[id] = new draft.script(id,scr);
+	cleansrc = {nodes:{},lines:{},scripts:{}};
+	this.scripts[id] = new draft.script(id,cleansrc);
+	if(!rad.objhasprop(src)){//no script was sent in, so we just make a blank script
 		//make a terminal node
 		var cc_dimensions = this.output_preview.getBoundingClientRect();
 		this.add_node("core","terminal",cc_dimensions.width/2,cc_dimensions.height/2);
-		this.scripts[0].nodes[0].start_drag(new rad.vector2());//automatically pop up the parameters
+	}else{//load the passes in script
+		for(n in src.nodes){
+			var new_node = this.add_node(src.nodes[n].category,src.nodes[n].class.label,src.nodes[n].x,src.nodes[n].y);//make the node
+			//need to put the expected values into the nodes
+			new_node.id=src.nodes[n].id;//set this to be the same value until we save the ids without the gaps
+			new_node.set_values(src.nodes[n].class);//pass in the values to set
+			//console.log(new_node);
+		}
+		for(l in src.lines){
+			this.scripts[id].add_line(src.lines[l].fnode,src.lines[l].fport,src.lines[l].tnode,src.lines[l].tport,src.lines[l].c);//
+		}
+		this.scripts[id].scale.scale=src.scale.scale;
+		this.scripts[id].scale.start=src.scale.start;
 	}
+	this.refresh();//draws everything again
+	this.scripts[0].nodes[0].start_drag(new rad.vector2());//automatically pop up the parameters
+}
+
+/// THE MAIN INIT FUNCTION CALLED ON LOAD
+draft.init=function(){
+	//lets set up the draft.io
+	this.file = new this.io();
+
+	this.layout_workspace("workspace");
+	this.node_menu = new draft.node_browser("node_menu");//this.init_nodes("node_menu");
+	this.set_canvas("canvas");
+	this.parameters = this.panels.get_panel("parameters");//this.set_parameter_pane("parameters");
+	this.console = this.panels.get_panel("console");//this.set_console("console");
+	
+	//this.set_output_preview("output_preview");
+	this.output = new this.renderer();
+	this.output_preview = this.panels.get_panel("output_preview");
+
+	this.set_script();
 }
 //--------------------------
 draft.mousedown=function(e){
@@ -415,7 +434,6 @@ draft.mousemove=function(e){
 }
 //--
 draft.refresh=function(){
-	//this function is currently only called from one location in this script
 	this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	var scr = this.scripts[this.activescript];
 	//draw the lines again
@@ -446,7 +464,7 @@ draft.add_node=function(category,name,x,y){
 	name = name||"none";
 	x = x||10;
 	y = y||10;
-	this.scripts[this.activescript].add_node(category,name,x,y);
+	return this.scripts[this.activescript].add_node(category,name,x,y);
 }
 
 //-------------------

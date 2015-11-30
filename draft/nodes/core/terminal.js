@@ -115,7 +115,7 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 	if(!file_list){//no files found,make the arrays we need
 		file_list = ["no files found"];
 	}
-	//console.log(file_list);
+	//console.log(file_list[0]);
 	
 	var dd_files = new rad.dropdown({
 		"id":id,
@@ -137,7 +137,19 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		"width_label":width_label,
 		"margin":margin,
 		"fontsize":draft.font.size,
-		"callback":function(arg){console.log("lets load");}
+		"callback":function(arg){
+			//get the file id from the dropdown
+			var fileid = document.getElementById("dd_"+id+"_load script").value;
+			var filename = file_list[fileid];
+			console.log("lets load: "+filename);
+			var loadedfile = draft.file.load(filename);
+			if (loadedfile != 'none'){
+				//console.log(loadedfile);
+				draft.set_script(0,loadedfile);//load the file
+			}else{
+				alert(filename+' file not found');
+			}
+		}
 	});
 
 	element.appendChild(bu_load.element);

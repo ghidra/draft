@@ -22,8 +22,9 @@ draft.script.prototype.add_node=function(category,name,x,y){
         category = category||"none";
         x = x||10;
         y = y||10;
-        this.nodes[this.ids.node] = new draft.node(this.ids.node,category,name,x,y,this.scale.scale);
+        var new_node = this.nodes[this.ids.node] = new draft.node(this.ids.node,category,name,x,y,this.scale.scale);
         this.ids.node+=1;
+        return new_node;
 }
 draft.script.prototype.remove_node=function(id){
 	delete this.nodes[id];

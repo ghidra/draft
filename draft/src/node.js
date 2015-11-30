@@ -49,6 +49,15 @@ draft.node.prototype.attach_class=function(category,name){
 	}
 	return node_class;
 }
+draft.node.prototype.set_values=function(values){
+	//when loading in a file, we need to set the saves values
+	//this.class.set_values=function(values);
+	for(v in values){
+		if (v!='label'){//dont need to set label value, thats the actual node name
+			this.class.inputs_values[v]=values[v];
+		}
+	}
+}
 draft.node.prototype.set_dimensions=function(){
 	//set label related shit
 	this.label = this.class.label;

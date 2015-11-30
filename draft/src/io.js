@@ -44,7 +44,13 @@ draft.io.prototype.save=function(name,src){
 }
 draft.io.prototype.load=function(name){
 	//load file, return object to be processed
+	//get all the local files
 	var files = this.storage.getobj("files");
+	if(files[name]){
+		return files[name];//return the specfic file requested
+	}else{
+		return 'none';
+	}
 }
 
 /*local storage should look like:

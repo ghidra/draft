@@ -7,7 +7,7 @@ draft.nodes.html.generic.prototype=new draft.node_framework();
 draft.nodes.html.generic.prototype.constructor=draft.node_framework;
 
 draft.nodes.html.generic.prototype.init=function(){
-	this.label="html node",
+	this.label="generic",
 	this.inputs.tags=[
 		"a",
 		"abbr",
