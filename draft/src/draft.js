@@ -173,9 +173,12 @@ draft.set_script=function(id,src){
 		}
 		for(l in src.lines){
 			this.scripts[id].add_line(src.lines[l].fnode,src.lines[l].fport,src.lines[l].tnode,src.lines[l].tport,src.lines[l].c);//
+			this.scripts[id].nodes[src.lines[l].tnode].p_i[src.lines[l].tport].c = src.lines[l].c;//color the connected to port
 		}
 		this.scripts[id].scale.scale=src.scale.scale;
 		this.scripts[id].scale.start=src.scale.start;
+
+		this.render_preview();//do an initial render on load
 	}
 	this.refresh();//draws everything again
 	this.scripts[0].nodes[0].start_drag(new rad.vector2());//automatically pop up the parameters
@@ -197,6 +200,10 @@ draft.init=function(){
 	this.output_preview = this.panels.get_panel("output_preview");
 
 	this.set_script();
+}
+draft.render_preview=function(){
+	var terminal = draft.scripts[0].find_node("core","terminal");
+	this.output_preview.innerHTML = this.output.render(terminal,0);
 }
 //--------------------------
 draft.mousedown=function(e){
@@ -337,10 +344,10 @@ draft.mouseup=function(e){
 			//THIS OUTPUTS TO MY OUTPUT WINDOW
 			//we made a connection
 			//console.log('connected, refresh render');
-			var terminal = draft.scripts[0].find_node("core","terminal");//returns the first one found, with no id sent
+			//var terminal = draft.scripts[0].find_node("core","terminal");//returns the first one found, with no id sent
 			//console.log(terminal);
-
-			this.output_preview.innerHTML = draft.output.render(terminal,0);//zero is the script id.. for later when I need to get compound data//terminal.class.render();
+			this.render_preview();
+			//this.output_preview.innerHTML = this.output.render(terminal,0);//zero is the script id.. for later when I need to get compound data//terminal.class.render();
 		}
 		this.dragging_line.id=-1;
 		this.dragging_line.create=false;
