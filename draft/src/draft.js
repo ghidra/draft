@@ -174,6 +174,8 @@ draft.set_script=function(id,src){
 		for(l in src.lines){
 			this.scripts[id].add_line(src.lines[l].fnode,src.lines[l].fport,src.lines[l].tnode,src.lines[l].tport,src.lines[l].c);//
 			this.scripts[id].nodes[src.lines[l].tnode].p_i[src.lines[l].tport].c = src.lines[l].c;//color the connected to port
+			this.scripts[id].nodes[src.lines[l].tnode].p_i[src.lines[l].tport].line = this.scripts[id].ids.line-1;//set the port ids
+			this.scripts[id].nodes[src.lines[l].fnode].p_o[src.lines[l].fport].line = this.scripts[id].ids.line-1;//set the port ids
 		}
 		this.scripts[id].scale.scale=src.scale.scale;
 		this.scripts[id].scale.start=src.scale.start;

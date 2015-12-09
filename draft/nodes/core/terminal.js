@@ -21,12 +21,12 @@ draft.nodes.core.terminal.prototype.init=function(){
 	this.inputs_values={
 		"element":eid
 	}
-	this.types={
-		input:{
+	//this.types={
+		this.types.input={
 			"element":"string",
 			"passthrough":'none'
 		}
-	};
+	//};
 
 	//this.store_defaults();
 }
@@ -36,7 +36,15 @@ draft.nodes.core.terminal.prototype.init=function(){
 draft.nodes.core.terminal.prototype.render=function(){
 	//loop the inputs
 	//get what is connected, and start to loop those
-	var output="this is the terminal node";
+	var output="";
+	for(p in this.inputs_values){
+		if(this.inputs_values.hasOwnProperty(p)){//only use the unique properties
+			if(p!='element'){//ignore elements
+				output+=this.inputs_values[p];
+			}
+		}
+	}
+	//var output="this is the terminal node";
 	return output;
 }
 
@@ -141,7 +149,7 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 			//get the file id from the dropdown
 			var fileid = document.getElementById("dd_"+id+"_load script").value;
 			var filename = file_list[fileid];
-			console.log("lets load: "+filename);
+			//console.log("lets load: "+filename);
 			var loadedfile = draft.file.load(filename);
 			if (loadedfile != 'none'){
 				//console.log(loadedfile);

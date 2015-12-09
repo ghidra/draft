@@ -17,7 +17,7 @@ draft.nodes.basic.string.prototype.init=function(){
 		"string":""
 	}
 
-	this.outputs.result={};
+	//this.outputs.result={};
 
 	this.types={
 		input:{

@@ -153,7 +153,7 @@ draft.nodes.html.generic.prototype.init=function(){
 		"testn":1
 	};
 
-	this.outputs.result={};
+	//this.outputs.result={};
 
 	//------typing, ports need to have a type association to keep things strict
 	
@@ -171,4 +171,19 @@ draft.nodes.html.generic.prototype.init=function(){
 	};
 	
 	this.store_defaults();
+}
+
+///-----------RENDER
+
+draft.nodes.html.generic.prototype.render=function(){
+	var output="";
+	for(p in this.inputs_values){
+		if(this.inputs_values.hasOwnProperty(p)){//only use the unique properties
+			if(p!='element'){//ignore elements
+				output+=this.inputs_values[p];
+			}
+		}
+	}
+	//var output="this is the terminal node";
+	return output;
 }

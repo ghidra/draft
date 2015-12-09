@@ -66,12 +66,14 @@ draft.node.prototype.set_dimensions=function(){
 	//get the number of ports to set the height
 	//out ports
 	for (var op in this.class.outputs){
-		if(this.class.outputs.hasOwnProperty(op)){
-			var iporttype = this.class.types.output[op];
-			//this.p_o[this.pid] = new draft.port(0,this.pid,this.w,(this.margin*3)*(this.o+1),this.margin,"#FBE17D");
-			this.p_o[this.pid] = new draft.port(0,this.pid,op,this.w,(this.margin*3)*(this.o+1),this.margin,iporttype);
-			this.pid+=1;
-			this.o+=1;
+		if(this.class.label!="terminal"){//no out puts on terminal nodes
+			if(this.class.outputs.hasOwnProperty(op)){
+				var iporttype = this.class.types.output[op];
+				//this.p_o[this.pid] = new draft.port(0,this.pid,this.w,(this.margin*3)*(this.o+1),this.margin,"#FBE17D");
+				this.p_o[this.pid] = new draft.port(0,this.pid,op,this.w,(this.margin*3)*(this.o+1),this.margin,iporttype);
+				this.pid+=1;
+				this.o+=1;
+			}
 		}
 	}
 	//in ports
