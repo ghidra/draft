@@ -205,7 +205,13 @@ draft.init=function(){
 }
 draft.render_preview=function(){
 	var terminal = draft.scripts[0].find_node("core","terminal");
-	this.output_preview.innerHTML = this.output.render(terminal,0);
+	var result = this.output.render(terminal,0);
+	if (typeof result === "string"){
+		this.output_preview.innerHTML = result;
+	}else{
+		this.output_preview.innerHTML="";
+		this.output_preview.appendChild(this.output.render(terminal,0));
+	}
 }
 //--------------------------
 draft.mousedown=function(e){

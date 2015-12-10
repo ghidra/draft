@@ -2,13 +2,14 @@ draft.renderer=function(){
 	return this;
 }
 
-draft.renderer.prototype.render=function(node,scriptid){
-	return this.render_loop(node,scriptid);
+draft.renderer.prototype.render=function(node,scriptid,mode){
+	mode = mode || 0;//mode allows is to render different types eg html can return dom objects or text
+	return this.render_loop(node,scriptid,mode);
 	//return node.render();
 }
 
 //this is the recursive function
-draft.renderer.prototype.render_loop=function(node,scriptid){
+draft.renderer.prototype.render_loop=function(node,scriptid,mode){
 
 	//console.log("****************");
 	//console.log(node.label);
@@ -27,7 +28,7 @@ draft.renderer.prototype.render_loop=function(node,scriptid){
 				//console.log(line.fnode+":"+line.fport);
 				//get the node to send back through
 				//console.log("we are gonna loop");
-				var foundvalue = this.render_loop(draft.scripts[scriptid].nodes[line.fnode],scriptid);
+				var foundvalue = this.render_loop(draft.scripts[scriptid].nodes[line.fnode],scriptid,mode);
 				//if(foundvalue != null){
 				node.class.inputs_values[node.p_i[input].label]=foundvalue;
 				//lamda+=foundvalue;
@@ -44,5 +45,5 @@ draft.renderer.prototype.render_loop=function(node,scriptid){
 			}
 		}
 	}
-	return node.render();
+	return node.render(mode);
 }

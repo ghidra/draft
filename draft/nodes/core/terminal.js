@@ -33,19 +33,31 @@ draft.nodes.core.terminal.prototype.init=function(){
 
 //this is the render function
 //being as it is the terminal node, the output of this will be the final output
-draft.nodes.core.terminal.prototype.render=function(){
+draft.nodes.core.terminal.prototype.render=function(mode){
 	//loop the inputs
 	//get what is connected, and start to loop those
-	var output="";
-	for(p in this.inputs_values){
+	
+	/*for(p in this.inputs_values){
 		if(this.inputs_values.hasOwnProperty(p)){//only use the unique properties
 			if(p!='element'){//ignore elements
 				output+=this.inputs_values[p];
 			}
 		}
-	}
-	//var output="this is the terminal node";
+	}*/
+	var output="";
+	this.loop_inputs(
+		function(key,value){
+			if(key!="element"){
+				if(typeof value != "string"){
+					output=value;
+				}else{
+					output+=value;
+				}
+			}
+		}
+	);
 	return output;
+	//return document.createElement("DIV");
 }
 
 ///-------------------------

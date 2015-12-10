@@ -29,12 +29,25 @@ draft.node_framework.prototype.store_defaults=function(){
 	this.inputs_values_defaults=rad.objclonefast(this.inputs_values);
 }
 
-draft.node_framework.prototype.render=function(){
+draft.node_framework.prototype.render=function(mode){
+	var output="";
+	this.loop_inputs(
+		function(key,value){
+			output+=value;
+		}
+	);
 	//here we evaluate the nodes data, and whomever is plugged in
-	return "you need to make render method for the node"
+	//return "you need to make render method for the node"
+	return output;
 }
 
-///----utility function
-draft.node_framework.prototype.loop_inputs=function(){
-	
+///----utility function to loop inputs
+draft.node_framework.prototype.loop_inputs=function(func){
+	for(p in this.inputs_values){
+		if(this.inputs_values.hasOwnProperty(p)){//only use the unique properties
+			if (typeof func === "function"){
+				func(p,this.inputs_values[p]);
+			}
+		}
+	}
 }

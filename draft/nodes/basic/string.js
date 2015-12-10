@@ -30,6 +30,6 @@ draft.nodes.basic.string.prototype.init=function(){
 	//this.store_defaults();
 }
 
-draft.nodes.basic.string.prototype.render=function(){
+/*draft.nodes.basic.string.prototype.render=function(){
 	return this.inputs.string;
-}
+}*/

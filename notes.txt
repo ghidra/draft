@@ -1,5 +1,11 @@
 #where i left off
-- look at the render path flow
+- basic render path working!
+- look at having multiple passthrough ports
+	-create new passthrough on connect
+- ability to disconnect connections by draggin backwards
+	-on backwards drag, disconnect connection if connected
+-when rendering, i only check if we are a string or object
+	-maybe need to consider if its a dom element specifically
 
 #-----rad
 -panels
@@ -23,10 +29,8 @@
 	-parameter changes update editor render
 	-render move to new object
 		-render recursion needs thought, and work
-		-at the moment, it returns the first value found
-		-i need to pipe values in and keep them to retrieve later
-		-maybe I need a attribute on node, that holds the render_output.
-			-also so that I can query if that has changed so that I dont need to render everything all the time
+		-now that render stores value, consider a cache system
+		-when attribut changes i dont have to re-evaluate everything
 
 #-----nodes
 node type color

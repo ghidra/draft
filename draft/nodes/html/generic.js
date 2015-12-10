@@ -175,15 +175,28 @@ draft.nodes.html.generic.prototype.init=function(){
 
 ///-----------RENDER
 
-draft.nodes.html.generic.prototype.render=function(){
+draft.nodes.html.generic.prototype.render=function(mode){
+	//var output="******<br/>"+this.label+"<br/>";
 	var output="";
-	for(p in this.inputs_values){
-		if(this.inputs_values.hasOwnProperty(p)){//only use the unique properties
-			if(p!='element'){//ignore elements
-				output+=this.inputs_values[p];
+	var _this=this;
+	this.loop_inputs(
+		function(key,value){
+			if(key=="tags"){
+				output = document.createElement(_this.inputs.tags[parseInt(value)]);
+
+				//output += _this.inputs.tags[parseInt(value)]+"<br/>";
+			}
+			//output+=key+":"+value+"<br/>";
+			//now just passthrough what is connected
+			if(key=="passthrough"){
+				if(typeof value === "string"){
+					output.innerHTML=value;
+				}else{
+					output.appendChild(value);
+				}
+				//output += value;
 			}
 		}
-	}
-	//var output="this is the terminal node";
+	);
 	return output;
 }
