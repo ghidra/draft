@@ -1,11 +1,13 @@
 #where i left off
-- basic render path working!
+- nodes, get downstream and upstream
+ 	-that will allows us to keep from doing infinite connections
+ 	-this will allow setting cache oudated or not
+- cache rendered data
 - look at having multiple passthrough ports
 	-create new passthrough on connect
 - ability to disconnect connections by draggin backwards
 	-on backwards drag, disconnect connection if connected
--when rendering, i only check if we are a string or object
-	-maybe need to consider if its a dom element specifically
+- ability to rename a node
 
 #-----rad
 -panels
@@ -14,11 +16,7 @@
 
 #----------draft
 #parameters
-	-on window resize, I need to update the dimensions
-	-i need to get new dimensions when its opned up again.
-	-currently dimensions are save the first time a parameter panel is created
-	-check if parameter we want to create is already created, so that we dont create it again redundantly
-
+- paramter needs to check if there is something plugged in, so it doesnt
 #script class
 	-find_node
 		-add ability to return a list of found nodes of a type and label if no id given
@@ -39,31 +37,21 @@ node infiniate recursion commnection needs to be checked
 #-----lines
 wires only get to connect once, if connected elsewhere, the old one is removed
 ability to dissconect wires
-paramter needs to check if there is something plugged in, so it doesnt show it
 deal with the inputs.passthrough value to make extendable ports
 
 //---------- UI
 
 my right padding on drop downs is missing
-i might need to label ports (boo)
 input string windows, hopefully easliy expandable
-maybe one day, i need to add another array on nodes, so I can get more specific with unput type data 	ie ints floats long string short strings
+
 input types:
-	strings
-	booleans
-	vectors
-	matrices
 	colors
 	ramps
 	gradient
 
-a way to give colors to groupds of nodes.
-port colors should also reflect the type of data
-
 nav map
-
 marquee selection
-
 upstream selection. downstream selection
+copy and paste
 
 ----

@@ -11,11 +11,13 @@ draft.node_parameters.prototype.init=function(){
 	return this;
 }
 draft.node_parameters.prototype.show=function(id,node){
+	this.dimensions();//re figure out the dimensions
 	var win = draft.parameters;//get the main html element
 	win.innerHTML="";
 	var parms = document.createElement("DIV");
 	var label = document.createElement("DIV");
 	label.innerHTML="&nbsp;"+node.label+" ("+id+")";
+	label.id = "parmnode_"+id;//put the node name on there to get later
 	label.className="parameter_label";
 	label.style.width=(this.width-(this.margin*2))+"px";
 

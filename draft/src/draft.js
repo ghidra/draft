@@ -86,7 +86,7 @@ draft.layout_workspace=function(id){
 			'console':{}
 		}
 	};
-	this.panels = new rad.panels(id,layout,rad.closure(this,this.resizecanvas));//,rad.closure(this,this.windowresized)
+	this.panels = new rad.panels(id,layout,rad.closure(this,this.windowresized));//,rad.closure(this,this.windowresized)
 }
 
 //draft.init_nodes=function(layer){}
@@ -136,8 +136,11 @@ draft.windowresized=function(){
 	//right now, I am not going to.. it all depends on if
 	//in rad.panels.windowresized, if I call this.draw() which redraws everything 
 	//and erases everything inside in the process
-	this.set_canvas(this.eids.canvas);
-	this.refresh();
+	//console.log(draft.paramaters.childNodes[1]);
+	this.resizecanvas();
+	draft.scripts[draft.activescript].nodes[this.get_parameter_node_id()].refresh_parameters();
+	//this.set_canvas(this.eids.canvas);
+	//this.refresh();
 }
 
 //draft.set_console=function(id){}
@@ -145,6 +148,16 @@ draft.windowresized=function(){
 draft.set_parameter_pane=function(id){
 	//this.parameters = document.getElementById(id);
 	this.parameters = this.panels.get_panel(id);
+}
+draft.get_parameter_node_id=function(){
+	//get the id of the parameter panes node, if there is one
+	var found = -1
+	if(this.parameters!=undefined){
+		if(this.parameters.childNodes[0]!=undefined){
+			found = draft.parameters.childNodes[0].childNodes[0].id.split("_")[1];
+		}
+	}
+	return found;
 }
 draft.set_font=function(size){
 	this.font.size = size||this.font.size;

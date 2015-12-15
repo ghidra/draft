@@ -152,7 +152,9 @@ draft.node.prototype.start_drag=function(v){
 	//this.ox = x-this.p.x;
 	//this.oy = y-this.p.y;
 	//show parameters
-	this.refresh_parameters();
+	if(this.id!=draft.get_parameter_node_id()){
+		this.refresh_parameters();
+	}
 	//this.node_parameters.show(this.id,this.class);
 }
 draft.node.prototype.refresh_parameters=function(){
@@ -292,6 +294,13 @@ draft.node.prototype.check_over_port=function(p,pio){//position
     	}
     }
   	return out;
+}
+//query methods
+draft.node.prototype.downstream=function(){
+	//get all the nodes that are downstream
+}
+draft.node.prototype.upstream=function(){
+	//get all the nodes that are upstream
 }
 
 //link to class.render
