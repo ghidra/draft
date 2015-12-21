@@ -13,6 +13,32 @@ draft.line.prototype.init=function(id,from_node,from_port,to_node,to_port,c){
 }
 
 //-------
+draft.line.prototype.connected=function(script_id,node,port,reverse){
+	//this make the connection succesful, updating the values on the ports related
+	node = (node!='undefined')?node:-1;//if no node is sent it, ita cause this we done when reading a saved file, and all data is already known
+	port = (port!='undefined')?port:-1;
+	reverse = (reverse!='undefined')?reverse:-1;
+
+	if(node>=0){
+		if(reverse>0){
+			this.fnode=node;
+			this.fport=port;
+			this.c = draft.scripts[script_id].nodes[this.fnode].p_o[this.fport].c;
+		}else{
+			this.tnode=node;
+			this.tport=port;
+		}
+	}
+
+	draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].c = this.c;//color the connected to port
+	draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].used = true;//color the connected to port
+	draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].line = this.id;//set the port ids
+	draft.scripts[script_id].nodes[this.fnode].p_o[this.fport].line = this.id;//set the port ids
+}
+draft.line.prototype.remove=function(script_id){
+	//draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].c = this.c;//color the connected to port
+	draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].reset();//reset the port
+}
 
 draft.line.prototype.draw=function(p1,p2){
 	var dist = Math.abs(p1.x-p2.x)/2;

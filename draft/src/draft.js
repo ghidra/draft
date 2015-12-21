@@ -36,7 +36,6 @@ draft.node_menu={};
 draft.database={};//not even used yet
 draft.file = {};//new draft.io();//a file io handler
 //draft.localstorage=new rad.localstorage();
-//console.log(draft.localstorage);
 
 //----
 
@@ -165,13 +164,13 @@ draft.set_font=function(size){
 //---------------------------
 //draft.set_output_preview=function(id){}
 //---------------------------
-draft.set_script=function(id,src){
+draft.set_script=function(sid,src){
 	//first thing, i need to clean out any objects if something was loaded before
 	rad.objclear(this.scripts);
 	//load the script, or make a blank one
-	id = id||0;
+	sid = sid||0;
 	cleansrc = {nodes:{},lines:{},scripts:{}};
-	this.scripts[id] = new draft.script(id,cleansrc);
+	this.scripts[sid] = new draft.script(sid,cleansrc);
 	if(!rad.objhasprop(src)){//no script was sent in, so we just make a blank script
 		//make a terminal node
 		var cc_dimensions = this.output_preview.getBoundingClientRect();
@@ -182,16 +181,13 @@ draft.set_script=function(id,src){
 			//need to put the expected values into the nodes
 			new_node.id=src.nodes[n].id;//set this to be the same value until we save the ids without the gaps
 			new_node.set_values(src.nodes[n].class);//pass in the values to set
-			//console.log(new_node);
 		}
 		for(l in src.lines){
-			this.scripts[id].add_line(src.lines[l].fnode,src.lines[l].fport,src.lines[l].tnode,src.lines[l].tport,src.lines[l].c);//
-			this.scripts[id].nodes[src.lines[l].tnode].p_i[src.lines[l].tport].c = src.lines[l].c;//color the connected to port
-			this.scripts[id].nodes[src.lines[l].tnode].p_i[src.lines[l].tport].line = this.scripts[id].ids.line-1;//set the port ids
-			this.scripts[id].nodes[src.lines[l].fnode].p_o[src.lines[l].fport].line = this.scripts[id].ids.line-1;//set the port ids
+			var new_line = this.scripts[sid].add_line(src.lines[l].fnode,src.lines[l].fport,src.lines[l].tnode,src.lines[l].tport,src.lines[l].c);//
+			new_line.connected(sid);//make the line connection succesful
 		}
-		this.scripts[id].scale.scale=src.scale.scale;
-		this.scripts[id].scale.start=src.scale.start;
+		this.scripts[sid].scale.scale=src.scale.scale;
+		this.scripts[sid].scale.start=src.scale.start;
 
 		this.render_preview();//do an initial render on load
 	}
@@ -228,22 +224,18 @@ draft.render_preview=function(){
 }
 //--------------------------
 draft.mousedown=function(e){
-	//alert(rad.isrightclick());
+
 	this.canvas_clicked=true;
 
-	var p = this.mouse_position(e);
-	this.console.innerHTML="x:"+p.x+" y:"+p.y;
+	var p = rad.relativemouseposition(e);
 
 	//check if we are over a node
 	
 	if(rad.isleftclick(e)){
-		//for(var n=0; n<this.nodes.length; n++){
-		//drag all vars
 		var overnode = false;
 		var overport = false;
 
-		for (var n in this.scripts[this.activescript].nodes){
-			//dragall.push(n);
+		for (var n in this.scripts[this.activescript].nodes){//loop all the nodes
 	        nd = this.scripts[this.activescript].nodes[n];
 			//if we are over the node + the margin we might be clicking a port, check that firsti
 			if(nd.near(p)){
@@ -251,6 +243,12 @@ draft.mousedown=function(e){
 				//check that we are a near an out port
 				var ndp = nd.over_port(p);
 				if(ndp.io>-1){//we are over a port
+					//check if this is an inport, and if something is connected
+					if(ndp.io===1){//this is an input port.. we need to know if it has a connection
+						if(ndp.used){//if the port is being used, we need to delete the line
+							this.scripts[this.activescript].remove_line(ndp.line);
+						}
+					}
 					this.dragging_line.reverse = (ndp.io===1);
 					this.dragging_line.node = nd.id;
 	        		this.dragging_line.port = ndp.port;
@@ -259,7 +257,6 @@ draft.mousedown=function(e){
 				}else{
 					//we are not over a port, lets see if we are over the node
 					if(nd.over(p)){
-						//nd.start_drag(p.x,p.y);
 						nd.start_drag(p);
 	                    this.dragging.push(n);
 	                    overnode=true;
@@ -267,6 +264,8 @@ draft.mousedown=function(e){
 				}
 			}
 	    }
+	    //we are not over a node or a port
+	    //here is where we can look at drawing a marquee if a modifier is down
 	    if(!overnode && !overport){
 	    	//drag all the nodes, this is a workspace translate
 	    	rad.flusharray(this.dragging);//clean it out
@@ -286,14 +285,8 @@ draft.mousedown=function(e){
 	    		this.scripts[this.activescript].nodes[n].set_scale_offset(p);
 	    		//this.dragging.push(n);
 	    	}
-			//set the offset on all the nodes
-
-			//lets scale the workspace
-			//console.log("rightclicked")
 		}
-
 	}
-
 }
 draft.mouseup=function(e){
 	this.canvas_clicked=false;
@@ -304,7 +297,7 @@ draft.mouseup=function(e){
 
 	//line dragging logic
 	if(this.dragging_line.create){
-		var p = this.mouse_position(e);
+		var p = rad.relativemouseposition(e);
 		var connected = false;
 		//find out if we released on a valid port
 		for (var n in this.scripts[this.activescript].nodes){//loop the nodes
@@ -326,49 +319,22 @@ draft.mouseup=function(e){
 					var fp = this.scripts[this.activescript].nodes[this.dragging_line.node].p_o[this.dragging_line.port];//the actual port
 					//var fp = nd.p_i[];
 					var dtmatch = fp.dt==ndp.dt || ndp.dt=='none';//data match
-					//console.log("from data type:"+fp.dt);
-					//console.log("to data type:"+ndp.dt);
+
 				}
 				var valid_reverse = (this.dragging_line.reverse && ndp.io===0 && !ndp.used && nd.id!=this.dragging_line.node);
 				var valid_forward = (!this.dragging_line.reverse && ndp.io===1 && !ndp.used && nd.id!=this.dragging_line.node && dtmatch);
 				if(valid_reverse || valid_forward){//valid, set the remaining values
 					var li = this.scripts[this.activescript].lines[this.dragging_line.id];
-					if(valid_reverse){
-						li.fnode = nd.id;
-						li.fport = ndp.port;
-						nd.p_o[ndp.port].line = li.id;
-						this.scripts[this.activescript].nodes[this.dragging_line.node].p_i[this.dragging_line.port].line=li.id;
-						//nd.p_o[ndp.port].line.push(li.id);
-						//this.scripts[this.activescript].nodes[this.dragging_line.node].p_i[this.dragging_line.port].line[0]=li.id;
-					}
-					if(valid_forward){
-						li.tnode = nd.id;
-						li.tport = ndp.port;
-						nd.p_i[ndp.port].line = li.id;
-						this.scripts[this.activescript].nodes[this.dragging_line.node].p_o[this.dragging_line.port].line = li.id;
-						//nd.p_i[ndp.port].line[0] = li.id;
-						//this.scripts[this.activescript].nodes[this.dragging_line.node].p_o[this.dragging_line.port].line.push(li.id);
-						if(ndp.dt=='none'){
-							nd.p_i[ndp.port].c = fp.c;
-						}
-					}
-					li.used = true;
+					li.connected(this.activescript,nd.id,ndp.port,valid_reverse);
 					connected = (!connected)?true:connected;
 				}
 			}
 		}
 		if(!connected){
-			//console.log("not valid");
 			this.scripts[this.activescript].remove_line(this.dragging_line.id);
-			//this.refresh();
 		}else{
 			//THIS OUTPUTS TO MY OUTPUT WINDOW
-			//we made a connection
-			//console.log('connected, refresh render');
-			//var terminal = draft.scripts[0].find_node("core","terminal");//returns the first one found, with no id sent
-			//console.log(terminal);
 			this.render_preview();
-			//this.output_preview.innerHTML = this.output.render(terminal,0);//zero is the script id.. for later when I need to get compound data//terminal.class.render();
 		}
 		this.dragging_line.id=-1;
 		this.dragging_line.create=false;
@@ -380,15 +346,10 @@ draft.mouseup=function(e){
 	if(draft.canvas_scale.scalling){
 		draft.canvas_scale.scalling=false;
 	}
-	//draw all the nodes again
-	//for(var n in this.scripts[this.activescript].nodes){
-	//	this.scripts[this.activescript].nodes[n].draw(draft.canvas_scale.scale);
-		//this.scripts[this.activescript].nodes[n].stop_drag();
-	//}
 }
 
 draft.mousemove=function(e){
-	var p = this.mouse_position(e);
+	var p = rad.relativemouseposition(e);
 	this.console.innerHTML="x:"+p.x+" y:"+p.y;
 	this.mouseposition = p;
 	if(this.canvas_clicked){
@@ -475,17 +436,6 @@ draft.refresh=function(){
 		scr.nodes[n].draw(draft.canvas_scale.scale);
 	}
 }
-
-//---
-draft.mouse_position=function(e){//this needs to be removed eventually
-	return rad.relativemouseposition(e);
-}
-/*draft.distance=function(p1,p2){
-	var x = p1.x-p2.x;
-	var y = p1.y-p2.y;
-	return Math.sqrt( (x*x)+(y*y) );
-}*/
-//---------------------
 
 draft.add_node=function(category,name,x,y){
 	category = category||"none";

@@ -2,11 +2,13 @@
 - nodes, get downstream and upstream
  	-that will allows us to keep from doing infinite connections
  	-this will allow setting cache oudated or not
+- look at marquee select (multiple canvas layers)
+- make a compound
+- copy and paste
+- delete a node
 - cache rendered data
 - look at having multiple passthrough ports
 	-create new passthrough on connect
-- ability to disconnect connections by draggin backwards
-	-on backwards drag, disconnect connection if connected
 - ability to rename a node
 
 #-----rad

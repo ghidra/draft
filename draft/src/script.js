@@ -2,6 +2,7 @@ draft.script=function(id,scr){
         return this.init(id,scr);
 }
 draft.script.prototype.init=function(id,scr){
+    this.id=id;
 	this.ids={
         'node':0,
         'line':0,
@@ -33,8 +34,12 @@ draft.script.prototype.remove_node=function(id){
 draft.script.prototype.add_line=function(fn,fp,tn,tp,c){
     this.lines[this.ids.line] = new draft.line(this.ids.line,fn,fp,tn,tp,c);
     this.ids.line+=1;
+    return this.lines[this.ids.line-1];//give the line to the function calling it
 }
 draft.script.prototype.remove_line=function(id){
+    //only do the port clean up if we are not a mouse dragged line
+    if(this.lines[id].fnode>=0 && this.lines[id].tnode>=0)
+        this.lines[id].remove(this.id);//we need to update port values
 	delete this.lines[id];
 }
 draft.script.prototype.start_scale=function(){

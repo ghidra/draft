@@ -291,6 +291,7 @@ draft.node.prototype.check_over_port=function(p,pio){//position
                     out.port = pa[po].id;
 					out.used = pa[po].used;
 					out.dt = pa[po].dt;
+					out.line = pa[po].line;
     	}
     }
   	return out;

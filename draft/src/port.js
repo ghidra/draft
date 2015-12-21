@@ -21,6 +21,12 @@ draft.port.prototype.set_position=function(x,y){
 	this.p.x = x;
 	this.p.y = y;
 }
+draft.port.prototype.reset=function(){
+	//this is called when a line is removed from an input port
+	this.c = draft.colors.port[this.dt];//data type, for color
+	this.used = false;
+	this.line = -1;//the connected line id
+}
 //----
 draft.port.prototype.draw=function(offset,scale){
 	scale = scale || 1.0;//draft.canvas_scale.scale;
