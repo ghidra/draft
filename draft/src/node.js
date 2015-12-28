@@ -12,6 +12,7 @@ draft.node.prototype.init=function(id,category,name,x,y,scale){
 	this.offset = new rad.vector2();//offset vector
 
 	this.scl = scale || 1.0;
+	this.selected = false;
 
 	this.w=0;
 	this.h=0;
@@ -116,10 +117,14 @@ draft.node.prototype.draw=function(){
 	//draft.context.fillStyle = "#E82572";//,,,,,,//http://www.colourlovers.com/
 	draft.context.fillStyle = "#93CEA4";//FBE17D,DA5757,D9D1A6,3F7A97,0C6E6D,E82572,//http://www.colourlovers.com/
     	//draft.context.fillRect(this.x,this.y,this.w,this.h);
+	draft.context.strokeStyle= "#FFBB00";
+	draft.context.lineWidth=2;
+
     this.draw_shape();
 	//draw the label
 	draft.context.fillStyle = "#FFFFFF";
 	draft.context.fillText(this.label,this.p.x+(this.margin*this.scl),this.p.y+(this.margin*this.scl)+(draft.font.size/2));
+
 	//draft.context.fillText(this.label,this.p.x+this.margin,this.p.y+this.margin+(draft.font.size/2));
 	//draw the ports
 	for(var op in this.p_o){
@@ -152,6 +157,7 @@ draft.node.prototype.start_drag=function(v){
 	//this.ox = x-this.p.x;
 	//this.oy = y-this.p.y;
 	//show parameters
+	this.selected=true;
 	if(this.id!=draft.get_parameter_node_id()){
 		this.refresh_parameters();
 	}
@@ -211,6 +217,8 @@ draft.node.prototype.draw_shape=function(){
 
 	draft.context.closePath();
 	draft.context.fill();
+	if(this.selected)
+		draft.context.stroke();
 }
 draft.node.prototype.debug_pos=function(){
 	draft.context.fillStyle = "#FF0000";
@@ -299,9 +307,11 @@ draft.node.prototype.check_over_port=function(p,pio){//position
 //query methods
 draft.node.prototype.downstream=function(){
 	//get all the nodes that are downstream
+	console.log("lets get downstream nodes");
 }
 draft.node.prototype.upstream=function(){
 	//get all the nodes that are upstream
+	console.log("lets get upstream nodes");
 }
 
 //link to class.render

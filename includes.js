@@ -1,5 +1,6 @@
 //COMPILE MODULES
 rad.includes.modules([
+	"keycode",
 	"array",
 	"object",
 	"math",

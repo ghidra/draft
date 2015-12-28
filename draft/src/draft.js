@@ -59,6 +59,7 @@ draft.dragging_line={
 	'node':-1,
 	'port':-1
 };
+draft.selected=[];//to hold the selected nodes for processing.. need a seperate array since we can select in a variaty of ways
 draft.mouseposition={};//i need to save this from the canvas
 
 //TEST
@@ -193,6 +194,7 @@ draft.set_script=function(sid,src){
 	}
 	this.refresh();//draws everything again
 	this.scripts[0].nodes[0].start_drag(new rad.vector2());//automatically pop up the parameters
+	this.scripts[0].nodes[0].selected=false;//turn off the selected attribute that start drag turns on
 }
 
 /// THE MAIN INIT FUNCTION CALLED ON LOAD
@@ -257,9 +259,23 @@ draft.mousedown=function(e){
 				}else{
 					//we are not over a port, lets see if we are over the node
 					if(nd.over(p)){
+						//we are over a node on mousedown
 						nd.start_drag(p);
-	                    this.dragging.push(n);
+						this.dragging.push(n);
+						this.unselect();
+	                    this.selected.push(n);
 	                    overnode=true;
+						//if (!e) e = window.event;
+						if(e.ctrlKey){
+							//we should select all the downstream nodes
+							var downstream = nd.downstream();
+						}
+						if(e.altKey){
+							//we should get all the upstream nodes
+							var upstream = nd.upstream();
+						}
+						
+	                    //----
 					}
 				}
 			}
@@ -273,6 +289,12 @@ draft.mousedown=function(e){
 	    		this.scripts[this.activescript].nodes[n].set_offset(p);
 	    		this.dragging.push(n);
 	    	}
+	    	this.unselect();
+	    	this.refresh();
+	    }
+	    //if we are over a node, wee need to update the drawing sense selected was updated
+	    if(overnode){
+	    	this.refresh();
 	    }
 	}else{
 		if(rad.isrightclick(e)){
@@ -294,10 +316,19 @@ draft.mouseup=function(e){
 	rad.flusharray(this.dragging);
 	this.over_port=false;
 
+	var p = rad.relativemouseposition(e);//the mouse position
+
+	//lets remove selected from node being dragged
+	/*for(var n in this.selected){
+		var nd = draft.scripts[draft.activescript].nodes[n];
+		if(!nd.near(p)){
+			//nd.selected=false;
+		}
+	}*/
+
 
 	//line dragging logic
 	if(this.dragging_line.create){
-		var p = rad.relativemouseposition(e);
 		var connected = false;
 		//find out if we released on a valid port
 		for (var n in this.scripts[this.activescript].nodes){//loop the nodes
@@ -421,6 +452,14 @@ draft.mousemove=function(e){
 		//-------
 	}
 }
+draft.unselect=function(){
+	//unselect all the selected nodes
+	for(n in this.selected){
+		draft.scripts[draft.activescript].nodes[this.selected[n]].selected=false;
+	}
+	rad.flusharray(this.selected);
+	//this.refresh();
+}
 //--
 draft.refresh=function(){
 	this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -460,9 +499,8 @@ draft.add_line=function(){
 	}
 }
 //-----------------
-draft.keycodes={"tab":9};
 draft.keypressed=function(e){
-	if(e.keyCode === this.keycodes["tab"]){
+	if(e.keyCode === rad.keycode["tab"]){
 		e.preventDefault();
 		//i might want to pass in different mouse position based on if it is going to overlap wrong
 		this.node_menu.toggle(this.mouseposition);
