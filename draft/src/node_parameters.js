@@ -40,6 +40,11 @@ draft.node_parameters.prototype.show=function(id,node){
 						"width_label":this.width_label,
 						"margin":this.margin,
 						"fontsize":draft.font.size,
+						"style":{
+							"width":this.width_input,
+							"margin":this.margin,
+							"fontSize":draft.font.size
+						},
 						"callback":function(arg){
 							draft.scripts[draft.activescript].nodes[arg.id].class.inputs_values[arg.label]=document.getElementById("dd_"+arg.id+"_"+arg.label).value;
 						}
@@ -61,6 +66,11 @@ draft.node_parameters.prototype.show=function(id,node){
 						"width_input":40,
 						"margin":this.margin,
 						"fontsize":draft.font.size,
+						"style":{
+							"width":this.width_input,
+							"margin":this.margin,
+							"fontSize":draft.font.size,
+						},
 						"callback":function(arg){
 							draft.scripts[draft.activescript].nodes[arg.id].class.inputs_values[arg.label]=arg.value;
 						}
@@ -78,6 +88,11 @@ draft.node_parameters.prototype.show=function(id,node){
 						"width_label":this.width_label,
 						"margin":this.margin,
 						"fontsize":draft.font.size,
+						"style":{
+							"width":this.width_input,
+							"margin":this.margin,
+							"fontSize":draft.font.size,
+						},
 						"callback":function(arg){
 							console.log( document.getElementById("tb_"+arg.id+"_"+arg.label).value );
 							draft.scripts[draft.activescript].nodes[arg.id].class.inputs_values[arg.label]=document.getElementById("tb_"+arg.id+"_"+arg.label).value;
