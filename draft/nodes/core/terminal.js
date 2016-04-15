@@ -83,10 +83,19 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		"id":id,
 		"label":"save as",
 		"value":"",
-		"width":width_input,
+		//"width":width_input,
 		"width_label":width_label,
-		"margin":margin,
-		"fontsize":draft.font.size
+		//"margin":margin,
+		//"fontsize":draft.font.size
+		"style":{
+			//"width":width_input,
+			"width":width,
+			"margin":margin,
+			"fontSize":draft.font.size
+		},
+		"style_textbox":{
+			"width":width_input
+		}
 	});
 	//the html elements id = tb_0_save as
 	element.appendChild(tb_saveas.element);
@@ -94,10 +103,18 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 	var bu_save = new rad.button({
 		"id":id,
 		"label":"save",
-		"width":width_input,
+		//"width":width_input,
 		"width_label":width_label,
-		"margin":margin,
-		"fontsize":draft.font.size,
+		//"margin":margin,
+		//"fontsize":draft.font.size,
+		"style":{
+			"width":width,
+			"margin":margin,
+			"fontSize":draft.font.size
+		},
+		"style_button":{
+			"width":width_input
+		},
 		"callback":function(arg){
 			//get the save file name
 			var filename = document.getElementById("tb_"+id+"_save as").value;
@@ -142,10 +159,18 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		"label":"load script",
 		"options":file_list,
 		"value":0,
-		"width":width_input,
+		//"width":width_input,
 		"width_label":width_label,
-		"margin":margin,
-		"fontsize":draft.font.size	
+		//"margin":margin,
+		//"fontsize":draft.font.size,
+		"style":{
+			"width":width,
+			"margin":margin,
+			"fontSize":draft.font.size
+		},
+		"style_dropdown":{
+			"width":width_input
+		}
 	});
 
 	element.appendChild(dd_files.element);
@@ -153,10 +178,18 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 	var bu_load = new rad.button({
 		"id":id,
 		"label":"load",
-		"width":width_input,
+		//"width":width_input,
 		"width_label":width_label,
-		"margin":margin,
-		"fontsize":draft.font.size,
+		//"margin":margin,
+		//"fontsize":draft.font.size,
+		"style":{
+			"width":width,
+			"margin":margin,
+			"fontSize":draft.font.size
+		},
+		"style_button":{
+			"width":width_input
+		},
 		"callback":function(arg){
 			//get the file id from the dropdown
 			var fileid = document.getElementById("dd_"+id+"_load script").value;

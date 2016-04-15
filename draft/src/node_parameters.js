@@ -41,9 +41,12 @@ draft.node_parameters.prototype.show=function(id,node){
 						"margin":this.margin,
 						"fontsize":draft.font.size,
 						"style":{
-							"width":this.width_input,
+							"width":this.width,
 							"margin":this.margin,
 							"fontSize":draft.font.size
+						},
+						"style_dropdown":{
+							"width":this.width_input
 						},
 						"callback":function(arg){
 							draft.scripts[draft.activescript].nodes[arg.id].class.inputs_values[arg.label]=document.getElementById("dd_"+arg.id+"_"+arg.label).value;
@@ -89,9 +92,12 @@ draft.node_parameters.prototype.show=function(id,node){
 						"margin":this.margin,
 						"fontsize":draft.font.size,
 						"style":{
-							"width":this.width_input,
+							"width":this.width,
 							"margin":this.margin,
 							"fontSize":draft.font.size,
+						},
+						"style_textbox":{
+							"width":this.width_input
 						},
 						"callback":function(arg){
 							console.log( document.getElementById("tb_"+arg.id+"_"+arg.label).value );
