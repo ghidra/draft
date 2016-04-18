@@ -7,6 +7,7 @@ rad.includes.modules([
 	"vector",
 	"dom",
 	"mouse",
+	"element",
 	"ui",
 	"drag",
 	"panels",

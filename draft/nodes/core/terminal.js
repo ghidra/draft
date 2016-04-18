@@ -84,7 +84,7 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		"label":"save as",
 		"value":"",
 		//"width":width_input,
-		"width_label":width_label,
+		//"width_label":width_label,
 		//"margin":margin,
 		//"fontsize":draft.font.size
 		"style":{
@@ -98,13 +98,13 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		}
 	});
 	//the html elements id = tb_0_save as
-	element.appendChild(tb_saveas.element);
+	element.appendChild(tb_saveas.getelement());
 
 	var bu_save = new rad.button({
 		"id":id,
 		"label":"save",
 		//"width":width_input,
-		"width_label":width_label,
+		//"width_label":width_label,
 		//"margin":margin,
 		//"fontsize":draft.font.size,
 		"style":{
@@ -133,7 +133,7 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		}
 	});
 
-	element.appendChild(bu_save.element);
+	element.appendChild(bu_save.getelement());
 
 	///---------
 
@@ -160,7 +160,7 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		"options":file_list,
 		"value":0,
 		//"width":width_input,
-		"width_label":width_label,
+		//"width_label":width_label,
 		//"margin":margin,
 		//"fontsize":draft.font.size,
 		"style":{
@@ -173,13 +173,13 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		}
 	});
 
-	element.appendChild(dd_files.element);
+	element.appendChild(dd_files.getelement());
 
 	var bu_load = new rad.button({
 		"id":id,
 		"label":"load",
 		//"width":width_input,
-		"width_label":width_label,
+		//"width_label":width_label,
 		//"margin":margin,
 		//"fontsize":draft.font.size,
 		"style":{
@@ -205,7 +205,7 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		}
 	});
 
-	element.appendChild(bu_load.element);
+	element.appendChild(bu_load.getelement());
 	
 	return element;
 }
