@@ -1,4 +1,9 @@
 #where i left off
+-loading not working with new passthrough
+	-node.js line 53 set_values we need to make the extra passthrough ports 
+-everytime i plug into a passthrough we create a new one... we need to only create them if we need them, if its pulgged into the "last" one
+-output preview render explicitly expects the first port of terminal only, it crashes cause i guess the render loop is expecting something weird
+
 - nodes, get downstream and upstream
  	-that will allows us to keep from doing infinite connections
  	-this will allow setting cache oudated or not
@@ -7,8 +12,6 @@
 - copy and paste
 - delete a node
 - cache rendered data
-- look at having multiple passthrough ports
-	-create new passthrough on connect
 - ability to rename a node
 
 #-----rad

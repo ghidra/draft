@@ -181,6 +181,7 @@ draft.set_script=function(sid,src){
 			var new_node = this.add_node(src.nodes[n].category,src.nodes[n].class.label,src.nodes[n].x,src.nodes[n].y);//make the node
 			//need to put the expected values into the nodes
 			new_node.id=src.nodes[n].id;//set this to be the same value until we save the ids without the gaps
+			//i should look at passing in the saved data, and make any extra ports
 			new_node.set_values(src.nodes[n].class);//pass in the values to set
 		}
 		for(l in src.lines){

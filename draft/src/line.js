@@ -27,9 +27,15 @@ draft.line.prototype.connected=function(script_id,node,port,reverse){
 		}else{
 			this.tnode=node;
 			this.tport=port;
+			//check if we are a passthrough port, so we can make more
+			if(draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].dt=="none"){
+				//console.log(this.tport);
+				//console.log("we are a passthrough so we can do something")
+				draft.scripts[script_id].nodes[this.tnode].increment_passthrough();
+			}
 		}
 	}
-
+	
 	draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].c = this.c;//color the connected to port
 	draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].used = true;//color the connected to port
 	draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].line = this.id;//set the port ids

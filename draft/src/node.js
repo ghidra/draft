@@ -52,6 +52,7 @@ draft.node.prototype.attach_class=function(category,name){
 }
 draft.node.prototype.set_values=function(values){
 	//when loading in a file, we need to set the saves values
+	//we also need to make any extra ports
 	//this.class.set_values=function(values);
 	for(v in values){
 		if (v!='label'){//dont need to set label value, thats the actual node name
@@ -79,7 +80,9 @@ draft.node.prototype.set_dimensions=function(){
 	}
 	//in ports
 	for (var ip in this.class.inputs){
-		if(this.class.inputs.hasOwnProperty(ip) && ip != "passthrough"){
+		//i need to take numbers off passthrough values
+		var rmnum = ip.replace(/[0-9]/g, '');//removes the number from string
+		if(this.class.inputs.hasOwnProperty(ip) && rmnum != "passthrough"){
 			var oporttype = this.class.types.input[ip];
 			//console.log(porttype)
 			//console.log( ip+":"+js.totype( this.class.inputs[ip] ) );
@@ -97,7 +100,11 @@ draft.node.prototype.set_dimensions=function(){
 		this.i+=1;
 	}
 
-	this.h = draft.font.size+(this.margin*2) + ((this.margin*3)*Math.max(this.i,this.o));
+	this.h = this.get_height();//draft.font.size+(this.margin*2) + ((this.margin*3)*Math.max(this.i,this.o));
+}
+draft.node.prototype.get_height=function(){
+	//this calculates the height mostly when adding a port, or when building the node at first
+	return draft.font.size+(this.margin*2) + ((this.margin*3)*Math.max(this.i,this.o));
 }
 //-------------------------
 
@@ -185,6 +192,17 @@ draft.node.prototype.drag=function(v){
 	//this.p.clone(this.p);
 	//this.p.x = x-this.ox;
 	//this.p.y = y-this.oy;
+}
+draft.node.prototype.increment_passthrough=function(){
+	this.class.inputs.passthrough+=1;
+	this.p_i[this.pid] = new draft.port(1,this.pid,"passthrough"+this.class.inputs.passthrough,0,(this.margin*3)*(this.i+1),this.margin, "none" );
+	this.pid += 1;
+	this.i += 1;
+	this.h = this.get_height();
+	this.class.types.input["passthrough"+this.class.inputs.passthrough]="none";//addign to the types object...
+	this.class.inputs_values["passthrough"+this.class.inputs.passthrough]=undefined;
+	//console.log(this.class.inputs.passthrough);
+	//this.set_dimensions();//i need to update the dimensions to include the new port
 }
 //--------------------
 draft.node.prototype.draw_shape=function(){
