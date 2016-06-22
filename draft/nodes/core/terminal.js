@@ -48,14 +48,19 @@ draft.nodes.core.terminal.prototype.render=function(mode){
 	this.loop_inputs(
 		function(key,value){
 			if(key!="element"){
-				if(typeof value != "string"){
-					output=value;
-				}else{
-					output+=value;
+				if(typeof value != "undefined")//ignore undefined
+				{
+					//console.log(typeof value)
+					if(typeof value != "string"){
+						output=value;
+					}else{
+						output+=value;
+					}
 				}
 			}
 		}
 	);
+	//console.log("render:"+output);
 	return output;
 	//return document.createElement("DIV");
 }

@@ -222,6 +222,9 @@ draft.render_preview=function(){
 		this.output_preview.innerHTML = result;
 	}else{
 		this.output_preview.innerHTML="";
+		//now its not rednering
+		//console.log(terminal);
+		//if(this.output.render(terminal,0)!=undefined)//this makes it not error when loading, since it was without this
 		this.output_preview.appendChild(this.output.render(terminal,0));
 	}
 }

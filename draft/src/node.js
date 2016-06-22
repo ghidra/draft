@@ -54,11 +54,25 @@ draft.node.prototype.set_values=function(values){
 	//when loading in a file, we need to set the saves values
 	//we also need to make any extra ports
 	//this.class.set_values=function(values);
+	var make_extra_passthrough=false;
 	for(v in values){
 		if (v!='label'){//dont need to set label value, thats the actual node name
+			//if this is a passthrough port thats not the first one ie passthrough2 we need to make the port
+			var rmnum = v.replace(/[0-9]/g, '');//removes the number from string
+			if(rmnum=="passthrough" && v!="passthrough"){
+				//make the port
+				this.increment_passthrough();
+				make_extra_passthrough=true;//i need to make a new passthrough too, because saved files dont save empty passthroughs
+			}
+			if(v=="passthrough"){
+				//console.log(v);
+				make_extra_passthrough=true;
+			}
 			this.class.inputs_values[v]=values[v];
 		}
 	}
+	if(make_extra_passthrough)
+		this.increment_passthrough();
 }
 draft.node.prototype.set_dimensions=function(){
 	//set label related shit
