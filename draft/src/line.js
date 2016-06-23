@@ -29,9 +29,12 @@ draft.line.prototype.connected=function(script_id,node,port,reverse){
 			this.tport=port;
 			//check if we are a passthrough port, so we can make more
 			if(draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].dt=="none"){
-				//console.log(this.tport);
-				//console.log("we are a passthrough so we can do something")
-				draft.scripts[script_id].nodes[this.tnode].increment_passthrough();
+				//before making a new passthough port, make sure we need one first
+				var pasthrough_name = draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].label;
+				var passthrough_digit = pasthrough_name.match(/\d/g);
+				passthrough_digit = (passthrough_digit)?passthrough_digit.join(""):1;//get the actual number
+				if(passthrough_digit==draft.scripts[script_id].nodes[this.tnode].class.inputs.passthrough)
+					draft.scripts[script_id].nodes[this.tnode].increment_passthrough();
 			}
 		}
 	}
