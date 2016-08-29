@@ -270,6 +270,7 @@ draft.mousedown=function(e){
 	                    this.selected.push(n);
 	                    overnode=true;
 						//if (!e) e = window.event;
+						/*
 						if(e.ctrlKey){
 							//we should select all the downstream nodes
 							var downstream = nd.downstream();
@@ -278,7 +279,7 @@ draft.mousedown=function(e){
 							//we should get all the upstream nodes
 							var upstream = nd.upstream();
 						}
-						
+						*/
 	                    //----
 					}
 				}
@@ -343,18 +344,32 @@ draft.mouseup=function(e){
 				//okay we are over a port, we need to check that it is a valid release point
 				//for forward to be valid, the port TO must be either the same type or polymorphic
 				//for reverse to be valid, same rules apply above.
+
 				//I need to also check for infinite recursion, plugging into a node that plugs into itself at some point
+
+				/*
+					//we should select all the downstream nodes
+					var downstream = nd.downstream();
+
+					//we should get all the upstream nodes
+					
+				*/
+
 				//also if valid, and polymorphic update the color
 				//also, if this is a second connection from a port, delete the first one
 
 				//which way are we dragging?
 				if(!this.dragging_line.reverse){
 					//dragging forward
+					var upstream = nd.upstream();
 					//check that the port that we are on is of the same color
 					var fp = this.scripts[this.activescript].nodes[this.dragging_line.node].p_o[this.dragging_line.port];//the actual port
 					//var fp = nd.p_i[];
 					var dtmatch = fp.dt==ndp.dt || ndp.dt=='none';//data match
 
+				}else{
+					//dragging backwards
+					var downstream = nd.downstream();
 				}
 				var valid_reverse = (this.dragging_line.reverse && ndp.io===0 && !ndp.used && nd.id!=this.dragging_line.node);
 				var valid_forward = (!this.dragging_line.reverse && ndp.io===1 && !ndp.used && nd.id!=this.dragging_line.node && dtmatch);

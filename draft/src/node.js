@@ -337,6 +337,21 @@ draft.node.prototype.check_over_port=function(p,pio){//position
   	return out;
 }
 //query methods
+//this is a recursive method to go over ports
+draft.node.prototype.trace_stream_connections=function(n,io=0){//input is the node, in our out nodes
+	var l = "";//for debugging
+	var pt = (io)?n.p_o:n.p_i;
+	for (var p in pt){
+		if(pt[p].used){//if the port is used
+			//console.dir(this.p_i[p]);
+			l += pt[p].line+",";
+			//now get the port that is connected, and we can loop it
+		}
+	}
+
+	return l
+}
+//
 draft.node.prototype.downstream=function(){
 	//get all the nodes that are downstream
 	console.log("lets get downstream nodes");
@@ -344,6 +359,16 @@ draft.node.prototype.downstream=function(){
 draft.node.prototype.upstream=function(){
 	//get all the nodes that are upstream
 	console.log("lets get upstream nodes");
+
+	//i need to recurse this to keep getting everything until i run out
+	//lets start looping all the nodes that are plugged in
+	console.log(this.trace_stream_connections(this));
+	/*for (var p in this.p_i){
+		if(this.p_i[p].used){//if the port is used
+			console.dir(this.p_i[p]);
+		}
+	}*/
+
 }
 
 //link to class.render

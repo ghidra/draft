@@ -11,6 +11,8 @@ draft.node_framework.prototype.init=function(){
 	this.inputs_values={};//to hold the set values
 	this.inputs_values_defaults={};//to hold default values
 
+	this.cache="";//the cached value
+
 	//DO NOT NAME INPUTS WITH '_' IT WILL BREAK THE PARAMETERS PASSING
 
 	this.outputs={};

@@ -1,9 +1,10 @@
 #where i left off
 
--everytime i plug into a passthrough we create a new one... we need to only create them if we need them, if its pulgged into the "last" one
-
 -render does not compile all the passthroughts together, just uses the first one
 -generic node render, doesnt not get the right "tag" it comes out "undefined"
+
+-my console needs updating and allow me to print things to it
+-console can have pinned inputs too.. like position
 
 - nodes, get downstream and upstream
  	-that will allows us to keep from doing infinite connections
