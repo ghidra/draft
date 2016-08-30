@@ -359,9 +359,10 @@ draft.mouseup=function(e){
 				//also, if this is a second connection from a port, delete the first one
 
 				//which way are we dragging?
+				var infinite_recursion = false;
 				if(!this.dragging_line.reverse){
 					//dragging forward
-					var upstream = nd.upstream();
+					infinite_recursion = nd.found_upstream(this.dragging_line.node,this.activescript);
 					//check that the port that we are on is of the same color
 					var fp = this.scripts[this.activescript].nodes[this.dragging_line.node].p_o[this.dragging_line.port];//the actual port
 					//var fp = nd.p_i[];
@@ -369,11 +370,12 @@ draft.mouseup=function(e){
 
 				}else{
 					//dragging backwards
-					var downstream = nd.downstream();
+					infinite_recursion = nd.found_downstream();
 				}
 				var valid_reverse = (this.dragging_line.reverse && ndp.io===0 && !ndp.used && nd.id!=this.dragging_line.node);
 				var valid_forward = (!this.dragging_line.reverse && ndp.io===1 && !ndp.used && nd.id!=this.dragging_line.node && dtmatch);
-				if(valid_reverse || valid_forward){//valid, set the remaining values
+				console.log(infinite_recursion);
+				if( !infinite_recursion && (valid_reverse || valid_forward) ){//valid, set the remaining values
 					var li = this.scripts[this.activescript].lines[this.dragging_line.id];
 					li.connected(this.activescript,nd.id,ndp.port,valid_reverse);
 					connected = (!connected)?true:connected;
@@ -495,12 +497,13 @@ draft.refresh=function(){
 	}
 }
 
-draft.add_node=function(category,name,x,y){
+draft.add_node=function(category,name,x,y,sid){
 	category = category||"none";
 	name = name||"none";
 	x = x||10;
 	y = y||10;
-	return this.scripts[this.activescript].add_node(category,name,x,y);
+	sid = sid||this.activescript;
+	return this.scripts[this.activescript].add_node(category,name,x,y,sid);
 }
 
 //-------------------

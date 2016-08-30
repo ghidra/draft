@@ -1,7 +1,7 @@
-draft.node=function(id,category,name,x,y,scale,i,o){
-	return this.init(id,category,name,x,y,scale,i,o);
+draft.node=function(id,category,name,x,y,scale,sid){
+	return this.init(id,category,name,x,y,scale,sid);
 }
-draft.node.prototype.init=function(id,category,name,x,y,scale){
+draft.node.prototype.init=function(id,category,name,x,y,scale,sid){
 	this.id = id;
 	this.class = this.attach_class(category,name);//attaches the send in node
 	this.category = category||"empty";
@@ -32,6 +32,8 @@ draft.node.prototype.init=function(id,category,name,x,y,scale){
 	this.p_o={};
 	this.p_i={};
 	this.pid = 0;//port ids
+
+	this.script_id = sid || 0;
 
 	this.set_dimensions();
 	this.center= new rad.vector2(this.w/2.0,this.h/2.0);
@@ -338,19 +340,27 @@ draft.node.prototype.check_over_port=function(p,pio){//position
 }
 //query methods
 //this is a recursive method to go over ports
-draft.node.prototype.trace_stream_connections=function(n,io=0){//input is the node, in our out nodes
-	var l = "";//for debugging
-	var pt = (io)?n.p_o:n.p_i;
+//https://www.sitepoint.com/recursion-functional-javascript/
+draft.node.prototype.loop_connections=function(func,io){
+	var pt = (io) ? this.p_i : this.p_o;
 	for (var p in pt){
 		if(pt[p].used){//if the port is used
-			//console.dir(this.p_i[p]);
-			l += pt[p].line+",";
-			//now get the port that is connected, and we can loop it
-		}
+			//an out port might have more than one connection... i need to loop on those
+			var line_id = pt[p].line;
+			var line = draft.scripts[this.script_id].lines[line_id] ;
+			var connected_node_id = (io) ? line.fnode : line.tnode;
+			
+			if(connected_node_id>=0){//we are connected, so lets do something with that node
+				var connected_node = draft.scripts[this.script_id].nodes[connected_node_id];
+				if (typeof func === "function"){
+					func(connected_node);
+					connected_node.loop_connections(func,io);
+				}
+			}
+		}	
 	}
-
-	return l
 }
+
 //
 draft.node.prototype.downstream=function(){
 	//get all the nodes that are downstream
@@ -358,17 +368,36 @@ draft.node.prototype.downstream=function(){
 }
 draft.node.prototype.upstream=function(){
 	//get all the nodes that are upstream
-	console.log("lets get upstream nodes");
+	//console.log("lets get upstream nodes");
 
 	//i need to recurse this to keep getting everything until i run out
 	//lets start looping all the nodes that are plugged in
-	console.log(this.trace_stream_connections(this));
-	/*for (var p in this.p_i){
-		if(this.p_i[p].used){//if the port is used
-			console.dir(this.p_i[p]);
-		}
-	}*/
+	//console.log( "connected to: "+this.label )
 
+	var collection=[];
+	this.loop_connections(
+		function(value){
+			collection.push(value);
+		}
+	);
+	//console.log(collection);
+	//I now have all the upstream nodes in collection
+	return collection
+}
+draft.node.prototype.found_downstream=function(){
+	//get all the nodes that are downstream
+	return false;
+}
+draft.node.prototype.found_upstream=function(id,sid){
+	var c = this.upstream();
+	//console.log("test: "+id+":"+sid);
+	for (var n in c){
+		//console.log(c[n].id+":"+c[n].script_id);
+		if(c[n].id == id && c[n].script_id == sid){
+			return true;
+		}
+	}
+	return false;
 }
 
 //link to class.render

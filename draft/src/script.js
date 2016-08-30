@@ -18,12 +18,13 @@ draft.script.prototype.init=function(id,scr){
 	this.scripts = rad.objhasprop(scr.scripts)?scr.scripts:{};
 }
 //----------------
-draft.script.prototype.add_node=function(category,name,x,y){
+draft.script.prototype.add_node=function(category,name,x,y,sid){
         name = name||"none";
         category = category||"none";
         x = x||10;
         y = y||10;
-        var new_node = this.nodes[this.ids.node] = new draft.node(this.ids.node,category,name,x,y,this.scale.scale);
+        sid = sid||this.ids.script;
+        var new_node = this.nodes[this.ids.node] = new draft.node(this.ids.node,category,name,x,y,this.scale.scale,sid);
         this.ids.node+=1;
         return new_node;
 }

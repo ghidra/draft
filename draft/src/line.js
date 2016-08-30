@@ -43,6 +43,7 @@ draft.line.prototype.connected=function(script_id,node,port,reverse){
 	draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].used = true;//color the connected to port
 	draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].line = this.id;//set the port ids
 	draft.scripts[script_id].nodes[this.fnode].p_o[this.fport].line = this.id;//set the port ids
+	draft.scripts[script_id].nodes[this.fnode].p_o[this.fport].used = true;//set the port ids
 }
 draft.line.prototype.remove=function(script_id){
 	//draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].c = this.c;//color the connected to port

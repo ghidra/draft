@@ -3,6 +3,15 @@
 -render does not compile all the passthroughts together, just uses the first one
 -generic node render, doesnt not get the right "tag" it comes out "undefined"
 
+-PORTS AWARE OF MULTIPLE CONNECTIONS
+-when a line is created, if its from an out port, I need to add to the lines variable. so I can loop it later
+-as it is now, ports only know of the last line created to it, so an outport, which might have more than one, is unaware
+
+-basic recursion testing working
+	-but if a port has more than one connectoin it might fail, since it is really only aware of a single connection line
+	-i need a port to be able to know how many times it is connected, specifically an outport
+	-in ports can only have a single connection
+
 -my console needs updating and allow me to print things to it
 -console can have pinned inputs too.. like position
 

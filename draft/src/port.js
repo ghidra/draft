@@ -15,6 +15,9 @@ draft.port.prototype.init=function(type,id,label,x,y,r,c){
 	this.c = draft.colors.port[c];//data type, for color
 	this.used = false;
 	this.line = -1;//the connected line id
+
+	this.lines = [];///extra lines for outports
+	
 	return this;	
 }
 draft.port.prototype.set_position=function(x,y){
