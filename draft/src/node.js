@@ -324,16 +324,16 @@ draft.node.prototype.check_over_port=function(p,pio){//position
     var out = {io:-1,port:-1,used:false,dt:'unknown'};
 	var pa = (pio===0)?this.p_o:this.p_i;
     for(var po in pa){
-            //var p1 = p;//new rad.vector2(p.x,p.y);///// THIS IS BECAUSE I AM NOT PASSING IN A RAD>VECTOR2//{x:p.x,y:p.y};
-            var p2 = new rad.vector2(this.p.x+(pa[po].p.x*this.scl),this.p.y+(pa[po].p.y*this.scl));//{x:this.p.x+pa[po].p.x,y:this.p.y+pa[po].p.y};
-            //var dist = draft.distance(p1,p2);//DRAFT BASED FUNCTION
-            var dist = p.distance(p2);//DRAFT BASED FUNCTION
-            if(dist<=this.margin*this.scl){
-                    out.io = pio;
-                    out.port = pa[po].id;
-					out.used = pa[po].used;
-					out.dt = pa[po].dt;
-					out.line = pa[po].line;
+        //var p1 = p;//new rad.vector2(p.x,p.y);///// THIS IS BECAUSE I AM NOT PASSING IN A RAD>VECTOR2//{x:p.x,y:p.y};
+        var p2 = new rad.vector2(this.p.x+(pa[po].p.x*this.scl),this.p.y+(pa[po].p.y*this.scl));//{x:this.p.x+pa[po].p.x,y:this.p.y+pa[po].p.y};
+        //var dist = draft.distance(p1,p2);//DRAFT BASED FUNCTION
+        var dist = p.distance(p2);//DRAFT BASED FUNCTION
+        if(dist<=this.margin*this.scl){
+            out.io = pio;
+            out.port = pa[po].id;
+			out.used = pa[po].used;
+			out.dt = pa[po].dt;
+			out.line = pa[po].line;
     	}
     }
   	return out;
@@ -346,15 +346,18 @@ draft.node.prototype.loop_connections=function(func,io){
 	for (var p in pt){
 		if(pt[p].used){//if the port is used
 			//an out port might have more than one connection... i need to loop on those
-			var line_id = pt[p].line;
-			var line = draft.scripts[this.script_id].lines[line_id] ;
-			var connected_node_id = (io) ? line.fnode : line.tnode;
-			
-			if(connected_node_id>=0){//we are connected, so lets do something with that node
-				var connected_node = draft.scripts[this.script_id].nodes[connected_node_id];
-				if (typeof func === "function"){
-					func(connected_node);
-					connected_node.loop_connections(func,io);
+			for(var i in pt[p].lines){
+				//var line_id = pt[p].line;
+				var line_id = pt[p].lines[i];
+				var line = draft.scripts[this.script_id].lines[line_id] ;
+				var connected_node_id = (io) ? line.fnode : line.tnode;
+				
+				if(connected_node_id>=0){//we are connected, so lets do something with that node
+					var connected_node = draft.scripts[this.script_id].nodes[connected_node_id];
+					if (typeof func === "function"){
+						func(connected_node);
+						connected_node.loop_connections(func,io);
+					}
 				}
 			}
 		}	

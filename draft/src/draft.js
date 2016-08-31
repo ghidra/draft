@@ -374,7 +374,7 @@ draft.mouseup=function(e){
 				}
 				var valid_reverse = (this.dragging_line.reverse && ndp.io===0 && !ndp.used && nd.id!=this.dragging_line.node);
 				var valid_forward = (!this.dragging_line.reverse && ndp.io===1 && !ndp.used && nd.id!=this.dragging_line.node && dtmatch);
-				console.log(infinite_recursion);
+				//console.log(infinite_recursion);
 				if( !infinite_recursion && (valid_reverse || valid_forward) ){//valid, set the remaining values
 					var li = this.scripts[this.activescript].lines[this.dragging_line.id];
 					li.connected(this.activescript,nd.id,ndp.port,valid_reverse);

@@ -44,10 +44,14 @@ draft.line.prototype.connected=function(script_id,node,port,reverse){
 	draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].line = this.id;//set the port ids
 	draft.scripts[script_id].nodes[this.fnode].p_o[this.fport].line = this.id;//set the port ids
 	draft.scripts[script_id].nodes[this.fnode].p_o[this.fport].used = true;//set the port ids
+	//appened the outports lines array
+	//if(draft.scripts[script_id].nodes[this.fnode].p_o[this.fport].type<1)
+	draft.scripts[script_id].nodes[this.fnode].p_o[this.fport].lines.push(this.id);//gonna push everything... cause I Might be able to get rid of "line" singular
 }
 draft.line.prototype.remove=function(script_id){
 	//draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].c = this.c;//color the connected to port
 	draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].reset();//reset the port
+	draft.scripts[script_id].nodes[this.fnode].p_o[this.fport].remove_line(this.id);
 }
 
 draft.line.prototype.draw=function(p1,p2){

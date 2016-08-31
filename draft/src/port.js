@@ -2,7 +2,7 @@ draft.port=function(type,id,label,x,y,r,c){
         return this.init(type,id,label,x,y,r,c);
 }
 draft.port.prototype.init=function(type,id,label,x,y,r,c){
-	this.type = type||1;//in or our
+	this.type = type||0;//in or our
 	this.id = id;
 	this.label = label;
 	//x y position is relative to the node
@@ -29,6 +29,17 @@ draft.port.prototype.reset=function(){
 	this.c = draft.colors.port[this.dt];//data type, for color
 	this.used = false;
 	this.line = -1;//the connected line id
+	rad.flusharray(this.lines);
+}
+draft.port.prototype.remove_line=function(line_id){
+	rad.removefromarray(this.lines,line_id);
+	if(this.lines.length>0){
+		this.line = this.lines[this.lines.length-1];
+	}else{
+		this.line = -1;
+		this.used=false;
+		//this.c=draft.colors.port[this.dt];
+	}
 }
 //----
 draft.port.prototype.draw=function(offset,scale){
