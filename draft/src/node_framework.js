@@ -12,6 +12,7 @@ draft.node_framework.prototype.init=function(){
 	this.inputs_values_defaults={};//to hold default values
 
 	this.cache="";//the cached value
+	this.cached=false;//set when rendered, unset when changes are made downstream
 
 	//DO NOT NAME INPUTS WITH '_' IT WILL BREAK THE PARAMETERS PASSING
 
@@ -31,6 +32,10 @@ draft.node_framework.prototype.store_defaults=function(){
 	this.inputs_values_defaults=rad.objclonefast(this.inputs_values);
 }
 
+draft.node_framework.prototype.clear_cache=function(){
+	this.cached=false;
+}
+
 draft.node_framework.prototype.render=function(mode){
 	var output="";
 	this.loop_inputs(
@@ -38,6 +43,9 @@ draft.node_framework.prototype.render=function(mode){
 			output+=value;
 		}
 	);
+
+	this.cache=output;
+	this.cached=true;
 	//here we evaluate the nodes data, and whomever is plugged in
 	//return "you need to make render method for the node"
 	return output;

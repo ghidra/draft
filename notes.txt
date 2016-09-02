@@ -3,9 +3,6 @@
 -render does not compile all the passthroughts together, just uses the first one
 -generic node render, doesnt not get the right "tag" it comes out "undefined"
 
--basic recursion testing working
-	-need to just check when dragging backwards now
-
 -my console needs updating and allow me to print things to it
 -console can have pinned inputs too.. like position
 

@@ -182,11 +182,8 @@ draft.nodes.html.generic.prototype.render=function(mode){
 	this.loop_inputs(
 		function(key,value){
 			if(key=="tags"){
-				output = document.createElement(_this.inputs.tags[parseInt(value)]);
-
-				//output += _this.inputs.tags[parseInt(value)]+"<br/>";
+				output = document.createElement(value);
 			}
-			//output+=key+":"+value+"<br/>";
 			//now just passthrough what is connected
 			if(key=="passthrough"){
 				if(typeof value === "string"){
@@ -198,5 +195,9 @@ draft.nodes.html.generic.prototype.render=function(mode){
 			}
 		}
 	);
+
+	this.cache=output;
+	this.cached=true;
+	
 	return output;
 }

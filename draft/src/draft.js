@@ -217,6 +217,7 @@ draft.init=function(){
 }
 draft.render_preview=function(){
 	var terminal = draft.scripts[0].find_node("core","terminal");
+	//we are rendering twice in here for some reason... maybe need to look at that
 	var result = this.output.render(terminal,0);
 	if (typeof result === "string"){
 		this.output_preview.innerHTML = result;

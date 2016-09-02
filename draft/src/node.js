@@ -341,22 +341,24 @@ draft.node.prototype.check_over_port=function(p,pio){//position
 //query methods
 //this is a recursive method to go over ports
 //https://www.sitepoint.com/recursion-functional-javascript/
-draft.node.prototype.loop_connections=function(func,io){
+draft.node.prototype.loop_connections=function(io,collect){
 	var pt = (io) ? this.p_i : this.p_o;
 	for (var p in pt){
 		if(pt[p].used){//if the port is used
 			//an out port might have more than one connection... i need to loop on those
-			for(var i in pt[p].lines){
+			//patch for input ports to not NEED lines array
+			var a = (io) ? [pt[p].line] : pt[p].lines;
+			for(var i in a){
 				//var line_id = pt[p].line;
-				var line_id = pt[p].lines[i];
+				var line_id = a[i];
 				var line = draft.scripts[this.script_id].lines[line_id] ;
 				var connected_node_id = (io) ? line.fnode : line.tnode;
 				
 				if(connected_node_id>=0){//we are connected, so lets do something with that node
 					var connected_node = draft.scripts[this.script_id].nodes[connected_node_id];
-					if (typeof func === "function"){
-						func(connected_node);
-						connected_node.loop_connections(func,io);
+					if (typeof collect === "function"){
+						collect(connected_node);
+						connected_node.loop_connections(io,collect);
 					}
 				}
 			}
@@ -367,7 +369,16 @@ draft.node.prototype.loop_connections=function(func,io){
 //
 draft.node.prototype.downstream=function(){
 	//get all the nodes that are downstream
-	console.log("lets get downstream nodes");
+	//console.log("lets get downstream nodes");
+	var collection=[];
+	this.loop_connections( 1,
+		function(value){
+			collection.push(value);
+		}
+	);
+	//console.log(collection);
+	//I now have all the upstream nodes in collection
+	return collection
 }
 draft.node.prototype.upstream=function(){
 	//get all the nodes that are upstream
@@ -378,7 +389,7 @@ draft.node.prototype.upstream=function(){
 	//console.log( "connected to: "+this.label )
 
 	var collection=[];
-	this.loop_connections(
+	this.loop_connections( 0,
 		function(value){
 			collection.push(value);
 		}
@@ -406,6 +417,9 @@ draft.node.prototype.found_upstream=function(id,sid){
 //link to class.render
 draft.node.prototype.render=function(){
 	return this.class.render();
+}
+draft.node.prototype.get_cache=function(){
+	return (this.class.cached)?this.class.cache:false;
 }
 //-----check when connecting lines if we are going to make an infinte loop
 /*draft.node.prototype.check_infinite_loop=function(nid){//the attempting to connect node, and the direction
