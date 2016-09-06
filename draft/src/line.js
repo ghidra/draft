@@ -47,6 +47,10 @@ draft.line.prototype.connected=function(script_id,node,port,reverse){
 	//appened the outports lines array
 	//if(draft.scripts[script_id].nodes[this.fnode].p_o[this.fport].type<1)
 	draft.scripts[script_id].nodes[this.fnode].p_o[this.fport].lines.push(this.id);//gonna push everything... cause I Might be able to get rid of "line" singular
+	//set the input port to have value
+	//console.dir(draft.scripts[script_id].nodes[this.tnode].class.inputs_values);//
+	//draft.scripts[script_id].nodes[this.tnode].class.inputs_values[ draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].label ] = "deferred_to_input";
+
 }
 draft.line.prototype.remove=function(script_id){
 	//draft.scripts[script_id].nodes[this.tnode].p_i[this.tport].c = this.c;//color the connected to port

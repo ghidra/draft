@@ -19,14 +19,18 @@ draft.renderer.prototype.render=function(node,scriptid,mode){
 		//console.log( downstream_nodes[id].get_cache() );
 	}
 	//console.log(node.get_cache());
+	node.render();
+	//console.log( node.get_cache() );
 
-	return this.render_loop(node,scriptid,mode);
+
+
+	//return this.render_loop_BACK(node,scriptid,mode);
 	//return node.render();
 	//return node.get_cache();
 }
 
 //this is the recursive function
-draft.renderer.prototype.render_loop=function(node,scriptid,mode){
+draft.renderer.prototype.render_loop_BACK=function(node,scriptid,mode){
 
 	//console.log("****************");
 	//console.log(node.label);
@@ -64,3 +68,25 @@ draft.renderer.prototype.render_loop=function(node,scriptid,mode){
 	}
 	return node.render(mode);
 }
+
+//----
+
+/*draft.renderer.prototype.render_loop=function(node,scriptid,mode){
+	for(var input in node.p_i){//loop the inputs of the node
+		if(node.p_i.hasOwnProperty(input)){//only use the unique properties
+
+			var line = draft.scripts[scriptid].lines[node.p_i[input].line];//the id of the line// need to seek out the line to get the data from it
+			if(line!=undefined){
+
+				var foundvalue = this.render_loop(draft.scripts[scriptid].nodes[line.fnode],scriptid,mode);
+				node.class.inputs_values[node.p_i[input].label]=foundvalue;
+
+			}else{
+				//do nothing basically for the port
+				//we can use the value from the node itself
+				var portvalue = node.class.inputs_values[node.p_i[input].label];
+
+			}
+		}
+	}
+}*/

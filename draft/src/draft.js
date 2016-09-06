@@ -219,14 +219,17 @@ draft.render_preview=function(){
 	var terminal = draft.scripts[0].find_node("core","terminal");
 	//we are rendering twice in here for some reason... maybe need to look at that
 	var result = this.output.render(terminal,0);
+	//console.log("render_preview");
 	if (typeof result === "string"){
-		this.output_preview.innerHTML = result;
+		//this.output_preview.innerHTML = result;
+		this.output_preview.innerHTML = "result";
 	}else{
 		this.output_preview.innerHTML="";
 		//now its not rednering
 		//console.log(terminal);
 		//if(this.output.render(terminal,0)!=undefined)//this makes it not error when loading, since it was without this
-		this.output_preview.appendChild(this.output.render(terminal,0));
+		this.output_preview.innerHTML="hahah";
+		//this.output_preview.appendChild(this.output.render(terminal,0));
 	}
 }
 //--------------------------
@@ -380,6 +383,7 @@ draft.mouseup=function(e){
 					var li = this.scripts[this.activescript].lines[this.dragging_line.id];
 					li.connected(this.activescript,nd.id,ndp.port,valid_reverse);
 					connected = (!connected)?true:connected;
+					//i might need to set the class.input_values
 				}
 			}
 		}

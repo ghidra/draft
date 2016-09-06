@@ -150,7 +150,8 @@ draft.nodes.html.generic.prototype.init=function(){
 		"tags":"div",
 		"globalAttribute":"none",
 		"test":"b",
-		"testn":1
+		"testn":1,
+		"passthrough":undefined
 	};
 
 	//this.outputs.result={};
@@ -177,24 +178,31 @@ draft.nodes.html.generic.prototype.init=function(){
 
 draft.nodes.html.generic.prototype.render=function(mode){
 	//var output="******<br/>"+this.label+"<br/>";
+	//console.log("--generic");
 	var output="";
 	var _this=this;
 	this.loop_inputs(
 		function(key,value){
+			//console.log("port");
 			if(key=="tags"){
 				output = document.createElement(value);
 			}
 			//now just passthrough what is connected
-			if(key=="passthrough"){
+			if( rad.strremovenumbers(key) == "passthrough" ){//if( rad.strremovenumbers(key) == "passthrough" ){ //rad.strremovenumbers(key)
+				//console.log(typeof value);
 				if(typeof value === "string"){
-					output.innerHTML=value;
+					//console.log("--inside string");
+					output.innerHTML+=value;
 				}else{
+					//console.log("--inside");
 					output.appendChild(value);
 				}
 				//output += value;
 			}
 		}
 	);
+
+	console.log(output);
 
 	this.cache=output;
 	this.cached=true;

@@ -37,6 +37,7 @@ draft.node_framework.prototype.clear_cache=function(){
 }
 
 draft.node_framework.prototype.render=function(mode){
+	//console.log("--framework");
 	var output="";
 	this.loop_inputs(
 		function(key,value){
@@ -46,6 +47,8 @@ draft.node_framework.prototype.render=function(mode){
 
 	this.cache=output;
 	this.cached=true;
+
+	//console.log(output);
 	//here we evaluate the nodes data, and whomever is plugged in
 	//return "you need to make render method for the node"
 	return output;
@@ -56,7 +59,9 @@ draft.node_framework.prototype.loop_inputs=function(func){
 	for(p in this.inputs_values){
 		if(this.inputs_values.hasOwnProperty(p)){//only use the unique properties
 			if (typeof func === "function"){
-				func(p,this.inputs_values[p]);
+				if(this.inputs_values[p]!=undefined){
+					func(p,this.inputs_values[p]);
+				}
 			}
 		}
 	}

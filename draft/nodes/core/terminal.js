@@ -19,13 +19,14 @@ draft.nodes.core.terminal.prototype.init=function(){
 
 	this.inputs.passthrough=1;
 	this.inputs_values={
-		"element":eid
+		"element":eid,
+		"passthrough":undefined
 	}
 	//this.types={
-		this.types.input={
-			"element":"string",
-			"passthrough":'none'
-		}
+	this.types.input={
+		"element":"string",
+		"passthrough":'none'
+	}
 	//};
 
 	//this.store_defaults();
@@ -44,6 +45,7 @@ draft.nodes.core.terminal.prototype.render=function(mode){
 			}
 		}
 	}*/
+	console.log("--terminal");
 	var output="";
 	this.loop_inputs(
 		function(key,value){
@@ -60,6 +62,12 @@ draft.nodes.core.terminal.prototype.render=function(mode){
 			}
 		}
 	);
+
+	//console.log(output);
+
+	this.cache=output;
+	this.cached=true;
+
 	//console.log("render:"+output);
 	return output;
 	//return document.createElement("DIV");

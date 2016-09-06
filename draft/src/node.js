@@ -416,6 +416,7 @@ draft.node.prototype.found_upstream=function(id,sid){
 
 //link to class.render
 draft.node.prototype.render=function(){
+	//i should look at the ports and not offload this to the class object.
 	return this.class.render();
 }
 draft.node.prototype.get_cache=function(){
