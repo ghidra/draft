@@ -34,7 +34,7 @@ draft.nodes.core.terminal.prototype.init=function(){
 
 //this is the render function
 //being as it is the terminal node, the output of this will be the final output
-draft.nodes.core.terminal.prototype.render=function(mode){
+draft.nodes.core.terminal.prototype.render=function(mode,ports,sid){
 	//loop the inputs
 	//get what is connected, and start to loop those
 	
@@ -45,16 +45,22 @@ draft.nodes.core.terminal.prototype.render=function(mode){
 			}
 		}
 	}*/
-	console.log("--terminal");
+	//console.log("--terminal");
 	var output="";
-	this.loop_inputs(
+	var dom = new rad.element("DIV");
+	var dom2 = new rad.element("DIV");
+	var usedom = false;
+
+	this.loop_inputs(mode,ports,sid,
 		function(key,value){
 			if(key!="element"){
-				if(typeof value != "undefined")//ignore undefined
+				if(value != undefined)//ignore undefined
 				{
-					//console.log(typeof value)
-					if(typeof value != "string"){
-						output=value;
+					if(rad.isdomelement(value)){
+						//console.log(value)
+						var el = value.cloneNode(true);//has to be cloned so incase its used multiple times
+						dom.element.appendChild(el);
+						usedom=true;
 					}else{
 						output+=value;
 					}
@@ -62,14 +68,18 @@ draft.nodes.core.terminal.prototype.render=function(mode){
 			}
 		}
 	);
+	if(usedom && output!=""){
+		dom2.element.innerHTML=output;
+		dom.element.appendChild(dom2.element);
+	}
 
 	//console.log(output);
 
-	this.cache=output;
+	this.cache=(usedom)?dom.element:output;
 	this.cached=true;
 
 	//console.log("render:"+output);
-	return output;
+	return this.cache;
 	//return document.createElement("DIV");
 }
 

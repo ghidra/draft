@@ -36,32 +36,50 @@ draft.node_framework.prototype.clear_cache=function(){
 	this.cached=false;
 }
 
-draft.node_framework.prototype.render=function(mode){
+draft.node_framework.prototype.render=function(mode,ports,sid){
 	//console.log("--framework");
 	var output="";
-	this.loop_inputs(
+	this.loop_inputs(mode,ports,sid,
 		function(key,value){
 			output+=value;
 		}
 	);
 
-	this.cache=output;
-	this.cached=true;
+	this.cache = output;
+	this.cached = true;
 
-	//console.log(output);
-	//here we evaluate the nodes data, and whomever is plugged in
-	//return "you need to make render method for the node"
 	return output;
 }
 
 ///----utility function to loop inputs
-draft.node_framework.prototype.loop_inputs=function(func){
-	for(p in this.inputs_values){
+draft.node_framework.prototype.loop_inputs=function(mode,ports,sid,func){
+	/*for(p in this.inputs_values){
 		if(this.inputs_values.hasOwnProperty(p)){//only use the unique properties
 			if (typeof func === "function"){
 				if(this.inputs_values[p]!=undefined){
 					func(p,this.inputs_values[p]);
 				}
+			}
+		}
+	}*/
+	for(p in ports){
+		var port = ports[p];
+		var connected = port.used;
+		var label = port.label;
+		var value = this.inputs_values[label];
+		 
+		//console.log(draft.scripts[sid].lines[port.line].fnode)
+		if (typeof func === "function"){
+			if(connected){
+				//we need to grab the value from what we are plugged into
+				var node_id = draft.scripts[sid].lines[port.line].fnode; 
+				var connected_node = draft.scripts[sid].nodes[node_id];
+				var v = (connected_node.class.cached)?connected_node.class.cache:"ERROR";
+				//console.log("connected:"+label+":"+v);
+				func(label,v);
+			}else{
+				//console.log("not connected:"+label+":"+value);
+				func(label,value);
 			}
 		}
 	}

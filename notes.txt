@@ -1,25 +1,15 @@
 #where i left off
 
--render does not compile all the passthroughts together, just uses the first one
--input_values need some type of value when plugged in... otherwise its undefined... and nothing happens
 -input values are not propegating to the paramters at first.. when the node is created
-
--ok, 1 do not render on open
--2 only use inputs values for when its changed on the node
--3 rendering node, looks at the node... not the class on the node
--4 rendereing loops the actual inputs, then looks to the class if nothing is plugged in
--5 cache is stored on the node, and not storred in the inputs on the plugged in node
+-saving not 100% anymore
 
 -my console needs updating and allow me to print things to it
 -console can have pinned inputs too.. like position
 
-- nodes, get downstream
- -this will allow setting cache oudated or not
 - look at marquee select (multiple canvas layers)
 - make a compound
 - copy and paste
 - delete a node
-- cache rendered data
 - ability to rename a node
 
 #-----rad
@@ -38,16 +28,11 @@
 
 #editor render
 	-parameter changes update editor render
-	-render move to new object
-		-render recursion needs thought, and work
-		-now that render stores value, consider a cache system
-		-when attribut changes i dont have to re-evaluate everything
 
 #-----nodes
 node type color
 
 #-----lines
-wires only get to connect once, if connected elsewhere, the old one is removed
 
 //---------- UI
 

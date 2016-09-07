@@ -33,6 +33,9 @@ draft.node.prototype.init=function(id,category,name,x,y,scale,sid){
 	this.p_i={};
 	this.pid = 0;//port ids
 
+	//this.cache="";
+	//this.cached=false;
+
 	this.script_id = sid || 0;
 
 	this.set_dimensions();
@@ -415,13 +418,11 @@ draft.node.prototype.found_upstream=function(id,sid){
 }
 
 //link to class.render
-draft.node.prototype.render=function(){
-	//i should look at the ports and not offload this to the class object.
-	return this.class.render();
+draft.node.prototype.render=function(mode){	
+	return this.class.render(mode,this.p_i,this.script_id);//send the ports along
 }
-draft.node.prototype.get_cache=function(){
-	return (this.class.cached)?this.class.cache:false;
-}
+
+
 //-----check when connecting lines if we are going to make an infinte loop
 /*draft.node.prototype.check_infinite_loop=function(nid){//the attempting to connect node, and the direction
 	//we need to recursevly check that no nodes plug into given node

@@ -176,12 +176,12 @@ draft.nodes.html.generic.prototype.init=function(){
 
 ///-----------RENDER
 
-draft.nodes.html.generic.prototype.render=function(mode){
+draft.nodes.html.generic.prototype.render=function(mode,ports,sid){
 	//var output="******<br/>"+this.label+"<br/>";
 	//console.log("--generic");
 	var output="";
 	var _this=this;
-	this.loop_inputs(
+	this.loop_inputs(mode,ports,sid,
 		function(key,value){
 			//console.log("port");
 			if(key=="tags"){
@@ -189,20 +189,20 @@ draft.nodes.html.generic.prototype.render=function(mode){
 			}
 			//now just passthrough what is connected
 			if( rad.strremovenumbers(key) == "passthrough" ){//if( rad.strremovenumbers(key) == "passthrough" ){ //rad.strremovenumbers(key)
-				//console.log(typeof value);
-				if(typeof value === "string"){
-					//console.log("--inside string");
-					output.innerHTML+=value;
-				}else{
-					//console.log("--inside");
-					output.appendChild(value);
+				if(value!=undefined){
+					if(rad.isdomelement(value)){
+						//console.log("dom");
+						output.appendChild(value);
+					}else{
+						//console.log("not dom");
+						output.innerHTML+=value;
+					}
 				}
-				//output += value;
 			}
 		}
 	);
 
-	console.log(output);
+	//console.log(output);
 
 	this.cache=output;
 	this.cached=true;

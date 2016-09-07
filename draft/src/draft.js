@@ -219,17 +219,13 @@ draft.render_preview=function(){
 	var terminal = draft.scripts[0].find_node("core","terminal");
 	//we are rendering twice in here for some reason... maybe need to look at that
 	var result = this.output.render(terminal,0);
-	//console.log("render_preview");
-	if (typeof result === "string"){
-		//this.output_preview.innerHTML = result;
-		this.output_preview.innerHTML = "result";
-	}else{
-		this.output_preview.innerHTML="";
-		//now its not rednering
-		//console.log(terminal);
-		//if(this.output.render(terminal,0)!=undefined)//this makes it not error when loading, since it was without this
-		this.output_preview.innerHTML="hahah";
-		//this.output_preview.appendChild(this.output.render(terminal,0));
+	//now we can deal with the render
+	console.log(result);
+	this.output_preview.innerHTML="";//clear it out
+	if(rad.isdomelement(result)){
+		this.output_preview.appendChild(result);
+	}else{//we assume its just a string
+		this.output_preview.innerHTML = result;
 	}
 }
 //--------------------------
