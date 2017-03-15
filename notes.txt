@@ -7,6 +7,7 @@
 -console can have pinned inputs too.. like position
 
 - look at marquee select (multiple canvas layers)
+- marquee needs to look at negative value dragging
 - make a compound
 - copy and paste
 - delete a node

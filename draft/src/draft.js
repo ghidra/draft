@@ -27,7 +27,8 @@ draft.activescript=0;
 
 draft.nodes={};//this will hold all the loaded node objects that are available
 draft.nodes.compound={};//this will be my default compound object
-draft.node_menu={};
+draft.node_menu={};//hold the node menu object
+draft.editor_marquee={};//hold the marquee
 
 //----
 //make local storage
@@ -40,6 +41,7 @@ draft.file = {};//new draft.io();//a file io handler
 //----
 
 draft.canvas_clicked=false;
+draft.canvas_clicked_type=-1;//this will be the mouse type clicked
 draft.canvas_scale={
 	'scalling':false,
 	//'scale':1.0,
@@ -59,6 +61,7 @@ draft.dragging_line={
 	'node':-1,
 	'port':-1
 };
+draft.dragging_marquee=false;
 draft.selected=[];//to hold the selected nodes for processing.. need a seperate array since we can select in a variaty of ways
 draft.mouseposition={};//i need to save this from the canvas
 
@@ -208,6 +211,7 @@ draft.init=function(){
 	this.set_canvas("canvas");
 	this.parameters = this.panels.get_panel("parameters");//this.set_parameter_pane("parameters");
 	this.console = this.panels.get_panel("console");//this.set_console("console");
+	this.editor_marquee = new draft.marquee("marquee");
 	
 	//this.set_output_preview("output_preview");
 	this.output = new this.renderer();
@@ -238,6 +242,7 @@ draft.mousedown=function(e){
 	//check if we are over a node
 	
 	if(rad.isleftclick(e)){
+		draft.canvas_clicked_type=0;
 		var overnode = false;
 		var overport = false;
 
@@ -288,14 +293,9 @@ draft.mousedown=function(e){
 	    //we are not over a node or a port
 	    //here is where we can look at drawing a marquee if a modifier is down
 	    if(!overnode && !overport){
-	    	//drag all the nodes, this is a workspace translate
-	    	rad.flusharray(this.dragging);//clean it out
-	    	for (var n in this.scripts[this.activescript].nodes){
-	    		this.scripts[this.activescript].nodes[n].set_offset(p);
-	    		this.dragging.push(n);
-	    	}
-	    	this.unselect();
-	    	this.refresh();
+	    	//console.log("LETS DRAW A MARQUEE");
+			this.editor_marquee.start_drag(this.mouseposition);
+			this.dragging_marquee=true;
 	    }
 	    //if we are over a node, wee need to update the drawing sense selected was updated
 	    if(overnode){
@@ -303,20 +303,39 @@ draft.mousedown=function(e){
 	    }
 	}else{
 		if(rad.isrightclick(e)){
-			draft.canvas_scale.start=p;
-			draft.canvas_scale.scalling=true;
-			this.scripts[this.activescript].start_scale();
-			//draft.canvas_scale.scale_start=draft.canvas_scale.scale;
-			
-			for (var n in this.scripts[this.activescript].nodes){
-	    		this.scripts[this.activescript].nodes[n].set_scale_offset(p);
-	    		//this.dragging.push(n);
+			draft.canvas_clicked_type=1;
+			//drag all the nodes, this is a workspace translate
+	    	rad.flusharray(this.dragging);//clean it out
+	    	for (var n in this.scripts[this.activescript].nodes){
+	    		this.scripts[this.activescript].nodes[n].set_offset(p);
+	    		this.dragging.push(n);
 	    	}
+	    	this.unselect();
+	    	this.refresh();
+
+			
+		}else{
+			if(rad.ismiddleclick(e)){
+				draft.canvas_clicked_type=2;
+				draft.canvas_scale.start=p;
+				draft.canvas_scale.scalling=true;
+				this.scripts[this.activescript].start_scale();
+				//draft.canvas_scale.scale_start=draft.canvas_scale.scale;
+				
+				for (var n in this.scripts[this.activescript].nodes){
+		    		this.scripts[this.activescript].nodes[n].set_scale_offset(p);
+		    		//this.dragging.push(n);
+		    	}
+
+				
+			}
 		}
 	}
 }
 draft.mouseup=function(e){
+	console.log("MOUSE RELEASED");
 	this.canvas_clicked=false;
+	draft.canvas_clicked_type=-1;
 	this.console.innerHTML="";
 	rad.flusharray(this.dragging);
 	this.over_port=false;
@@ -330,7 +349,13 @@ draft.mouseup=function(e){
 			//nd.selected=false;
 		}
 	}*/
-
+	//if marquee was turned on, turn it off
+	console.log(draft.dragging_marquee);
+	if(draft.dragging_marquee){
+		draft.editor_marquee.remove();
+		draft.dragging_marquee=false;
+		//console.log("we should be trying to get rid of the marquee here");
+	}
 
 	//line dragging logic
 	if(this.dragging_line.create){
@@ -436,39 +461,45 @@ draft.mousemove=function(e){
 			//get the length and the dot to determine which and where
 
 		}else{
+			//drag out the marquee
+	    	if(this.dragging_marquee){
+				this.editor_marquee.drag(this.mouseposition);
+			}else{
 			//lets release everything
-			this.console.innerHTML="x:"+p.x+" y:"+p.y;
+				this.console.innerHTML="x:"+p.x+" y:"+p.y;
 
-			//if we have created a new line
-			if(this.dragging_line.create){
-				this.scripts[this.activescript].lines[this.dragging_line.id].drag(p,this.dragging_line.reverse);
-			}
-
-			//drag any nodes in the dragging array
-			for(var n=0; n<this.dragging.length;n++){
-	    		//this.scripts[this.activescript].nodes[this.dragging[n]].drag(p.x,p.y);
-	    		this.scripts[this.activescript].nodes[this.dragging[n]].drag(p);
-	    	}
-
-			if(this.dragging.length>0 || this.dragging_line.create){
-				//duplicate of refersh with specific code because of draggin line
-	    		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-				var scr = this.scripts[this.activescript];
-				//draw the lines again
-				for (var l in scr.lines){
-					//this first one is our lewly created line
-					if(l==this.dragging_line.id){//use == instead of === because tpyes might be different
-						scr.lines[l].drag(p,this.dragging_line.reverse);
-					}else{
-						var p1 = scr.nodes[scr.lines[l].fnode].port_position(scr.lines[l].fport,0);
-						var p2 = scr.nodes[scr.lines[l].tnode].port_position(scr.lines[l].tport,1);
-						scr.lines[l].draw(p1,p2);
-					}
+				//if we have created a new line
+				if(this.dragging_line.create){
+					this.scripts[this.activescript].lines[this.dragging_line.id].drag(p,this.dragging_line.reverse);
 				}
-				//draw the nodes again
-	  			for(var n in scr.nodes){
-	  				scr.nodes[n].draw(draft.canvas_scale.scale);
-	  			}
+
+				//drag any nodes in the dragging array
+				for(var n=0; n<this.dragging.length;n++){
+		    		//this.scripts[this.activescript].nodes[this.dragging[n]].drag(p.x,p.y);
+		    		this.scripts[this.activescript].nodes[this.dragging[n]].drag(p);
+		    	}
+
+				if(this.dragging.length>0 || this.dragging_line.create){
+					//duplicate of refersh with specific code because of draggin line
+		    		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+					var scr = this.scripts[this.activescript];
+					//draw the lines again
+					for (var l in scr.lines){
+						//this first one is our lewly created line
+						if(l==this.dragging_line.id){//use == instead of === because tpyes might be different
+							scr.lines[l].drag(p,this.dragging_line.reverse);
+						}else{
+							var p1 = scr.nodes[scr.lines[l].fnode].port_position(scr.lines[l].fport,0);
+							var p2 = scr.nodes[scr.lines[l].tnode].port_position(scr.lines[l].tport,1);
+							scr.lines[l].draw(p1,p2);
+						}
+					}
+					//draw the nodes again
+		  			for(var n in scr.nodes){
+		  				scr.nodes[n].draw(draft.canvas_scale.scale);
+		  			}
+		    	}
+
 	    	}
 	    }
 		//-------
