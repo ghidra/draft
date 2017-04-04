@@ -269,9 +269,9 @@ draft.mousedown=function(e){
 					//we are not over a port, lets see if we are over the node
 					if(nd.over(p)){
 						//we are over a node on mousedown
-						nd.start_drag(p);
 						this.dragging.push(n);
 						this.unselect();
+						nd.start_drag(p);
 	                    this.selected.push(n);
 	                    overnode=true;
 						//if (!e) e = window.event;
@@ -294,8 +294,12 @@ draft.mousedown=function(e){
 	    //here is where we can look at drawing a marquee if a modifier is down
 	    if(!overnode && !overport){
 	    	//console.log("LETS DRAW A MARQUEE");
+	    	
 			this.editor_marquee.start_drag(this.mouseposition);
 			this.dragging_marquee=true;
+
+			this.unselect();
+			this.refresh();
 	    }
 	    //if we are over a node, wee need to update the drawing sense selected was updated
 	    if(overnode){
@@ -310,8 +314,8 @@ draft.mousedown=function(e){
 	    		this.scripts[this.activescript].nodes[n].set_offset(p);
 	    		this.dragging.push(n);
 	    	}
-	    	this.unselect();
-	    	this.refresh();
+	    	//this.unselect();
+	    	//this.refresh();
 
 			
 		}else{
@@ -333,7 +337,7 @@ draft.mousedown=function(e){
 	}
 }
 draft.mouseup=function(e){
-	console.log("MOUSE RELEASED");
+	//console.log("MOUSE RELEASED");
 	this.canvas_clicked=false;
 	draft.canvas_clicked_type=-1;
 	this.console.innerHTML="";
@@ -350,7 +354,7 @@ draft.mouseup=function(e){
 		}
 	}*/
 	//if marquee was turned on, turn it off
-	console.log(draft.dragging_marquee);
+	//console.log(draft.dragging_marquee);
 	if(draft.dragging_marquee){
 		draft.editor_marquee.remove();
 		draft.dragging_marquee=false;
@@ -562,6 +566,14 @@ draft.keypressed=function(e){
 	
 }
 
+//this is a helper function that returns all the nodes in the active script
+draft.get_active_nodes=function(){
+	return this.scripts[this.activescript].nodes;
+}
+//helper function to get the node in the active script by ID
+draft.get_active_node=function(n){
+	return this.scripts[this.activescript].nodes[n];
+}
 
 //------
 //colors

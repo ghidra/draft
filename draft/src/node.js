@@ -17,6 +17,8 @@ draft.node.prototype.init=function(id,category,name,x,y,scale,sid){
 	this.w=0;
 	this.h=0;
 
+	this.bottomcorner=new rad.vector2();
+
 	//this.x = x||10;
 	//this.y = y||10;
 
@@ -120,6 +122,8 @@ draft.node.prototype.set_dimensions=function(){
 	}
 
 	this.h = this.get_height();//draft.font.size+(this.margin*2) + ((this.margin*3)*Math.max(this.i,this.o));
+
+	this.bottomcorner = this.p.add(rad.vector2(this.w,this.h));
 }
 draft.node.prototype.get_height=function(){
 	//this calculates the height mostly when adding a port, or when building the node at first
