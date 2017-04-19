@@ -85,10 +85,10 @@ draft.marquee.prototype.remove=function(){
 	//console.log("canvas x:"+cpos.x+" y:"+cpos.y);
 	console.log("-------------");
 	console.log("MARQUEE DATA");
-	console.log( "x:"+this.p.x+"\ny:"+this.p.y+"\nbottom corner x:"+this.bottomcorner.x+"\nbottom corner y:"+this.bottomcorner.y );
+	console.log( "x:"+this.p.x+" y:"+this.p.y+"\nbottom corner x:"+this.bottomcorner.x+" bottom corner y:"+this.bottomcorner.y );
 
-	console.log("GRAPH DATA");
-	console.log("scale:"+cscl);
+	//console.log("GRAPH DATA");
+	//console.log("scale:"+cscl);
 	//loop the nodes...
 	//deal with the node
 	for (var n in draft.get_active_nodes() ){//loop all the nodes
@@ -100,19 +100,14 @@ draft.marquee.prototype.remove=function(){
 		
 		var xb = (nd.bottomcorner.x>this.p.x && nd.bottomcorner.x<this.bottomcorner.x);//x bottom corner
 		var yb = (nd.bottomcorner.y>this.p.y && nd.bottomcorner.y<this.bottomcorner.y);//y bottom corner
-		
-		var xc = (nd.bottomcorner.x>this.p.x && nd.bottomcorner.x<this.bottomcorner.x);//x top right
-		var yc = (nd.p.y>this.p.y && nd.p.y<this.bottomcorner.y);//y top right
-		
-		var xd = (nd.p.x>this.p.x && nd.p.x<this.bottomcorner.x);//x bottom left
-		var yd = (nd.bottomcorner.y>this.p.y && nd.bottomcorner.y<this.bottomcorner.y);//y bottom left
 
 		console.log("NODE DATA");
-		console.log("xa:"+nd.p.x+"\nya:"+nd.p.y)
-		console.log("RESULTS"+ (xa&&ya) +":"+ (xb&&yb) +":"+ (xc&&yc) +":"+ (xd&&yd) );
+		console.log("xa:"+nd.p.x+" ya:"+nd.p.y)
+		console.log("xb:"+nd.bottomcorner.x+" yb:"+nd.bottomcorner.y)
+		//console.log("RESULTS"+ (xa&&ya) +":"+ (xb&&yb) +":"+ (xc&&yc) +":"+ (xd&&yd) );
 		
-		//if ( (xa && ya) || (xb && yb) || (xc && yc) || (xd && yd) ) {
-		if ( (xb && yb) ) {
+		if ( (xa && ya) || (xb && yb) || (xb && ya) || (xa && yb) ) {
+		//if ( (xb && yb) ) {
 			nd.selected=true;	
 		}
 		

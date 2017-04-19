@@ -179,8 +179,9 @@ draft.node.prototype.scale=function(scale,start){
 	var scalledp = atorigin.multscalar(scale/start);
 
 	this.p = scalledp.add(toorigin.neg());
+	this.bottomcorner = this.p.add( rad.vector2(this.w*this.scl,this.h*this.scl) );
 	//this.p = atorigin.add(toorigin.neg());
-	this.draw()
+	this.draw();
 }
 draft.node.prototype.start_drag=function(v){
 	this.set_offset(v);//this.offset.set(v.x-this.p.x,v.y-this.p.y)
@@ -215,6 +216,7 @@ draft.node.prototype.drag=function(v){
 	//this.p.clone(this.p);
 	//this.p.x = x-this.ox;
 	//this.p.y = y-this.oy;
+	this.bottomcorner = this.p.add(rad.vector2(this.w,this.h));
 }
 draft.node.prototype.increment_passthrough=function(){
 	this.class.inputs.passthrough+=1;
