@@ -1,7 +1,13 @@
 draft.node=function(id,category,name,x,y,scale,sid){
 	return this.init(id,category,name,x,y,scale,sid);
 }
+
+draft.node.prototype=new draft.drawing();
+draft.node.prototype.constructor=draft.drawing;
+
 draft.node.prototype.init=function(id,category,name,x,y,scale,sid){
+	draft.drawing.prototype.init.call(this);//super incase i need this shit
+
 	this.id = id;
 	this.class = this.attach_class(category,name);//attaches the send in node
 	this.category = category||"empty";
@@ -11,13 +17,13 @@ draft.node.prototype.init=function(id,category,name,x,y,scale,sid){
 	this.p_scalled = new rad.vector2();//store the mouse position value before scaling
 	this.offset = new rad.vector2();//offset vector
 
-	this.scl = scale || 1.0;
+	//this.scl = scale || 1.0;
 	this.selected = false;
 
-	this.w=0;
-	this.h=0;
+	//this.w=0;
+	//this.h=0;
 
-	this.bottomcorner=new rad.vector2();
+	//this.bottomcorner=new rad.vector2();
 
 	//this.x = x||10;
 	//this.y = y||10;
@@ -289,7 +295,8 @@ draft.node.prototype.debug_pos=function(){
 	draft.context.closePath();
 	draft.context.fill();
 }
-draft.node.prototype.draw_rounded_corner=function(position,radius,segments,corner,start){
+
+/*draft.node.prototype.draw_rounded_corner=function(position,radius,segments,corner,start){
 	start=start||false;
     var c = 2*3.1415;
    	for (var i =0; i<=segments; i++){
@@ -302,7 +309,7 @@ draft.node.prototype.draw_rounded_corner=function(position,radius,segments,corne
         	    draft.context.lineTo(x+position.x,y+position.y);
         	}
     	}
-}
+}*/
 
 //------
 //first check that we are near a node before going any further

@@ -16,6 +16,7 @@ rad.includes.modules([
 //COMPILE SOURCES
 rad.includes.source([
 	"draft/src/draft.js",
+	"draft/src/drawing.js",
 	"draft/src/io.js",
 	"draft/src/script.js",
 	"draft/src/node_parameters.js",

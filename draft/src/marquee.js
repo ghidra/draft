@@ -83,9 +83,9 @@ draft.marquee.prototype.remove=function(){
 	var offcorner = this.bottomcorner.sub(cpos);
 	
 	//console.log("canvas x:"+cpos.x+" y:"+cpos.y);
-	console.log("-------------");
-	console.log("MARQUEE DATA");
-	console.log( "x:"+this.p.x+" y:"+this.p.y+"\nbottom corner x:"+this.bottomcorner.x+" bottom corner y:"+this.bottomcorner.y );
+	//console.log("-------------");
+	//console.log("MARQUEE DATA");
+	//console.log( "x:"+this.p.x+" y:"+this.p.y+"\nbottom corner x:"+this.bottomcorner.x+" bottom corner y:"+this.bottomcorner.y );
 
 	//console.log("GRAPH DATA");
 	//console.log("scale:"+cscl);
@@ -101,18 +101,17 @@ draft.marquee.prototype.remove=function(){
 		var xb = (nd.bottomcorner.x>this.p.x && nd.bottomcorner.x<this.bottomcorner.x);//x bottom corner
 		var yb = (nd.bottomcorner.y>this.p.y && nd.bottomcorner.y<this.bottomcorner.y);//y bottom corner
 
-		console.log("NODE DATA");
-		console.log("xa:"+nd.p.x+" ya:"+nd.p.y)
-		console.log("xb:"+nd.bottomcorner.x+" yb:"+nd.bottomcorner.y)
+		//console.log("NODE DATA");
+		//console.log("xa:"+nd.p.x+" ya:"+nd.p.y)
+		//console.log("xb:"+nd.bottomcorner.x+" yb:"+nd.bottomcorner.y)
 		//console.log("RESULTS"+ (xa&&ya) +":"+ (xb&&yb) +":"+ (xc&&yc) +":"+ (xd&&yd) );
 		
 		if ( (xa && ya) || (xb && yb) || (xb && ya) || (xa && yb) ) {
 		//if ( (xb && yb) ) {
-			nd.selected=true;	
+			nd.selected=true;
+			draft.selected.push(n);
 		}
 		
-		
-		draft.selected.push(n);
 	}
 	draft.refresh();
 }
