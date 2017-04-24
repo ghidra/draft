@@ -6,32 +6,14 @@ draft.node.prototype=new draft.drawing();
 draft.node.prototype.constructor=draft.drawing;
 
 draft.node.prototype.init=function(id,category,name,x,y,scale,sid){
-	draft.drawing.prototype.init.call(this);//super incase i need this shit
+	draft.drawing.prototype.init.call(this,x,y);//super incase i need this shit
 
 	this.id = id;
 	this.class = this.attach_class(category,name);//attaches the send in node
 	this.category = category||"empty";
 
-	this.p = new rad.vector2(x,y);
-	this.p_prescalled = new rad.vector2(x,y);//store values durring scalling calculations
-	this.p_scalled = new rad.vector2();//store the mouse position value before scaling
-	this.offset = new rad.vector2();//offset vector
-
 	//this.scl = scale || 1.0;
 	this.selected = false;
-
-	//this.w=0;
-	//this.h=0;
-
-	//this.bottomcorner=new rad.vector2();
-
-	//this.x = x||10;
-	//this.y = y||10;
-
-	//this.ox = 0;//offset values for dragging
-	//this.oy = 0;
-
-	this.margin = 6;
 
 	this.label="";
 	this.i = 0;//number of inports
@@ -237,39 +219,12 @@ draft.node.prototype.increment_passthrough=function(){
 }
 //--------------------
 draft.node.prototype.draw_shape=function(){
-	var r = this.margin*this.scl;//radius of rounder corners
-	var seg = Math.ceil(r*0.3);
-	var coff = r*2;
-	var pivot = new rad.vector2(this.p.x+r,this.p.y+r);//{x:this.x+r,y:this.y+r};
-
-	draft.context.beginPath();
-	this.draw_rounded_corner(pivot,r,seg,2,true);
-	pivot.x = pivot.x+(this.w*this.scl)-coff;
-	this.draw_rounded_corner(pivot,r,seg,3);
-	pivot.y = pivot.y+(this.h*this.scl)-coff;
-	this.draw_rounded_corner(pivot,r,seg,0);
-	pivot.x = this.p.x+r;
-	this.draw_rounded_corner(pivot,r,seg,1);
-	/*var r = this.margin;//radius of rounder corners
-	var seg = Math.ceil(r*0.3);
-	var coff = r*2;
-	var pivot = new rad.vector2(this.p.x+r,this.p.y+r);//{x:this.x+r,y:this.y+r};
-
-	draft.context.beginPath();
-	this.draw_rounded_corner(pivot,r,seg,2,true);
-	pivot.x = pivot.x+this.w-coff;
-	this.draw_rounded_corner(pivot,r,seg,3);
-	pivot.y = pivot.y+this.h-coff;
-	this.draw_rounded_corner(pivot,r,seg,0);
-	pivot.x = this.p.x+r;
-	this.draw_rounded_corner(pivot,r,seg,1);*/
-
-	draft.context.closePath();
-	draft.context.fill();
+	draft.drawing.prototype.draw_shape.call(this);//super incase i need this shit
 	if(this.selected)
 		draft.context.stroke();
 }
-draft.node.prototype.debug_pos=function(){
+
+/*draft.node.prototype.debug_pos=function(){
 	draft.context.fillStyle = "#FF0000";
 	draft.context.beginPath();
 
@@ -294,31 +249,11 @@ draft.node.prototype.debug_pos=function(){
 
 	draft.context.closePath();
 	draft.context.fill();
-}
-
-/*draft.node.prototype.draw_rounded_corner=function(position,radius,segments,corner,start){
-	start=start||false;
-    var c = 2*3.1415;
-   	for (var i =0; i<=segments; i++){
-        	var s = (((i+(segments*corner))/segments)/4);
-        	var x = (Math.cos(s*c))*radius;
-        	var y = (Math.sin(s*c))*radius;
-        	if(i===0 && start){
-        	    draft.context.moveTo(x+position.x, y+position.y);
-        	}else{
-        	    draft.context.lineTo(x+position.x,y+position.y);
-        	}
-    	}
 }*/
 
 //------
 //first check that we are near a node before going any further
-draft.node.prototype.near=function(p){
-	return (p.x>this.p.x-(this.margin*this.scl) && p.x<(this.p.x+((this.w+this.margin)*this.scl)) && p.y>this.p.y-(this.margin*this.scl) && p.y<(this.p.y+(this.h+this.margin)*this.scl) );
-}
-draft.node.prototype.over=function(p){
-	return (p.x>this.p.x && p.x<(this.p.x+(this.w*this.scl)) && p.y>this.p.y && p.y<(this.p.y+(this.h*this.scl)) );
-}
+
 //get port information
 draft.node.prototype.port_position=function(id,io){
 	//gets the relative port position

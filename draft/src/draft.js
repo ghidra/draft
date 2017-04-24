@@ -29,7 +29,7 @@ draft.nodes={};//this will hold all the loaded node objects that are available
 draft.nodes.compound={};//this will be my default compound object
 draft.node_menu={};//hold the node menu object
 draft.editor_marquee={};//hold the marquee
-//draft.sub_menu={};//this is to get the html element that we can use for submenu buttons
+draft.editor_submenu={};//this is to get the html element that we can use for submenu buttons
 
 //----
 //make local storage
@@ -213,7 +213,7 @@ draft.init=function(){
 	this.parameters = this.panels.get_panel("parameters");//this.set_parameter_pane("parameters");
 	this.console = this.panels.get_panel("console");//this.set_console("console");
 	this.editor_marquee = new draft.marquee("marquee");
-	//this.sub_menu = document.getElementById("sub_menu");
+	this.editor_submenu = new draft.submenu("canvas");
 	
 	//this.set_output_preview("output_preview");
 	this.output = new this.renderer();
@@ -509,6 +509,12 @@ draft.mousemove=function(e){
 	    	}
 	    }
 		//-------
+	}else{
+		//we are just moving the mouse around
+		//lets check if we are over the submenu to we can give some feedback
+		if(this.editor_submenu.over(p)){
+			console.log('we are over the submenu');
+		}
 	}
 }
 draft.unselect=function(){
@@ -534,13 +540,14 @@ draft.refresh=function(){
 		scr.nodes[n].draw(draft.canvas_scale.scale);
 	}
 	//draw contextual buttons ie make compound from selection node
-	console.log( "LENGTH" + this.selected.length );
+	//console.log( "LENGTH" + this.selected.length );
 	if(this.selected.length>1 ){
 		//only make the button is there are more than one nodes selected... we will make presets for single nodes later
 		//console.log("LETS MAKE THE MAKE A COMPOUND BUTTON");
 		//draw the make compound button
 		
 	}
+	this.editor_submenu.draw();
 }
 
 draft.add_node=function(category,name,x,y,sid){
