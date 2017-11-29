@@ -1,4 +1,15 @@
 #where i left off
+----------------I WANT TO LOOK AT MAKING MAYBE EASIER TO UNDERSTAN PANEL
+---Node connections were not working.
+----look at overall code clean up
+---what is this submenu i was working on for
+
+---file structure for saving files
+---project
+   ---directory
+      ---file
+      ----dire
+      	---file
 
 -input values are not propegating to the paramters at first.. when the node is created
 -saving not 100% anymore
