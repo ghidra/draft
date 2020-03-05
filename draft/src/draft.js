@@ -7,7 +7,7 @@ draft.canvas={};
 draft.context={};//the 2d context
 draft.parameters={};//hold the parameter pane
 draft.output_preview={};//hold the windows that the terminal will output to
-draft.console={};//hold the console log window
+draft.output_console={};//hold the console log window
 
 draft.colors={};//object to hold color types
 
@@ -211,7 +211,7 @@ draft.init=function(){
 	this.node_menu = new draft.node_browser("node_menu");//this.init_nodes("node_menu");
 	this.set_canvas("canvas");
 	this.parameters = this.panels.get_panel("parameters");//this.set_parameter_pane("parameters");
-	this.console = this.panels.get_panel("console");//this.set_console("console");
+	this.output_console = new draft.console(this.panels.get_panel_id("console"));//this.set_console("console");
 	this.editor_marquee = new draft.marquee("marquee");
 	this.editor_submenu = new draft.submenu("canvas");
 	
@@ -220,6 +220,9 @@ draft.init=function(){
 	this.output_preview = this.panels.get_panel("output_preview");
 
 	this.set_script();
+
+	///make output consol constant entry for the mouse data
+	this.output_console.new_constant("mouse","mouse position");
 }
 draft.render_preview=function(){
 	var terminal = draft.scripts[0].find_node("core","terminal");
@@ -342,7 +345,7 @@ draft.mouseup=function(e){
 	//console.log("MOUSE RELEASED");
 	this.canvas_clicked=false;
 	draft.canvas_clicked_type=-1;
-	this.console.innerHTML="";
+	//this.output_console.innerHTML="";
 	rad.flusharray(this.dragging);
 	this.over_port=false;
 
@@ -434,7 +437,8 @@ draft.mouseup=function(e){
 
 draft.mousemove=function(e){
 	var p = rad.relativemouseposition(e);
-	this.console.innerHTML="x:"+p.x+" y:"+p.y;
+	//this.output_console.innerHTML="x:"+p.x+" y:"+p.y;
+	this.output_console.set_constant("mouse","x:"+p.x+" y:"+p.y);
 	this.mouseposition = p;
 	if(this.canvas_clicked){
 
@@ -472,8 +476,8 @@ draft.mousemove=function(e){
 				this.editor_marquee.drag(this.mouseposition);
 			}else{
 			//lets release everything
-				this.console.innerHTML="x:"+p.x+" y:"+p.y;
-
+				//this.output_console.innerHTML="x:"+p.x+" y:"+p.y;
+				this.output_console.set_constant("mouse","x:"+p.x+" y:"+p.y);
 				//if we have created a new line
 				if(this.dragging_line.create){
 					this.scripts[this.activescript].lines[this.dragging_line.id].drag(p,this.dragging_line.reverse);
