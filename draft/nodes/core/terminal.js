@@ -229,6 +229,37 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 	});
 
 	element.appendChild(bu_load.getelement());
+
+	///---------
+	/////////////
+	// DO THE LOG IN PORTION
+	/////
+
+	var labellogin = document.createElement("DIV");
+	labellogin.innerHTML="&nbsp;"+"Connect to Database";
+	labellogin.className="parameter_label";
+	labellogin.style.width=(width-(margin*2))+"px";
+	labellogin.style.display="inline-block";
+
+	element.appendChild(labellogin);
+
+	var logincontainer = document.createElement("DIV");
+	logincontainer.id = "login_container";
+	if(!draft.logged_in){//not logged in, make the login page
+		logincontainer.innerHTML="&nbsp;"+"NOT CONNECTED";
+		draft.ajax.get(
+			draft.php,
+			"q=login",
+			function(lamda){
+				alert(lamda);
+				document.getElementById("login_container").innerHTML = lamda;
+			}
+		);
+	}else{
+		logincontainer.innerHTML="&nbsp;"+"CONNECTED";
+	}
+	element.appendChild(logincontainer);
+
 	
 	return element;
 }

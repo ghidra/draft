@@ -1,13 +1,14 @@
 draft={};
 
-draft.panels={};//this holds the rad.panels
-draft.output={};//this is the rendere, that needs to be set after everything loads
+draft.panels={};//OBJECT this holds the rad.panels
+draft.output_console={};//OBJECT hold the console log
+draft.output={};//OBJECT this is the rendere, that needs to be set after everything loads
 
-draft.canvas={};
-draft.context={};//the 2d context
-draft.parameters={};//hold the parameter pane
-draft.output_preview={};//hold the windows that the terminal will output to
-draft.output_console={};//hold the console log window
+draft.canvas={};//DOM //drawing the nodes into
+draft.context={};//the 2d context for the canvas
+draft.parameters={};//DOM hold the parameter pane
+draft.output_preview={};//DOM hold the windows that the terminal will output to
+
 
 draft.colors={};//object to hold color types
 
@@ -38,6 +39,12 @@ draft.editor_submenu={};//this is to get the html element that we can use for su
 draft.database={};//not even used yet
 draft.file = {};//new draft.io();//a file io handler
 //draft.localstorage=new rad.localstorage();
+
+///REAL DATABASE
+///HOW I INTERFACE WITH THE DATABASE
+draft.ajax = new rad.ajax();
+draft.php = "draft/backend_interface.php";
+draft.logged_in = false;///logged in flag
 
 //----
 

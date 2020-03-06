@@ -11,7 +11,8 @@ rad.includes.modules([
 	"ui",
 	"drag",
 	"panels",
-	"localstorage"
+	"localstorage",
+	"ajax"
 ]);
 //COMPILE SOURCES
 rad.includes.source([
