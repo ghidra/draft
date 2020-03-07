@@ -245,19 +245,58 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 
 	var logincontainer = document.createElement("DIV");
 	logincontainer.id = "login_container";
-	if(!draft.logged_in){//not logged in, make the login page
+
+	////////////////////////////////////////
+	////////////////////////////////////////
+	///this logs me in, and out.... 
+	////////////////////////////////////////
+	////////////////////////////////////////
+	//if(!draft.logged_in){//not logged in, make the login page
 		logincontainer.innerHTML="&nbsp;"+"NOT CONNECTED";
 		draft.ajax.get(
-			draft.php,
+			draft.login_php,
 			"q=login",
 			function(lamda){
-				alert(lamda);
+				//alert(lamda);
 				document.getElementById("login_container").innerHTML = lamda;
 			}
 		);
-	}else{
-		logincontainer.innerHTML="&nbsp;"+"CONNECTED";
-	}
+		/////set the login function on draft
+		draft.process_login = function(form_name){
+			var elements = document.getElementById(form_name).elements;
+			var obj ={};
+			obj.q = "login";
+		    for(var i = 0 ; i < elements.length ; i++){
+		        var item = elements.item(i);
+		        obj[item.name] = item.value;
+		    }
+		    //alert(JSON.stringify(obj));
+		    draft.ajax.post(
+				draft.login_php,
+				obj,
+				//"q=login&payload="+JSON.stringify(obj),
+				function(lamda){
+					document.getElementById("login_container").innerHTML = lamda;
+				}
+			);
+		}
+		//set the draft logout function
+		draft.logout=function(){
+			draft.ajax.get(
+				draft.login_php,
+				"q=logout",
+				function(lamda){
+					document.getElementById("login_container").innerHTML = lamda;
+				}
+			);
+		}
+
+		////////////////////////////////////////
+		////////////////////////////////////////
+	//}else{
+		///get the log out button
+	//	logincontainer.innerHTML="&nbsp;"+"CONNECTED";
+	//}
 	element.appendChild(logincontainer);
 
 	

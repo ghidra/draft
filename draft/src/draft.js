@@ -44,7 +44,8 @@ draft.file = {};//new draft.io();//a file io handler
 ///HOW I INTERFACE WITH THE DATABASE
 draft.ajax = new rad.ajax();
 draft.php = "draft/backend_interface.php";
-draft.logged_in = false;///logged in flag
+draft.login_php = "rad/backend/login_interface.php";
+//draft.logged_in = false;///logged in flag
 
 //----
 
@@ -231,6 +232,13 @@ draft.init=function(){
 	///make output consol constant entry for the mouse data
 	this.output_console.new_constant("mouse","mouse position");
 }
+///////
+////this needs to get filled out by the terminal node!!
+////called from index.html
+draft.process_login=function(form_name){alert("THIS WAS NOT OVERWRITTEN");}
+draft.logout=function(){alert("THIS NEEDS TO BE OVERWRITTEN");}
+///////
+
 draft.render_preview=function(){
 	var terminal = draft.scripts[0].find_node("core","terminal");
 	//we are rendering twice in here for some reason... maybe need to look at that
