@@ -43,7 +43,7 @@ draft.file = {};//new draft.io();//a file io handler
 ///REAL DATABASE
 ///HOW I INTERFACE WITH THE DATABASE
 draft.ajax = new rad.ajax();
-draft.php = "draft/backend_interface.php";
+draft.php = "draft/draft_interface.php";
 draft.login_php = "rad/backend/login_interface.php";
 //draft.logged_in = false;///logged in flag
 

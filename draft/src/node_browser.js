@@ -18,6 +18,8 @@ draft.node_browser.prototype.init=function(layer){
 	this.canvas.style.top=0;
 	this.canvas.style.left=0;
 
+	this.compounds_list = [];
+
 	//the main container
 	var menu_container = document.createElement("DIV");
 	menu_container.id = "node_menu_list";
@@ -70,6 +72,18 @@ draft.node_browser.prototype.init=function(layer){
 			this.canvas.appendChild(sub_menu_container);
 		}
 	}
+	//////NOW I NEED TO SEE IF I AM LOGGED INTO THE DATA BASE TO GRAB IN COMPOUNDS SAVED IN
+	
+	draft.ajax.get(
+		draft.php,
+		"q=get_compound_list",
+		function(lamda){
+			alert(lamda);
+			//document.getElementById("login_container").innerHTML = lamda;
+		}
+	);
+
+	///now draw the compounds into the list too
 
 	this.canvas.appendChild(menu_container);
 
