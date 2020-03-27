@@ -27,20 +27,28 @@ draft.io.prototype.list=function(){
 }
 draft.io.prototype.save=function(name,src){
 	//save the file
-	//if using local storage get the file object first, to add to it
-	var files = this.storage.getobj("files");
-	var src_clean=this.sanitize_script(src);
+	if(!draft.logged_in)
+	{
+		//if using local storage get the file object first, to add to it
+		/*var files = this.storage.getobj("files");
+		var src_clean=this.sanitize_script(src);
 
-	if(!files){//there are no files already saved
-		var new_file = {};
-		new_file[name]=src_clean;
-		//console.log(name)
-		this.storage.setobj("files",new_file);
+		if(!files){//there are no files already saved
+			var new_file = {};
+			new_file[name]=src_clean;
+			//console.log(name)
+			this.storage.setobj("files",new_file);
+		}else{
+			//there are saved files, lets append, or overwrite
+			files[name]=src_clean;
+			this.storage.setobj("files",files);
+		}*/
 	}else{
-		//there are saved files, lets append, or overwrite
-		files[name]=src_clean;
-		this.storage.setobj("files",files);
+		////////////LOGGED INTO A DATABASE SAVE IT THERE
+
 	}
+	//console.dir(src);
+	console.log( JSON.stringify(this.sanitize_script(src)) );
 }
 draft.io.prototype.load=function(name){
 	//load file, return object to be processed

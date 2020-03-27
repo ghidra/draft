@@ -45,7 +45,8 @@ draft.file = {};//new draft.io();//a file io handler
 draft.ajax = new rad.ajax();
 draft.php = "draft/draft_interface.php";
 draft.login_php = "rad/backend/login_interface.php";
-//draft.logged_in = false;///logged in flag
+draft.logincontainer_id = "login_container";
+draft.logged_in = false;///logged in flag
 
 //----
 
@@ -232,11 +233,6 @@ draft.init=function(){
 	///make output consol constant entry for the mouse data
 	this.output_console.new_constant("mouse","mouse position");
 }
-///////
-////this needs to get filled out by the terminal node!!
-////called from index.html
-draft.process_login=function(form_name){alert("THIS WAS NOT OVERWRITTEN");}
-draft.logout=function(){alert("THIS NEEDS TO BE OVERWRITTEN");}
 ///////
 
 draft.render_preview=function(){
@@ -640,4 +636,67 @@ draft.colors.port={
 	'novel':'#',
 	'passthrough':'#F67421',
 	'none':'#000000'//none is a polymorphic type expectation
+}
+
+
+
+/////////////////////////////////////////
+////////////////////////////////////////
+// PHP
+/////set the login function on draft
+draft.make_login_element=function(){
+	var logincontainer = document.createElement("DIV");
+	logincontainer.id = draft.logincontainer_id;
+
+	logincontainer.innerHTML="&nbsp;"+"NOT CONNECTED";
+	draft.ajax.get(
+		draft.login_php,
+		"q=login",
+		function(lamda){
+			data = JSON.parse(lamda);
+			draft.logged_in=data.logged_in;
+			document.getElementById(draft.logincontainer_id).innerHTML = data.html;
+			if(draft.logged_in){
+				console.log("already logged in");
+			}else{
+				console.log("not logged in");
+			}
+		}
+	);
+	return logincontainer;
+}
+draft.process_login = function(form_name){
+	var elements = document.getElementById(form_name).elements;
+	var obj ={};
+	obj.q = "login";
+    for(var i = 0 ; i < elements.length ; i++){
+        var item = elements.item(i);
+        obj[item.name] = item.value;
+    }
+    //alert(JSON.stringify(obj));
+    draft.ajax.post(
+		draft.login_php,
+		obj,
+		//"q=login&payload="+JSON.stringify(obj),
+		function(lamda){
+			data = JSON.parse(lamda);
+			draft.logged_in=data.logged_in;
+			document.getElementById(draft.logincontainer_id).innerHTML = data.html;
+			//document.getElementById(draft.logincontainer_id).innerHTML = lamda;
+			if(draft.logged_in)console.log("logged in");
+		}
+	);
+}
+//set the draft logout function
+draft.logout=function(){
+	draft.ajax.get(
+		draft.login_php,
+		"q=logout",
+		function(lamda){
+			data = JSON.parse(lamda);
+			draft.logged_in=data.logged_in;
+			document.getElementById(draft.logincontainer_id).innerHTML = data.html;
+			if(!draft.logged_in)console.log("logged out");
+		}
+	);
 }

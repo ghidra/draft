@@ -78,7 +78,8 @@ draft.node_browser.prototype.init=function(layer){
 		draft.php,
 		"q=get_compound_list",
 		function(lamda){
-			alert(lamda);
+			//alert(lamda);
+			console.log('trying to get stuff from the database');
 			//document.getElementById("login_container").innerHTML = lamda;
 		}
 	);
