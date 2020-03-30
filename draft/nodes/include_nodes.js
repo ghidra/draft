@@ -9,6 +9,7 @@ draft.include_nodes={
 	lib:[
 		"basic/string",
 		"core/terminal",
+		"core/compound",
 		"html/generic"
 	],
 	include:function(src){

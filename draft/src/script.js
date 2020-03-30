@@ -16,6 +16,8 @@ draft.script.prototype.init=function(id,scr){
 	this.nodes = rad.objhasprop(scr.nodes)?scr.nodes:{};
 	this.lines = rad.objhasprop(scr.lines)?scr.lines:{};
 	this.scripts = rad.objhasprop(scr.scripts)?scr.scripts:{};
+
+    this.author = "anonymous";
 }
 //----------------
 draft.script.prototype.add_node=function(category,name,x,y,sid){

@@ -123,6 +123,49 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 	//the html elements id = tb_0_save as
 	element.appendChild(tb_saveas.getelement());
 
+	///LETS GET CATEGORIES FROM DATABASE
+	var category_list = draft.database_query.get_categories( );///that is a callback function
+	if(!category_list){//no files found,make the arrays we need
+		category_list = ["new category"];
+	}else{
+		category_list.push("new category");
+	}
+	console.log("------");
+	console.log(category_list[0]);
+	
+	var dd_categories = new rad.dropdown({
+		"id":id,
+		"label":"load script",
+		"options":category_list,
+		"value":0,
+		"style":{
+			"width":width,
+			"margin":margin,
+			"fontSize":draft.font.size
+		},
+		"style_dropdown":{
+			"width":width_input
+		}
+	});
+
+	element.appendChild(dd_categories.getelement());
+	///MAKE A FIELD FOR NEW CATEGORIES
+	var tb_newcategory = new rad.textbox({
+		"id":id,
+		"label":"new category",
+		"value":"",
+		"style":{
+			//"width":width_input,
+			"width":width,
+			"margin":margin,
+			"fontSize":draft.font.size
+		},
+		"style_textbox":{
+			"width":width_input
+		}
+	});
+	element.appendChild(tb_newcategory.getelement());
+	//THE SAVE BUTTON
 	var bu_save = new rad.button({
 		"id":id,
 		"label":"save",

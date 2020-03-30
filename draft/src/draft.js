@@ -36,7 +36,7 @@ draft.editor_submenu={};//this is to get the html element that we can use for su
 //make local storage
 //make I can test to see if I am connected to a database first... if not, then we can talk about local storage
 //right now, at work i only have local storage for testing
-draft.database={};//not even used yet
+//draft.database={};//not even used yet
 draft.file = {};//new draft.io();//a file io handler
 //draft.localstorage=new rad.localstorage();
 
@@ -643,8 +643,13 @@ draft.colors.port={
 /////////////////////////////////////////
 ////////////////////////////////////////
 // PHP
+///////////////////////////////////////
+
+/////////////////////////////////////
+//LOGIN
+/////////////////////////////////////
 /////set the login function on draft
-draft.make_login_element=function(){
+draft.make_login_element=function(){//callback incase we need to refresh the parameters
 	var logincontainer = document.createElement("DIV");
 	logincontainer.id = draft.logincontainer_id;
 
@@ -658,6 +663,7 @@ draft.make_login_element=function(){
 			document.getElementById(draft.logincontainer_id).innerHTML = data.html;
 			if(draft.logged_in){
 				console.log("already logged in");
+				//callback();
 			}else{
 				console.log("not logged in");
 			}
@@ -699,4 +705,44 @@ draft.logout=function(){
 			if(!draft.logged_in)console.log("logged out");
 		}
 	);
+}
+
+/////////////////////////////
+///CATEGORIES FROM DATABASE
+/////////////////////////////
+draft.database_query={};
+draft.database_query.cache={};
+draft.database_query.cache.categories=null;
+draft.database_query.get_categories=function(){
+	//if(draft.logged_in)
+	//{
+		if(draft.database_query.cache.categories==null)
+		{
+			//////
+			/// BUG
+			/// WE HAVE TO CLICK OFF AND ON TO A TERMINAL NODE TO GET THE CATERGORIES TO LOAD THEY ARE NOT LOADED AT FIRST BECAUSE OF THE ASYNC LOG IN CALL
+			//////
+			draft.database_query.cache.categories=[];
+			draft.ajax.get(
+				draft.php,
+				"q=get_categories",
+				function(lamda){
+					data = JSON.parse(lamda);
+					//draft.logged_in=data.logged_in;
+					//document.getElementById(draft.logincontainer_id).innerHTML = data.html;
+					//if(!draft.logged_in)console.log("logged out");
+					//alert(lamda);
+					draft.database_query.cache.categories = ["HELL YAH"];
+					//callback();//hopefully this calls this method again from whatever thing called this
+					console.log('went to php to get categories');
+				}
+			);
+			return null;
+		}else{
+			console.log('categories retrieved from cahced');
+			return draft.database_query.cache.categories;
+		}
+	//}else{
+	//	console.log('we aint logged in');
+	//}
 }

@@ -27,11 +27,12 @@ draft.io.prototype.list=function(){
 }
 draft.io.prototype.save=function(name,src){
 	//save the file
+	var src_clean=this.sanitize_script(src);
+
 	if(!draft.logged_in)
 	{
 		//if using local storage get the file object first, to add to it
-		/*var files = this.storage.getobj("files");
-		var src_clean=this.sanitize_script(src);
+		var files = this.storage.getobj("files");
 
 		if(!files){//there are no files already saved
 			var new_file = {};
@@ -42,13 +43,28 @@ draft.io.prototype.save=function(name,src){
 			//there are saved files, lets append, or overwrite
 			files[name]=src_clean;
 			this.storage.setobj("files",files);
-		}*/
+		}
 	}else{
 		////////////LOGGED INTO A DATABASE SAVE IT THERE
-
+		var obj ={};
+		obj.q = "save_script";
+		obj.name = name;
+		obj.data = JSON.stringify(src_clean)
+		draft.ajax.post(
+			draft.php,
+			obj,
+			function(lamda){
+				data = JSON.parse(lamda);
+				//draft.logged_in=data.logged_in;
+				//document.getElementById(draft.logincontainer_id).innerHTML = data.html;
+				//document.getElementById(draft.logincontainer_id).innerHTML = lamda;
+				//if(draft.logged_in)console.log("logged in");
+				alert(lamda);
+			}
+		);
 	}
 	//console.dir(src);
-	console.log( JSON.stringify(this.sanitize_script(src)) );
+	//console.log( JSON.stringify(this.sanitize_script(src)) );
 }
 draft.io.prototype.load=function(name){
 	//load file, return object to be processed

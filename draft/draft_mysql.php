@@ -82,26 +82,55 @@ class draft_mysql extends mysql{
 		return $payload;
 	}
 
+	public function get_categories()
+	{
+		$payload = new stdClass();
+		$raw_categories =  mysqli_query($this->conn,"SELECT * FROM $this->mysql_categories_table ORDER BY id DESC") or die($this->errMsg = 'Error, getting categories '. mysqli_error());
+		$count_compounds=0;
+	}
+
 	////////////////////////////////////////
 	// SETTERS
 	////////////////////////////////////////
-	public function save_compound($payload)
+	public function save_script($name,$data)
 	{
-		$query_storage = "INSERT INTO $this->mysql_storage_table ( data ) VALUES ( '$payload->xml' )";
-		$success_storage = mysqli_query($this->conn,$query_storage) or die($this->errMsg = 'Error, saving compound data ' . mysqli_error($this->conn));
+		$query_storage = "INSERT INTO $this->mysql_storage_table ( data ) VALUES ( '$data' )";
+		$success_storage = mysqli_query($this->conn,$query_storage) or die($this->errMsg = 'Error, saving script data ' . mysqli_error($this->conn));
+		
+		$payload = new stdClass();
+		$payload->success = 0;
+		$payload->error = '';
 		
 		if($success_storage)
 		{
-			$last_compound_id = $this->conn->insert_id;
+			$script_id = $this->conn->insert_id;
+			$payload->id = $script_id;
+			//$script_id = mysql_insert_id();
 
 			//now i need to see if I have something with this name already and up the version
-
+			$version = 0;
+			//check category, if it's a new category make that too
+			$category = 0;
+			///time
+			$time = date("Y-m-d H:i:s");//time();//
 			//if we are clear to send it in
-			$query_compounds = "INSERT INTO $this->mysql_compounds_table ( name,category,version,storage ) VALUES ( '$payload->name','0','0','$last_compound_id' )";
-			$success_compounds = mysqli_query($this->conn,$query_compounds) or die($this->errMsg = 'Error, saving compound pointer' . mysqli_error($this->conn));
-		
+			$query_compounds = "INSERT INTO $this->mysql_compounds_table (name,created,category,version,storage) VALUES ('$name','$time',$category,$version,$script_id)";
+			$success_compounds = mysqli_query($this->conn,$query_compounds) or die($this->errMsg = 'Error, saving compound pointer ' . mysqli_error($this->conn));
+			if($success_compounds)
+			{
+				$payload->success=1;
+			}
+			else
+			{
+				$payload->error .= "COMPOUND ENTRY FAILED:" . $success_compounds . " -- ";
+			}
 		}
-		return $last_compound_id;
+		else
+		{
+			$payload->error .= "STORAGE ENTRY FAILED:" . $success_storage . " -- ";
+		}
+
+		return $payload;
 	}
 }
 ?>
