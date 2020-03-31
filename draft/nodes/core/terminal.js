@@ -96,6 +96,7 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 	label.innerHTML="&nbsp;"+"file save";
 	label.className="parameter_label";
 	label.style.width=(width-(margin*2))+"px";
+	//label.style.height=(height-(margin*2))+"px";
 	label.style.display="inline-block";
 
 	element.appendChild(label);
@@ -125,18 +126,22 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 
 	///LETS GET CATEGORIES FROM DATABASE
 	var category_list = draft.database_query.get_categories( );///that is a callback function
+	var new_category_list=[];
+	var NO_CATEGORIES=true;
 	if(!category_list){//no files found,make the arrays we need
-		category_list = ["new category"];
+		new_category_list = ["new category"];
 	}else{
-		category_list.push("new category");
+		NO_CATEGORIES=false;
+		new_category_list=category_list.slice();
+		new_category_list.push("new category");
 	}
 	console.log("------");
-	console.log(category_list[0]);
+	//console.log(new_category_list[0]);
 	
 	var dd_categories = new rad.dropdown({
 		"id":id,
 		"label":"load script",
-		"options":category_list,
+		"options":new_category_list,
 		"value":0,
 		"style":{
 			"width":width,
@@ -145,25 +150,35 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		},
 		"style_dropdown":{
 			"width":width_input
+		},
+		"callback":function(t){
+			var ctb = document.getElementById(id+"_dd_categories");
+			//console.log("------");
+			//console.log(t.value);
+			//console.log(ctb.style.visibility);
+			//console.log("------");
+			ctb.style.display=(t.value=="new category")?'block':'none';
 		}
 	});
 
 	element.appendChild(dd_categories.getelement());
 	///MAKE A FIELD FOR NEW CATEGORIES
 	var tb_newcategory = new rad.textbox({
-		"id":id,
+		"id":id+"_dd_categories",
 		"label":"new category",
 		"value":"",
 		"style":{
 			//"width":width_input,
 			"width":width,
 			"margin":margin,
-			"fontSize":draft.font.size
+			"fontSize":draft.font.size,
+			"display":(NO_CATEGORIES)?"block":"none"
 		},
 		"style_textbox":{
 			"width":width_input
 		}
 	});
+	//document.getElementById(id+"_dd_categories").style.display="none"
 	element.appendChild(tb_newcategory.getelement());
 	//THE SAVE BUTTON
 	var bu_save = new rad.button({
