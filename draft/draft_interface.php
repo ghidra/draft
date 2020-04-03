@@ -39,11 +39,11 @@ if ( isset($_POST['q'])  )
 	$payload = new stdClass();
 	if($_POST['q']=='save_script')
 	{
-		if ( isset($_POST['data']) && isset($_POST['name'])  )
+		if ( isset($_POST['data']) && isset($_POST['name']) && isset($_POST['category']) )
 		{
 			//we have data to save... lets' put it in the database
 			$mysql = new draft_mysql();
-			$payload->result = $mysql->save_script($_POST['name'],$_POST['data']);
+			$payload->result = $mysql->save_script($_POST['name'],$_POST['data'],$_POST['category']);
 		}
 		//echo attemp_login($_POST);
 		//$payload->result='we did it';

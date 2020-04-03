@@ -140,7 +140,7 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 	
 	var dd_categories = new rad.dropdown({
 		"id":id,
-		"label":"load script",
+		"label":"categories",
 		"options":new_category_list,
 		"value":0,
 		"style":{
@@ -164,7 +164,7 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 	element.appendChild(dd_categories.getelement());
 	///MAKE A FIELD FOR NEW CATEGORIES
 	var tb_newcategory = new rad.textbox({
-		"id":id+"_dd_categories",
+		"id":id+"_dd_categories",//this is so i name the whole group
 		"label":"new category",
 		"value":"",
 		"style":{
@@ -203,10 +203,13 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 				alert("save: no file name given");
 				return null;
 			}
+
+			//get the category
+			var category = ( document.getElementById("dd_"+id+"_categories").value === "new category" )?document.getElementById( "tb_"+id+"_dd_categories_new category").value:document.getElementById("dd_"+id+"_categories").value;
+			//alert( category );
 			//console.log(filename);
 			//send that to the save function
-			//draft.file.save(filename,{data:"lots of data"});
-			draft.file.save(filename,draft.scripts[0]);
+			draft.file.save(filename,draft.scripts[0],category);
 			//now clear the save as text input value, and update the list
 			//probably best to just reload the parameters
 			//document.getElementById("tb_"+id+"_save as").value="";

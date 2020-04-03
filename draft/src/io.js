@@ -25,9 +25,10 @@ draft.io.prototype.list=function(){
 	}
 	//console.log(files);
 }
-draft.io.prototype.save=function(name,src){
+draft.io.prototype.save=function(name,src,cat){
 	//save the file
 	var src_clean=this.sanitize_script(src);
+	var category = cat||"uncategorized";
 
 	if(!draft.logged_in)
 	{
@@ -49,7 +50,8 @@ draft.io.prototype.save=function(name,src){
 		var obj ={};
 		obj.q = "save_script";
 		obj.name = name;
-		obj.data = JSON.stringify(src_clean)
+		obj.data = JSON.stringify(src_clean);
+		obj.category = category;
 		draft.ajax.post(
 			draft.php,
 			obj,

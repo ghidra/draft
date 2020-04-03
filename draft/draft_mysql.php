@@ -92,7 +92,7 @@ class draft_mysql extends mysql{
 	////////////////////////////////////////
 	// SETTERS
 	////////////////////////////////////////
-	public function save_script($name,$data)
+	public function save_script($name,$data,$cat)
 	{
 		$query_storage = "INSERT INTO $this->mysql_storage_table ( data ) VALUES ( '$data' )";
 		$success_storage = mysqli_query($this->conn,$query_storage) or die($this->errMsg = 'Error, saving script data ' . mysqli_error($this->conn));
