@@ -52,11 +52,12 @@ draft.io.prototype.save=function(name,src,cat){
 		obj.name = name;
 		obj.data = JSON.stringify(src_clean);
 		obj.category = category;
+		//obj.isnewcat = isnewcat;
 		draft.ajax.post(
 			draft.php,
 			obj,
 			function(lamda){
-				data = JSON.parse(lamda);
+				//data = JSON.parse(lamda);
 				//draft.logged_in=data.logged_in;
 				//document.getElementById(draft.logincontainer_id).innerHTML = data.html;
 				//document.getElementById(draft.logincontainer_id).innerHTML = lamda;

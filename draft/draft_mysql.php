@@ -86,7 +86,16 @@ class draft_mysql extends mysql{
 	{
 		$payload = new stdClass();
 		$raw_categories =  mysqli_query($this->conn,"SELECT * FROM $this->mysql_categories_table ORDER BY id DESC") or die($this->errMsg = 'Error, getting categories '. mysqli_error());
-		$count_compounds=0;
+		$count_categories=0;
+		$arr_categories=array();
+		while($info = mysqli_fetch_array( $raw_categories ))
+		{
+			$arr_categories[$count_categories] = $info;
+			$count_categories++;
+		}
+		$payload->count = $count_categories;
+		$payload->categories = $arr_categories;
+		return $payload;
 	}
 
 	////////////////////////////////////////
@@ -111,6 +120,27 @@ class draft_mysql extends mysql{
 			$version = 0;
 			//check category, if it's a new category make that too
 			$category = 0;
+			$raw_categories =  mysqli_query($this->conn,"SELECT * FROM $this->mysql_categories_table WHERE name LIKE '$cat'") or die($this->errMsg = 'Error, looking at categories '. mysqli_error());
+			$count_categories=0;
+			$arr_categories=array();
+			while($infocat = mysqli_fetch_array( $raw_categories ))
+			{
+				$arr_categories[$count_categories] = $infocat;
+				$count_categories++;
+			}
+
+			if($count_categories<1)
+			{
+				$query_newcategory = "INSERT INTO $this->mysql_categories_table ( name ) VALUES ( '$cat' )";
+				$success_newcategory = mysqli_query($this->conn,$query_newcategory) or die($this->errMsg = 'Error, creating new category ' . mysqli_error($this->conn));
+				$category = $this->conn->insert_id;
+			}
+			else
+			{
+				$category = $arr_categories[0]->id;
+			}
+
+			
 			///time
 			$time = date("Y-m-d H:i:s");//time();//
 			//if we are clear to send it in

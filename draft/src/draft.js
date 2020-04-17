@@ -731,13 +731,19 @@ draft.database_query.get_categories=function(){
 					//draft.logged_in=data.logged_in;
 					//document.getElementById(draft.logincontainer_id).innerHTML = data.html;
 					//if(!draft.logged_in)console.log("logged out");
-					//alert(lamda);
-					draft.database_query.cache.categories = ["HELL YAH"];
+					//alert("--- " + lamda);
+					if(data.count>0)
+					{
+						//alert("CALLED FROM TERMINAL LINE 128--- " + lamda);
+						draft.database_query.cache.categories = data.categories;
+						//draft.database_query.cache.categories = ["HELL YAH"];
+					}
+					
 					//callback();//hopefully this calls this method again from whatever thing called this
 					console.log('went to php to get categories');
 				}
 			);
-			return null;
+			return [];
 		}else{
 			console.log('categories retrieved from cahced');
 			return draft.database_query.cache.categories;

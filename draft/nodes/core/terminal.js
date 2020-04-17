@@ -128,14 +128,18 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 	var category_list = draft.database_query.get_categories( );///that is a callback function
 	var new_category_list=[];
 	var NO_CATEGORIES=true;
-	if(!category_list){//no files found,make the arrays we need
+	if(category_list.length<1){//no files found,make the arrays we need
 		new_category_list = ["new category"];
 	}else{
 		NO_CATEGORIES=false;
-		new_category_list=category_list.slice();
+		//new_category_list=category_list.slice();//this makes a copy
+		for(var cat =0; cat<category_list.length;cat++){
+			//alert(category_list[cat].name);
+			new_category_list.push(category_list[cat].name);
+		}
 		new_category_list.push("new category");
 	}
-	console.log("------");
+	//console.log("------");
 	//console.log(new_category_list[0]);
 	
 	var dd_categories = new rad.dropdown({
@@ -206,6 +210,8 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 
 			//get the category
 			var category = ( document.getElementById("dd_"+id+"_categories").value === "new category" )?document.getElementById( "tb_"+id+"_dd_categories_new category").value:document.getElementById("dd_"+id+"_categories").value;
+			//var isnewcat = ( document.getElementById("dd_"+id+"_categories").value === "new category" )?1:0;
+
 			//alert( category );
 			//console.log(filename);
 			//send that to the save function
