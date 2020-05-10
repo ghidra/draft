@@ -53,7 +53,7 @@ class draft_mysql extends mysql{
 	// GETTERS
 	////////////////////////////////////////
 
-	public function get_compound_list()
+	public function get_categories_and_compounds()
 	{
 		$payload = new stdClass();
 
@@ -74,10 +74,12 @@ class draft_mysql extends mysql{
 			$arr_categories[$count_categories] = $info_categories;
 			$count_categories++;
 		}
-		return $arr_categories;
+		//return $arr_categories;
 
 		$payload->compounds = $arr_compounds;
+		$payload->compounds_count = $count_compounds;
 		$payload->categories = $arr_categories;
+		$payload->categories_count = $count_categories;
 
 		return $payload;
 	}
@@ -95,6 +97,40 @@ class draft_mysql extends mysql{
 		}
 		$payload->count = $count_categories;
 		$payload->categories = $arr_categories;
+		return $payload;
+	}
+
+	public function get_compound($name)
+	{
+		$payload = new stdClass();
+		///first use the name to get the storage id
+		$raw_compound_id =  mysqli_query($this->conn,"SELECT * FROM $this->mysql_compounds_table WHERE name LIKE '$name'") or die($this->errMsg = 'Error, getting compound by name '. mysqli_error());
+		$count_compounds=0;
+		$arr_compounds=array();
+		while($info_compounds = mysqli_fetch_array( $raw_compound_id ))
+		{
+			$arr_compounds[$count_compounds] = $info_compounds;
+			$count_compounds++;
+		}
+		
+		$storage_id = $arr_compounds[0]['storage'];//5 is the actual storage id
+		///////////////
+		//NOW GET THE STORAGE DATA
+
+		$raw_storage =  mysqli_query($this->conn,"SELECT * FROM $this->mysql_storage_table WHERE id LIKE '$storage_id'") or die($this->errMsg = 'Error, getting compound storage '. mysqli_error());
+		$count_storage=0;
+		$arr_storage=array();
+		while($info = mysqli_fetch_array( $raw_storage ))
+		{
+			$arr_storage[$count_storage] = $info;
+			$count_storage++;
+		}
+
+		//$payload->count = $count_categories;
+		$payload->compound_name = $name;
+		//$payload->data = $arr_compounds[0];
+		//$payload->storage_id = $storage_id;
+		$payload->storage = $arr_storage[0]['data'];
 		return $payload;
 	}
 

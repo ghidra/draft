@@ -3,19 +3,20 @@
 require_once 'draft_mysql.php';
 require_once '../rad/backend/login_interface.php';
 
-function get_compound_list($payload)
-{
-	if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true)
-	{
-		$mysql = new draft_mysql();
-		return $mysql->get_compound_list();
-	}
-}
-
 function get_categories()
 {
 	$mysql = new draft_mysql();
 	return $mysql->get_categories();
+}
+function get_categories_and_compounds()
+{
+	$mysql = new draft_mysql();
+	return $mysql->get_categories_and_compounds();
+}
+function get_compound($name)
+{
+	$mysql = new draft_mysql();
+	return $mysql->get_compound($name);
 }
 ////////////////////////////////////
 ///////////////////////////////////
@@ -24,13 +25,17 @@ if ( isset($_GET['q'])  )
 {
 	$q = $_GET['q'];
 
-	if($q=='get_compound_list')
-	{
-		echo json_encode(get_compound_list($_GET));
-	}
 	if($q=='get_categories')
 	{
 		echo json_encode(get_categories());
+	}
+	if($q=='get_categories_and_compounds')
+	{
+		echo json_encode(get_categories_and_compounds());
+	}
+	if($q=='get_compound')
+	{
+		echo json_encode(get_compound($_GET['compound_name']));
 	}
 }
 ////passwords are send via post

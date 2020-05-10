@@ -9,21 +9,42 @@ draft.io.prototype.init=function(){
 	return this;
 }
 //---------------------
-draft.io.prototype.list=function(){
+draft.io.prototype.list_local=function(){
 	//get list of saved
-
-	//this is the brute force local storage way
-	var files = this.storage.getobj("files");
-	if(!files){//there are no files already saved
-		return null;
-	}else{
-		var file_names=[];
-		for (n in files){
-			file_names.push(n);
+	//alert(draft.logged_in);
+	var file_names=[];
+	//if(!draft.logged_in)
+	//{
+		//alert("we are getting local storage files");
+		//this is the brute force local storage way
+		var files = this.storage.getobj("files");
+		if(!files){//there are no files already saved
+			return null;
+		}else{
+			for (n in files){
+				file_names.push(n);
+			}
+			return file_names;
 		}
-		return file_names;
-	}
-	//console.log(files);
+	//}
+	//else
+	//{
+		//draft.database_query.get_categories_and_compounds();
+		/*draft.ajax.get(
+			draft.php,
+			"q=get_compound_list",
+			function(lamda){
+				data = JSON.parse(lamda);
+
+				for (var i=0;i< data.compounds.length;i++){
+					//console.log(data.compounds[i].name);
+					file_names.push(data.compounds[i].name);
+					//NOW I NEED TO ACTUALLY CALL ANOTHER COMMAND TO FILL IN THE DROP DOWN
+				}
+			}
+		);*/
+	//}
+	
 }
 draft.io.prototype.save=function(name,src,cat){
 	//save the file
@@ -72,10 +93,34 @@ draft.io.prototype.save=function(name,src,cat){
 draft.io.prototype.load=function(name){
 	//load file, return object to be processed
 	//get all the local files
-	var files = this.storage.getobj("files");
-	if(files[name]){
-		return files[name];//return the specfic file requested
-	}else{
+	if(!draft.logged_in)
+	{
+		var files = this.storage.getobj("files");
+		if(files[name]){
+			console.log(files[name]);
+			draft.set_script(0,files[name]);
+			//return files[name];//return the specfic file requested
+		}else{
+			alert(name+' file not found in local storage');
+			//return 'none';
+		}
+	}
+	else
+	{
+		//GET IT FROM DATABASE
+		draft.ajax.get(
+			draft.php,
+			"q=get_compound&compound_name="+name,
+			function(lamda){
+				data = JSON.parse(lamda);
+				console.log('-----------------');
+				console.log(data);
+				///needs to be parsed again to turn it into an object
+				//console.log('went to php to get saved compound');
+				draft.set_script(0,JSON.parse(data.storage));
+			}
+		);
+		//alert("we have no load mechanism for database loading yet");
 		return 'none';
 	}
 }

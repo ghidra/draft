@@ -86,8 +86,15 @@ draft.nodes.core.terminal.prototype.render=function(mode,ports,sid){
 ///-------------------------
 //specific paramaters
 ///this is going to be my save and load for now
+// THERE IS A BUG, ON LOAD, WE DO NOT HAVE ALL THE DATA CACHED FROM DATABASE.... SO IT DOENT SHOW EVEYRHING, YOU HAVE TO CLICK ANOTHER NODE, THEN THIS ONE AGAIN
 ///-------------------------
 draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,width_label,margin){
+	///DO THE LOGIN PART FIRST,,, CAUSE IT SET WEATHER OR NOT I AM LOGGED IN
+	var login_element = draft.make_login_element();
+	//go ahead and grab my database data
+	var db_data = draft.database_query.get_categories_and_compounds();
+
+	///NOW DO THE REST
 	var element = document.createElement("DIV");
 	element.style.display="inline-block";
 	element.style.width="100%";
@@ -125,7 +132,31 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 	element.appendChild(tb_saveas.getelement());
 
 	///LETS GET CATEGORIES FROM DATABASE
-	var category_list = draft.database_query.get_categories( );///that is a callback function
+	var new_category_list=[];
+	if(!draft.logged_in){
+		//im not saving categories in loca database... so I can just ignore it
+		new_category_list = ["new category"];
+		var NO_CATEGORIES=true;
+	}else{
+		if(db_data.categories.length>0){
+			var NO_CATEGORIES=false;
+			new_category_list=[];
+			for(var cat =0; cat<db_data.categories.length;cat++){
+				new_category_list.push(db_data.categories[cat].name);
+			}
+			new_category_list.push("new category");
+		}else{
+			///we are potentiall still waiting for load too
+			//new_category_list=["waiting for database"];
+			new_category_list = ["new category"];
+			var NO_CATEGORIES=true;
+		}
+
+		///I'm waiting for the database to respond anyay
+		//new_category_list = ["waiting for database"];
+		
+	}
+	/*var category_list = draft.database_query.get_categories( );///that is a callback function
 	var new_category_list=[];
 	var NO_CATEGORIES=true;
 	if(category_list.length<1){//no files found,make the arrays we need
@@ -138,10 +169,10 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 			new_category_list.push(category_list[cat].name);
 		}
 		new_category_list.push("new category");
-	}
+	}*/
 	//console.log("------");
 	//console.log(new_category_list[0]);
-	
+	///MAKE THE DROP DOWN LIST IN HTML
 	var dd_categories = new rad.dropdown({
 		"id":id,
 		"label":"categories",
@@ -237,10 +268,22 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 
 	//now we need to look and see if we have database storage or local storage
 	//if local storage, we make a drop down with the data that we find
-	
-	var file_list = draft.file.list();
-	if(!file_list){//no files found,make the arrays we need
-		file_list = ["no files found"];
+	if(!draft.logged_in){
+		var file_list = draft.file.list_local();
+		if(!file_list){//no files found,make the arrays we need
+			file_list = ["no files found"];
+		}
+	}else{
+		//console.log(db_data.compounds);
+		var file_list=[]
+		if(db_data.compounds.length>0){
+			for(var com=0;com<db_data.compounds.length;com++){
+				file_list.push(db_data.compounds[com].name);
+			}
+		}else{
+			file_list = ["no files found"];
+		}
+		//var file_list = ["waiting for database"];
 	}
 	//console.log(file_list[0]);
 	
@@ -283,15 +326,17 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		"callback":function(arg){
 			//get the file id from the dropdown
 			var fileid = document.getElementById("dd_"+id+"_load script").value;
-			var filename = file_list[fileid];
+			//alert(file_list+'\n'+fileid);
+			//var file_exists = file_list.indexOf(fileid);
 			//console.log("lets load: "+filename);
-			var loadedfile = draft.file.load(filename);
-			if (loadedfile != 'none'){
+			var loadedfile = draft.file.load(fileid);
+
+			/*if (loadedfile != 'none'){
 				//console.log(loadedfile);
 				draft.set_script(0,loadedfile);//load the file
 			}else{
-				alert(filename+' file not found');
-			}
+				alert(fileid+' file not found');
+			}*/
 		}
 	});
 
@@ -328,7 +373,7 @@ draft.nodes.core.terminal.prototype.parameters=function(id,width,width_input,wid
 		///get the log out button
 	//	logincontainer.innerHTML="&nbsp;"+"CONNECTED";
 	//}
-	element.appendChild(draft.make_login_element());
+	element.appendChild(login_element);
 
 	
 	return element;

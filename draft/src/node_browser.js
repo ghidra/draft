@@ -73,7 +73,7 @@ draft.node_browser.prototype.init=function(layer){
 		}
 	}
 	//////NOW I NEED TO SEE IF I AM LOGGED INTO THE DATA BASE TO GRAB IN COMPOUNDS SAVED IN
-	
+	/*
 	draft.ajax.get(
 		draft.php,
 		"q=get_compound_list",
@@ -82,7 +82,7 @@ draft.node_browser.prototype.init=function(layer){
 			console.log('trying to get stuff from the database');
 			//document.getElementById("login_container").innerHTML = lamda;
 		}
-	);
+	);*/
 
 	///now draw the compounds into the list too
 

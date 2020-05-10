@@ -47,6 +47,7 @@ draft.php = "draft/draft_interface.php";
 draft.login_php = "rad/backend/login_interface.php";
 draft.logincontainer_id = "login_container";
 draft.logged_in = false;///logged in flag
+draft.database_present = false;///logged in flag
 
 //----
 
@@ -201,8 +202,10 @@ draft.set_script=function(sid,src){
 			var new_line = this.scripts[sid].add_line(src.lines[l].fnode,src.lines[l].fport,src.lines[l].tnode,src.lines[l].tport,src.lines[l].c);//
 			new_line.connected(sid);//make the line connection succesful
 		}
-		this.scripts[sid].scale.scale=src.scale.scale;
-		this.scripts[sid].scale.start=src.scale.start;
+		if(src.scale){
+			this.scripts[sid].scale.scale=src.scale.scale;
+			this.scripts[sid].scale.start=src.scale.start;
+		}
 
 		this.render_preview();//do an initial render on load
 	}
@@ -658,6 +661,8 @@ draft.make_login_element=function(){//callback incase we need to refresh the par
 		draft.login_php,
 		"q=login",
 		function(lamda){
+			///we made it back! so we have a database!
+			draft.database_present = true;
 			data = JSON.parse(lamda);
 			draft.logged_in=data.logged_in;
 			document.getElementById(draft.logincontainer_id).innerHTML = data.html;
@@ -685,6 +690,7 @@ draft.process_login = function(form_name){
 		obj,
 		//"q=login&payload="+JSON.stringify(obj),
 		function(lamda){
+			draft.database_present = true;
 			data = JSON.parse(lamda);
 			draft.logged_in=data.logged_in;
 			document.getElementById(draft.logincontainer_id).innerHTML = data.html;
@@ -699,6 +705,7 @@ draft.logout=function(){
 		draft.login_php,
 		"q=logout",
 		function(lamda){
+			draft.database_present = true;
 			data = JSON.parse(lamda);
 			draft.logged_in=data.logged_in;
 			document.getElementById(draft.logincontainer_id).innerHTML = data.html;
@@ -712,8 +719,9 @@ draft.logout=function(){
 /////////////////////////////
 draft.database_query={};
 draft.database_query.cache={};
-draft.database_query.cache.categories=null;
-draft.database_query.get_categories=function(){
+draft.database_query.cache.categories=null;//cache the found compounds
+draft.database_query.cache.compounds=null;//cache the compounds (names and categories, not the node data)
+/*draft.database_query.get_categories=function(){
 	//if(draft.logged_in)
 	//{
 		if(draft.database_query.cache.categories==null)
@@ -727,16 +735,21 @@ draft.database_query.get_categories=function(){
 				draft.php,
 				"q=get_categories",
 				function(lamda){
+					draft.database_present = true;
 					data = JSON.parse(lamda);
 					//draft.logged_in=data.logged_in;
 					//document.getElementById(draft.logincontainer_id).innerHTML = data.html;
 					//if(!draft.logged_in)console.log("logged out");
-					//alert("--- " + lamda);
+					console.log('------------------');
+					console.log(data);
 					if(data.count>0)
 					{
 						//alert("CALLED FROM TERMINAL LINE 128--- " + lamda);
 						draft.database_query.cache.categories = data.categories;
 						//draft.database_query.cache.categories = ["HELL YAH"];
+						console.log('WE GOT SOMETHING');
+						//THIS KIND OF FIXES MY BUG!!!
+						draft.scripts[0].nodes[0].refresh_parameters();///REFRESH THE NODE
 					}
 					
 					//callback();//hopefully this calls this method again from whatever thing called this
@@ -751,4 +764,36 @@ draft.database_query.get_categories=function(){
 	//}else{
 	//	console.log('we aint logged in');
 	//}
+}*/
+draft.database_query.get_categories_and_compounds=function(){
+	///THIS IS CALLED FROM IO, LIST command
+	if(draft.database_query.cache.categories==null && draft.database_query.cache.compounds==null){
+		//draft.database_query.cache.categories=[];
+		//draft.database_query.cache.compounds=[];
+
+		draft.ajax.get(
+			draft.php,
+			"q=get_categories_and_compounds",
+			function(lamda){
+				draft.database_present = true;
+				data = JSON.parse(lamda);
+				//console.log('-----------------');
+				//console.log(data.categories);
+				if(data.categories_count>0){
+					draft.database_query.cache.categories = data.categories;
+				}
+				if(data.compounds_count>0){
+					draft.database_query.cache.compounds = data.compounds;
+				}
+				//THIS KIND OF FIXES MY BUG!!!
+				draft.scripts[0].nodes[0].refresh_parameters();///REFRESH THE NODE
+				console.log('went to php to get compound and category info');
+			}
+		);
+		return [];
+	}else{
+		console.log('categories and compounds retrieved from cahced');
+		return draft.database_query.cache;
+		
+	}
 }
