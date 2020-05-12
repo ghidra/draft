@@ -46,10 +46,15 @@ draft.node.prototype.attach_class=function(category,name){
 	return node_class;
 }
 draft.node.prototype.set_values=function(values){
+	//THIS SHOULD BE MOVED TO THE NODE_FRAMEWORK, AND IT RETURNS NUM of passthroughts to make
+	var num_passthrough_ports = this.class.set_values(values);
+	for(var pt=0;pt<num_passthrough_ports;pt++){
+		this.increment_passthrough();
+	}
 	//when loading in a file, we need to set the saves values
 	//we also need to make any extra ports
 	//this.class.set_values=function(values);
-	var make_extra_passthrough=false;
+	/*var make_extra_passthrough=false;
 	for(v in values){
 		if (v!='label'){//dont need to set label value, thats the actual node name
 			//if this is a passthrough port thats not the first one ie passthrough2 we need to make the port
@@ -67,7 +72,7 @@ draft.node.prototype.set_values=function(values){
 		}
 	}
 	if(make_extra_passthrough)
-		this.increment_passthrough();
+		this.increment_passthrough();*/
 }
 draft.node.prototype.set_dimensions=function(){
 	//set label related shit
