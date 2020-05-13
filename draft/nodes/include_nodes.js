@@ -7,9 +7,10 @@ draft.nodes.js={};
 
 draft.include_nodes={
 	lib:[
-		"basic/string",
 		"core/terminal",
+		"core/parameter",
 		"core/compound",
+		"basic/string",
 		"html/generic"
 	],
 	include:function(src){
