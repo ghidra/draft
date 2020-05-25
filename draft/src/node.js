@@ -45,6 +45,14 @@ draft.node.prototype.attach_class=function(category,name){
 	}
 	return node_class;
 }
+draft.node.prototype.reset_ports=function(){
+	this.i = 0;//number of inports
+	this.o = 0;//nuber of out ports
+
+	this.p_o={};
+	this.p_i={};
+	this.pid = 0;//port ids
+}
 draft.node.prototype.set_values=function(values){
 	//THIS SHOULD BE MOVED TO THE NODE_FRAMEWORK, AND IT RETURNS NUM of passthroughts to make
 	var num_passthrough_ports = this.class.set_values(values);

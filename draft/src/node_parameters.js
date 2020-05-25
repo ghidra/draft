@@ -49,7 +49,13 @@ draft.node_parameters.prototype.show=function(id,node){
 							"width":this.width_input
 						},
 						"callback":function(arg){
-							draft.scripts[draft.activescript].nodes[arg.id].class.inputs_values[arg.label]=document.getElementById("dd_"+arg.id+"_"+arg.label).value;
+							//the node
+							var nd = draft.scripts[draft.activescript].nodes[arg.id];
+							nd.class.inputs_values[arg.label]=document.getElementById("dd_"+arg.id+"_"+arg.label).value;
+
+							if(nd.class.callback_from_dropdown!=null || nd.class.callback_from_dropdown!=undefined){
+								nd.class.callback_from_dropdown(nd);
+							}
 						}
 							
 					});

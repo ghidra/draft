@@ -12,7 +12,7 @@ draft.nodes.core.parameter.prototype.init=function(){
 	this.label="parameter";
 	//This is a fully dynamic node
 	//i need to know what type of data you want to represent
-	this.inputs.type=[
+	/*this.inputs.type=[
 		"boolean",
 		"scalar",
 		"integer",
@@ -27,25 +27,25 @@ draft.nodes.core.parameter.prototype.init=function(){
 		"matrix 2",
 		"matrix 3",
 		"matrix 4"
-	];
+	];*/
 
 	//THIS WILL NEED TO APPENDED Basically
-	this.inputs_values={
+	/*this.inputs_values={
 		"type":"string"
-	}
+	}*/
 
 	//this.outputs.result={};
 
 	///THIS NEEDS TO BE DYNAMIC THE OUTPUT IS THE BASED ON THE INPUT
 	///RIGHT NOW, JUST LEAVING IT AS A STRING
-	this.types={
+	/*this.types={
 		input:{
 			"type":"select"
 		},
 		output:{
 			"result":"string"
 		}
-	};
+	};*/
 	//this.store_defaults();
 	this.build_for_type("string");
 }
@@ -98,9 +98,31 @@ draft.nodes.core.parameter.prototype.build_for_type=function(type){
 		"matrix 3",
 		"matrix 4"
 	*/
+	//this.init();//basically start fresh
+	this.inputs={};
+	this.inputs.type=[
+		"boolean",
+		"scalar",
+		"integer",
+		"string",
+		"long string",
+		"array",
+		"link",
+		"path",
+		"vector 2",
+		"vector 3",
+		"vector 4",
+		"matrix 2",
+		"matrix 3",
+		"matrix 4"
+	];
 	this.inputs_values={
 		"type":type
 	}
+
+	this.outputs={};
+	this.outputs.result={};
+	
 
 	//this.outputs.result={};
 
@@ -273,4 +295,13 @@ draft.nodes.core.parameter.prototype.set_dynamic_values=function(values){
 			
 		}
 	}
+}
+
+////this is called from dropdown change, that allows us to rebuild this node in the editor
+draft.nodes.core.parameter.prototype.callback_from_dropdown=function(nd){
+	nd.reset_ports();
+	this.build_for_type(this.inputs_values.type);
+	nd.set_dimensions();
+	nd.draw();//redraw the node
+	nd.refresh_parameters();
 }
